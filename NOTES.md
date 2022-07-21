@@ -202,3 +202,17 @@ npm run start-dev
 ####
 ![postman success screenshot](https://i.ibb.co/P5hKGfb/Capture.png)
 
+####
+#### Connect Database : 
+
+####
+17. Database connect করার জন্য "6PP_ECOMMERCE/backend/config/**database.js**" নামের একটা file বানাতে হবে, তার পর _________
+####
+
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/config/database.js]]
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+dischik dischik
+```
+
