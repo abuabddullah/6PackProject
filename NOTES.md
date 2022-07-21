@@ -98,7 +98,7 @@ app.listen(process.env.PORT, () => {
 """""""""""""""""""""""""""""""""""""""""
 
 "start": "node backend/server.js",
-"start-dev": "nodemon index.js",
+"start-dev": "nodemon backend/server.js",
 ```
 
 #### Backend Route : 
