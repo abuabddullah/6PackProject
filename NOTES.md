@@ -200,4 +200,6 @@ npm run start-dev
 ####
 
 ####
+<a href="https://ibb.co/BgZb2S7"><img src="https://i.ibb.co/P5hKGfb/Capture.png" alt="Capture" border="0"></a><br /><a target='_blank' href='https://imgbb.com/'>free image hosting</a><br />
 ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
