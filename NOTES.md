@@ -196,7 +196,7 @@ npm run start-dev
 ```
 
 ####
-16. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** নামের একটা নতুন collection বানাতে হবে, তারপর সেখানে **_http://localhost:5000//api/v1/products_** link এর against এ একটা **GET request** generate করতে হবে
+16. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** নামের একটা নতুন collection বানাতে হবে, তারপর সেখানে **_http://localhost:5000/api/v1/products_** link এর against এ একটা **GET request** generate করতে হবে
 ####
 
 ####
