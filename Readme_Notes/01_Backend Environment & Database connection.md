@@ -196,11 +196,7 @@ npm run start-dev
 ```
 
 ####
-<<<<<<< HEAD:Readme_Notes/01_Backend Environment & Database connection.md
 16. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** নামের একটা নতুন collection বানাতে হবে, তারপর সেখানে **_http://localhost:5000//api/v1/products_** link এর against এ একটা **GET request** generate করতে হবে
-=======
-16. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** নামের একটা নতুন collection বানাতে হবে, তারপর সেখানে **_http://localhost:5000/api/v1/products_** link এর against এ একটা **GET request** generate করতে হবে
->>>>>>> fc51b25e02013e0346cf15810a77a34955aefa68:NOTES.md
 ####
 
 ####
@@ -210,7 +206,6 @@ npm run start-dev
 #### Connect Database : 
 
 ####
-<<<<<<< HEAD:Readme_Notes/01_Backend Environment & Database connection.md
 17. প্রথমে "6PP_ECOMMERCE/backend/config/**config.env**" file এ **_DB_URI_** নামের আরো একটা environment variable বানাতে হবে
 ####
 
@@ -224,16 +219,12 @@ DB_URI="mongodb://localhost:27017/Ecommerce"
 
 ####
 18. Database connect করার জন্য "6PP_ECOMMERCE/backend/config/**database.js**" নামের একটা file বানাতে হবে, তারপর সেখানে **mongoose** কে import করে নিতে হুবে, এবার **connectDatabase** function এ নিচে দেখানো code এর মত করে **database connect** করে সবার নিচে **connectDatabase** কে এখান থেকে export করে দিতে হবে তবে মনে রাখতে হবে বর্তমান version এ **_useCreateIndex: true_** লিখলে **error* দেয় তাই এই line টাকে **comment out** করে দিতে হবে
-=======
-17. Database connect করার জন্য "6PP_ECOMMERCE/backend/config/**database.js**" নামের একটা file বানাতে হবে, তার পর _________
->>>>>>> fc51b25e02013e0346cf15810a77a34955aefa68:NOTES.md
 ####
 
 ```http
 [[FILENAME : 6PP_ECOMMERCE/backend/config/database.js]]
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-<<<<<<< HEAD:Readme_Notes/01_Backend Environment & Database connection.md
 const mongoose = require("mongoose");
 
 const connectDatabase = () => {
@@ -278,10 +269,3 @@ app.listen(process.env.PORT, () => {
   console.log(`Server is working on http://localhost:${process.env.PORT}`);
 });
 ```
-
-
-=======
-dischik dischik
-```
-
->>>>>>> fc51b25e02013e0346cf15810a77a34955aefa68:NOTES.md
