@@ -10,9 +10,11 @@ exports.createProduct = async(req, res,next) => {
 }
 
 // Get All Product
-exports.getAllProducts = (req, res) => {
+exports.getAllProducts = async(req, res,next) => {
+    const products = await productModel.find();
     res.status(200).json({
         success: true,
         message: "getAllProducts route is working",
+        products,
     });
 };
