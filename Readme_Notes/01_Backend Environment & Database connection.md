@@ -30,7 +30,7 @@ entry point : backend/server.js
 ```
 
 ####
-5. আবারো terminal দিয়ে "6PP_ECOMMERCE" folder এ npm দিয়ে **express, mongoose, dotenv** install করতে হবে
+5. আবারো terminal দিয়ে "6PP_ECOMMERCE" folder এ npm দিয়ে **express, mongoose, dotenv, cors** install করতে হবে
 ####
 
 ```http
@@ -104,7 +104,7 @@ app.listen(process.env.PORT, () => {
 #### Backend Route : 
 
 ####
-10. backend folder এ দুটা নতুন folder বানাতে হবে "6PP_ECOMMERCE/backend/**controllers**" & "6PP_ECOMMERCE/backend/**routes**" তারপর **controllers** folder এ product এর জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/controllers/**productController.js**"
+10. backend folder এ দুটা নতুন folder বানাতে হবে "6PP_ECOMMERCE/backend/**controllers**" & "6PP_ECOMMERCE/backend/**routes**" তারপর **controllers** folder এ product এর জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/controllers/**productController.js**" । _এই **contoller** file গুলো মূলত **API** এর **async** function কে hold করে_
 11. **productController** **_API_** এর জন্য **_getAllProducts function_** বানাতে হবে যা **inline exported** হবে
 ####
 
@@ -122,8 +122,8 @@ exports.getAllProducts = (req, res) => {
 ```
 
 ####
-12. এবার "6PP_ECOMMERCE/backend/**routes**" folder এ **_getAllProducts function_** কে **_get request দিয়ে routing_** করার জন্য জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/routes/**productRoute.js**"
-13. "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **express, getAllProducts** কে import করে **express** এর সাহায্যে **_express.Router()_** method দিয়ে **router** create করতে হবে, এরপর **_router.route().get()_** method দিয়ে প্রতিটা **API requests** এর aginst এ route বানাতে হবে এবং সবার নিচে **router** কে exports করে দিতে হবে
+12. এবার "6PP_ECOMMERCE/backend/**routes**" folder এ **_getAllProducts** function_ কে **_get request দিয়ে routing_** করার জন্য জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/routes/**productRoute.js**"
+13. "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **express, getAllProducts** কে import করে **express** এর সাহায্যে **_express.Router()_** method দিয়ে **router** create করতে হবে, এরপর **_router.route().get()_** method দিয়ে প্রতিটা **API requests** এর aginst এ route বানাতে হবে এবং সবার নিচে **router** কে exports করে দিতে হবে । _এখানে মূলত সকল **API**s এর জন্য যে http req আছে যেমন **.get, .post, .put, .delete** আছে সেগুলোকে **pathName** অনুযায়ি line by line declare করা হয় এবং **pathName** যদি same হয় তাহলে সবগুলো request কে একই line এও declare করা যায়_
 ####
 
 ```http
@@ -153,7 +153,7 @@ module.exports = router;
 ```
 
 ####
-14. এবার "6PP_ECOMMERCE/backend/**app.js**" file এ **_productRoute_** variable কে import করে তারপর **_app.use()_** method দিয়ে **commonURL & productRoute** সহ invoke করতে হবে
+14. এবার "6PP_ECOMMERCE/backend/**app.js**" file এ **_productRoute_** variable কে import করে তারপর **_app.use()_** method দিয়ে **commonURL & productRoute** সহ invoke করতে হবে। _এই **commonURL** সব সময় url এর সাথে fixed থাকে_
 ####
 
 ```http

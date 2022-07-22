@@ -3,8 +3,8 @@
 #### APIs : productSchema, productModel, productRoute, GET, POST, UPDATE, DELETE (37:45 - 51:45)
 
 
-1. backend folder এর ভিতরে "6PP_ECOMMERCE/backend/**models**" folder বানাতে হবে যার ভিতরে "6PP_ECOMMERCE/backend/models/**productModel.js**" file বানাতে হবে। basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে
-2. এবার "6PP_ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে **_mongoose.schema()_** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports** করে দিব। মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে
+1. backend folder এর ভিতরে "6PP_ECOMMERCE/backend/**models**" folder বানাতে হবে যার ভিতরে "6PP_ECOMMERCE/backend/models/**productModel.js**" file বানাতে হবে। _basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে_
+2. এবার "6PP_ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে **_mongoose.schema()_** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports** করে দিব। _মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে_
 ####
 
 ```http
@@ -95,7 +95,7 @@ const productSchema = new mongoose.Schema({
 const productModel = mongoose.model("Product", productSchema);
 module.exports = productModel;
 ```
-
+### POST req for creating a product by --ADMIN
 ####
 3. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **productModel** কে import করে নিয়ে তারপর **createProduct** নামের asynchronus function generate করতে হবে
 ####
@@ -167,13 +167,15 @@ module.exports = router;
 ####
 
 ####
-6. এবার **mongodb_compass software** দিয়ে database check করতে হবে
+6. এবার **mongodb_compass software** দিয়ে database check করতে হবে,
 ####
 
 ####
 ![mongodb_compass success screenshot](https://i.ibb.co/JkCxW8m/xcv.png)
 ####
 
+
+### GET req for having all products
 ####
 7. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **getAllProducts** নামের function কে asynchronus করতে হবে পাশাপাশি এটাকে এমন একটা **GET API** বানাতে হবে যা সব products কে database থেকে get করতে পারে।
 ####
