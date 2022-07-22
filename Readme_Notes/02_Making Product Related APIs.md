@@ -95,7 +95,7 @@ const productSchema = new mongoose.Schema({
 const productModel = mongoose.model("Product", productSchema);
 module.exports = productModel;
 ```
-### POST req for creating a product by --ADMIN
+### POST req for creating a product by -- _ADMINROUTE_
 ####
 3. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **productModel** কে import করে নিয়ে তারপর **createProduct** নামের asynchronus function generate করতে হবে
 ####
@@ -209,3 +209,250 @@ exports.getAllProducts = async(req, res,next) => {
 ####
 ![postman success screenshot](https://i.ibb.co/GPm1LM0/xcv.png)
 ####
+
+### PUT,DELETE req for Updating, Deleting a product respectively by -- _ADMINROUTE_
+####
+8. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ  **updateProduct, deleteProduct** নামের asynchronus function generate করতে হবে
+####
+
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/productController.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const productModel = require("../models/productModel");
+
+
+// create a product - AdminRoute
+exports.createProduct = async(req, res,next) => {
+    const product = await productModel.create(req.body);
+    res.status(201).json({
+        success: true,
+        product,
+    });
+}
+
+// update a product - AdminRoute
+exports.updateProduct = async(req, res,next) => {
+    const id = req.params.id;
+    const updateInfo = req.body;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+    const updatedProduct = await productModel.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
+    res.status(200).json({
+        success: true,
+        updatedProduct,
+    });
+}
+
+
+// delete a product - AdminRoute
+exports.deleteProduct = async(req, res,next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+
+    await product.remove();
+    // await productModel.findByIdAndDelete(id); // এটাও চলবে
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted",
+    });
+}
+
+
+
+// Get All Product
+exports.getAllProducts = async(req, res,next) => {
+    const products = await productModel.find();
+    res.status(200).json({
+        success: true,
+        message: "getAllProducts route is working",
+        products,
+    });
+};
+
+```
+
+####
+9. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে **_router.route().put().delete()_** method দিয়ে নতুন **PUT & DELETE API** এর route বানাতে হবে 
+####
+
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const express = require("express");
+const {
+  getAllProducts, createProduct, updateProduct, deleteProduct,
+} = require("../controllers/productController");
+
+
+
+const router = express.Router();
+
+
+
+router.route("/products").get(getAllProducts);
+router.route("/product/new").post(createProduct);
+router.route("/product/:id").put(updateProduct).delete(deleteProduct);
+
+
+
+
+
+
+
+module.exports = router;
+
+```
+
+####
+10. এবার **postman & mongodb_compass software** দিয়ে project test করে দেখতে হবে,
+####
+
+####
+![postman & mongodb_compass success screenshot](https://i.ibb.co/4N6CnRQ/put.png)
+####
+![postman & mongodb_compass success screenshot](https://i.ibb.co/Wc3f9rb/dlt.png)
+####
+
+
+
+
+### GET req for having details of a specific product
+####
+11. "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ  **getProductDetails ** নামের asynchronus function generate করতে হবে
+####
+
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/productController.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const productModel = require("../models/productModel");
+
+
+// create a product - AdminRoute
+exports.createProduct = async(req, res,next) => {
+    const product = await productModel.create(req.body);
+    res.status(201).json({
+        success: true,
+        product,
+    });
+}
+
+// update a product - AdminRoute
+exports.updateProduct = async(req, res,next) => {
+    const id = req.params.id;
+    const updateInfo = req.body;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+    const updatedProduct = await productModel.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
+    res.status(200).json({
+        success: true,
+        updatedProduct,
+    });
+}
+
+
+// delete a product - AdminRoute
+exports.deleteProduct = async(req, res,next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+
+    await product.remove();
+    // await productModel.findByIdAndDelete(id); // এটাও চলবে
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted",
+    });
+}
+
+
+
+// Get All Product
+exports.getAllProducts = async(req, res,next) => {
+    const products = await productModel.find();
+    res.status(200).json({
+        success: true,
+        message: "getAllProducts route is working",
+        products,
+    });
+};
+
+```
+
+####
+12. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে **_router.route().put().delete()_** method দিয়ে নতুন **PUT & DELETE API** এর route বানাতে হবে 
+####
+
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const express = require("express");
+const {
+  getAllProducts, createProduct, updateProduct, deleteProduct,
+} = require("../controllers/productController");
+
+
+
+const router = express.Router();
+
+
+
+router.route("/products").get(getAllProducts);
+router.route("/product/new").post(createProduct);
+router.route("/product/:id").put(updateProduct).delete(deleteProduct);
+
+
+
+
+
+
+
+module.exports = router;
+
+```
+
+####
+13. এবার **postman & mongodb_compass software** দিয়ে project test করে দেখতে হবে,
+####
+
+####
+![postman & mongodb_compass success screenshot](https://i.ibb.co/4N6CnRQ/put.png)
+####
+![postman & mongodb_compass success screenshot](https://i.ibb.co/Wc3f9rb/dlt.png)
+####
+
+
