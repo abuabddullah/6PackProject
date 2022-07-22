@@ -1,6 +1,6 @@
 const productModel = require("../models/productModel");
 
-// create a product
+// create a product - AdminRoute
 exports.createProduct = async(req, res,next) => {
     const product = await productModel.create(req.body);
     res.status(201).json({

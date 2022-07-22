@@ -13,7 +13,7 @@
 
 const mongoose = require("mongoose");
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please Enter product Name"],
@@ -91,7 +91,9 @@ const productSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Product", productSchema);
+// module.exports = mongoose.model("Product", productSchema);
+const productModel = mongoose.model("Product", productSchema);
+module.exports = productModel;
 ```
 
 ####
@@ -104,7 +106,7 @@ module.exports = mongoose.model("Product", productSchema);
 
 const productModel = require("../models/productModel");
 
-// create a product
+// create a product - AdminRoute
 exports.createProduct = async(req, res,next) => {
     const product = await productModel.create(req.body);
     res.status(201).json({
@@ -173,7 +175,7 @@ module.exports = router;
 ####
 
 ####
-7. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **getAllProducts ** নামের function কে asynchronus করতে হবে পাশাপাশি এটাকে এমন একটা **GET API** বানাতে হবে যা সব products কে database থেকে get করতে পারে।
+7. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **getAllProducts** নামের function কে asynchronus করতে হবে পাশাপাশি এটাকে এমন একটা **GET API** বানাতে হবে যা সব products কে database থেকে get করতে পারে।
 ####
 
 ```http
@@ -182,7 +184,7 @@ module.exports = router;
 
 const productModel = require("../models/productModel");
 
-// create a product
+// create a product - AdminRoute
 exports.createProduct = async(req, res,next) => {
     const product = await productModel.create(req.body);
     res.status(201).json({
