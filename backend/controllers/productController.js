@@ -64,3 +64,21 @@ exports.getAllProducts = async(req, res,next) => {
         products,
     });
 };
+
+
+// Get Product details by ID
+exports.getProductDetails = async(req, res,next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+    res.status(200).json({
+        success: true,
+        message: "getProductDetails route is working",
+        product,
+    });
+}

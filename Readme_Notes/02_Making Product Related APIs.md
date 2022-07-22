@@ -410,10 +410,28 @@ exports.getAllProducts = async(req, res,next) => {
     });
 };
 
+
+// Get Product details by ID
+exports.getProductDetails = async(req, res,next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+    res.status(200).json({
+        success: true,
+        message: "getProductDetails route is working",
+        product,
+    });
+}
+
 ```
 
 ####
-12. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে **_router.route().put().delete()_** method দিয়ে নতুন **PUT & DELETE API** এর route বানাতে হবে 
+12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে **_router.route().get()_** method দিয়ে নতুন **GET API** এর route বানাতে হবে । _এখানে same **path** এর সবগুলো  req কে একই সাথে একই line এ দেয়া যেত কিন্তু **AdminRoute & NonAdminRoute** differenciate করারা জন্য আলাদা আলাদা দুটা line এ করা হয়েছে_
 ####
 
 ```http
@@ -422,7 +440,7 @@ exports.getAllProducts = async(req, res,next) => {
 
 const express = require("express");
 const {
-  getAllProducts, createProduct, updateProduct, deleteProduct,
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails,
 } = require("../controllers/productController");
 
 
@@ -432,8 +450,11 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(createProduct);
-router.route("/product/:id").put(updateProduct).delete(deleteProduct);
+router.route("/product/new").post(createProduct); // AdminRoute
+
+// router.route("/product/:id").put(updateProduct).delete(deleteProduct).get(getProductDetails); // allowed
+router.route("/product/:id").put(updateProduct).delete(deleteProduct) // AdminRoute
+router.route("/product/:id").get(getProductDetails);
 
 
 
@@ -450,9 +471,7 @@ module.exports = router;
 ####
 
 ####
-![postman & mongodb_compass success screenshot](https://i.ibb.co/4N6CnRQ/put.png)
-####
-![postman & mongodb_compass success screenshot](https://i.ibb.co/Wc3f9rb/dlt.png)
+![postman & mongodb_compass success screenshot](https://i.ibb.co/7nkBpgY/xcv.png)
 ####
 
 
