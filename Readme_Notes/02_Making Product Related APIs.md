@@ -3,8 +3,14 @@
 #### APIs : productSchema, productModel, productRoute, GET, POST, UPDATE, DELETE (37:45 - 51:45)
 
 
-1. backend folder এর ভিতরে "6PP_ECOMMERCE/backend/**models**" folder বানাতে হবে যার ভিতরে "6PP_ECOMMERCE/backend/models/**productModel.js**" file বানাতে হবে। _basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে_
-2. এবার "6PP_ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে **_mongoose.schema()_** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports** করে দিব। _মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে_
+1. backend folder এর ভিতরে "6PP_ECOMMERCE/backend/**models**" folder বানাতে হবে যার ভিতরে "6PP_ECOMMERCE/backend/models/**productModel.js**" file বানাতে হবে। 
+
+>_basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে_
+
+2. এবার "6PP_ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে **_mongoose.schema()_** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports** করে দিব।
+
+>_মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে_
+
 ####
 
 ```http
@@ -175,7 +181,7 @@ module.exports = router;
 ####
 
 
-### GET req for having all products
+### GET req for having all products (51:45 - 1:02:37)
 ####
 7. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **getAllProducts** নামের function কে asynchronus করতে হবে পাশাপাশি এটাকে এমন একটা **GET API** বানাতে হবে যা সব products কে database থেকে get করতে পারে।
 ####
@@ -431,7 +437,10 @@ exports.getProductDetails = async(req, res,next) => {
 ```
 
 ####
-12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে **_router.route().get()_** method দিয়ে নতুন **GET API** এর route বানাতে হবে । _এখানে same **path** এর সবগুলো  req কে একই সাথে একই line এ দেয়া যেত কিন্তু **AdminRoute & NonAdminRoute** differenciate করারা জন্য আলাদা আলাদা দুটা line এ করা হয়েছে_
+12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে **_router.route().get()_** method দিয়ে নতুন **GET API** এর route বানাতে হবে । 
+
+>_এখানে same **path** এর সবগুলো  req কে একই সাথে একই line এ দেয়া যেত কিন্তু **AdminRoute & NonAdminRoute** differenciate করারা জন্য আলাদা আলাদা দুটা line এ করা হয়েছে_
+
 ####
 
 ```http

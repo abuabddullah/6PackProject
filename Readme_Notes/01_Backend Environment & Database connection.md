@@ -2,7 +2,7 @@
 
 # E-Commerce By 6PP
 
-এই project এ আমি একটি large scale এর e-commerce site বানাব MERN stack দিয়ে যেখানে backend এ extra হিসেবে mongoose থাকবে এবং index.js এ আমরা সব api declare না করে structuredly বিভিন্ন folder এ define করব।\
+> এই project এ আমি একটি large scale এর e-commerce site বানাব MERN stack দিয়ে যেখানে backend এ extra হিসেবে mongoose থাকবে এবং index.js এ আমরা সব api declare না করে structuredly বিভিন্ন folder এ define করব।\
 পাশাপাশি কোন রকম firebase এর help ছাড়াই internal authentication system বানাব। আর frontend এতো নতুন নতুন চমক থাকছেই।
 
 
@@ -104,7 +104,10 @@ app.listen(process.env.PORT, () => {
 #### Backend Route : 
 
 ####
-10. backend folder এ দুটা নতুন folder বানাতে হবে "6PP_ECOMMERCE/backend/**controllers**" & "6PP_ECOMMERCE/backend/**routes**" তারপর **controllers** folder এ product এর জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/controllers/**productController.js**" । _এই **contoller** file গুলো মূলত **API** এর **async** function কে hold করে_
+10. backend folder এ দুটা নতুন folder বানাতে হবে "6PP_ECOMMERCE/backend/**controllers**" & "6PP_ECOMMERCE/backend/**routes**" তারপর **controllers** folder এ product এর জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/controllers/**productController.js**" । 
+
+>_এই **contoller** file গুলো মূলত **API** এর **async** function কে hold করে_
+
 11. **productController** **_API_** এর জন্য **_getAllProducts function_** বানাতে হবে যা **inline exported** হবে
 ####
 
@@ -123,7 +126,10 @@ exports.getAllProducts = (req, res) => {
 
 ####
 12. এবার "6PP_ECOMMERCE/backend/**routes**" folder এ **_getAllProducts** function_ কে **_get request দিয়ে routing_** করার জন্য জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/routes/**productRoute.js**"
-13. "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **express, getAllProducts** কে import করে **express** এর সাহায্যে **_express.Router()_** method দিয়ে **router** create করতে হবে, এরপর **_router.route().get()_** method দিয়ে প্রতিটা **API requests** এর aginst এ route বানাতে হবে এবং সবার নিচে **router** কে exports করে দিতে হবে । _এখানে মূলত সকল **API**s এর জন্য যে http req আছে যেমন **.get, .post, .put, .delete** আছে সেগুলোকে **pathName** অনুযায়ি line by line declare করা হয় এবং **pathName** যদি same হয় তাহলে সবগুলো request কে একই line এও declare করা যায়_
+13. "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **express, getAllProducts** কে import করে **express** এর সাহায্যে **_express.Router()_** method দিয়ে **router** create করতে হবে, এরপর **_router.route().get()_** method দিয়ে প্রতিটা **API requests** এর aginst এ route বানাতে হবে এবং সবার নিচে **router** কে exports করে দিতে হবে । 
+
+>_এখানে মূলত সকল **API**s এর জন্য যে http req আছে যেমন **.get, .post, .put, .delete** আছে সেগুলোকে **pathName** অনুযায়ি line by line declare করা হয় এবং **pathName** যদি same হয় তাহলে সবগুলো request কে একই line এও declare করা যায়_
+
 ####
 
 ```http
@@ -153,7 +159,10 @@ module.exports = router;
 ```
 
 ####
-14. এবার "6PP_ECOMMERCE/backend/**app.js**" file এ **_productRoute_** variable কে import করে তারপর **_app.use()_** method দিয়ে **commonURL & productRoute** সহ invoke করতে হবে। _এই **commonURL** সব সময় url এর সাথে fixed থাকে_
+14. এবার "6PP_ECOMMERCE/backend/**app.js**" file এ **_productRoute_** variable কে import করে তারপর **_app.use()_** method দিয়ে **commonURL & productRoute** সহ invoke করতে হবে। 
+
+>_এই **commonURL** সব সময় url এর সাথে fixed থাকে_
+
 ####
 
 ```http
@@ -218,7 +227,10 @@ DB_URI="mongodb://localhost:27017/Ecommerce"
 ```
 
 ####
-18. Database connect করার জন্য "6PP_ECOMMERCE/backend/config/**database.js**" নামের একটা file বানাতে হবে, তারপর সেখানে **mongoose** কে import করে নিতে হুবে, এবার **connectDatabase** function এ নিচে দেখানো code এর মত করে **database connect** করে সবার নিচে **connectDatabase** কে এখান থেকে export করে দিতে হবে তবে মনে রাখতে হবে বর্তমান version এ **_useCreateIndex: true_** লিখলে **error* দেয় তাই এই line টাকে **comment out** করে দিতে হবে
+18. Database connect করার জন্য "6PP_ECOMMERCE/backend/config/**database.js**" নামের একটা file বানাতে হবে, তারপর সেখানে **mongoose** কে import করে নিতে হুবে, এবার **connectDatabase** function এ নিচে দেখানো code এর মত করে **database connect** করে সবার নিচে **connectDatabase** কে এখান থেকে export করে দিতে হবে 
+
+>তবে মনে রাখতে হবে বর্তমান version এ **_useCreateIndex: true_** লিখলে **error* দেয় তাই এই line টাকে **comment out** করে দিতে হবে
+
 ####
 
 ```http
