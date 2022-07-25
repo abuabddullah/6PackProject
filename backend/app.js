@@ -12,11 +12,16 @@ app.use(express.json())
 
 // Route Imports
 const productRoute = require("./routes/productRoute");
+const errorMiddleware = require("./middleware/error");
 
 
 
 // invoking
 app.use("/api/v1", productRoute);
+
+
+// last placing Middleware for Errors
+app.use(errorMiddleware);
 
 
 module.exports = app;

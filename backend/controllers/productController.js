@@ -1,25 +1,24 @@
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
 const productModel = require("../models/productModel");
+const ErrorHandler = require("../utils/ErrorHandler");
 
 
 // create a product - AdminRoute
-exports.createProduct = async(req, res,next) => {
+exports.createProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
     const product = await productModel.create(req.body);
     res.status(201).json({
         success: true,
         product,
     });
-}
+})
 
 // update a product - AdminRoute
-exports.updateProduct = async(req, res,next) => {
+exports.updateProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
     const id = req.params.id;
     const updateInfo = req.body;
     const product = await productModel.findById(id);
     if (!product) {
-        return res.status(404).json({
-            success: false,
-            message: "Product not found",
-        });
+        return next(new ErrorHandler(`Product not found`, 404));
     }
     const updatedProduct = await productModel.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
@@ -30,18 +29,15 @@ exports.updateProduct = async(req, res,next) => {
         success: true,
         updatedProduct,
     });
-}
+})
 
 
 // delete a product - AdminRoute
-exports.deleteProduct = async(req, res,next) => {
+exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
     const id = req.params.id;
     const product = await productModel.findById(id);
     if (!product) {
-        return res.status(404).json({
-            success: false,
-            message: "Product not found",
-        });
+        return next(new ErrorHandler(`Product not found`, 404));
     }
 
     await product.remove();
@@ -51,34 +47,32 @@ exports.deleteProduct = async(req, res,next) => {
         success: true,
         message: "Product deleted",
     });
-}
+})
 
 
 
 // Get All Product
-exports.getAllProducts = async(req, res,next) => {
+exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
     const products = await productModel.find();
     res.status(200).json({
         success: true,
         message: "getAllProducts route is working",
         products,
     });
-};
+});
 
 
 // Get Product details by ID
-exports.getProductDetails = async(req, res,next) => {
+exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
     const id = req.params.id;
     const product = await productModel.findById(id);
     if (!product) {
-        return res.status(404).json({
-            success: false,
-            message: "Product not found",
-        });
+        return next(new ErrorHandler(`Product not found`, 404));
     }
+    
     res.status(200).json({
         success: true,
         message: "getProductDetails route is working",
         product,
     });
-}
+})
