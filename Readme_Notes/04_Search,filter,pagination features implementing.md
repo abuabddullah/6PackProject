@@ -415,7 +415,7 @@ module.exports = ApiFeatures;
 
 
 ####
-10. এখন আমরা "6PP_ECOMMERCE/backend/controllers/**productController.js "** file এ  **_pagination()_** function কে invoke করব সাথে argument হিসেবে **_resultPerPage_**  কেও দিয়ে দিব
+10. এখন আমরা "6PP_ECOMMERCE/backend/controllers/**productController.js "** file এ  **_pagination()_** function কে invoke করব সাথে argument হিসেবে  **_resultPerPage_**  কেও দিয়ে দিব পাশাপাশি **_.countDocuments()_** method use করে **_totalProductsCount_** বের করে নিব
 
 ####
 > যদিও আপাতত যেহেতু আমরা **frontend** শুরু করি নি তাই **resultPerPage** variable কে static ভাবে declare করেছি কিন্তু পরবর্তিতে এটা **frontend** থেকে আসবে  [[line-61]
