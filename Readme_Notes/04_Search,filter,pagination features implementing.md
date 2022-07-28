@@ -10,6 +10,7 @@
 3. এরপর **_search()_** function এ **query keyword_** থেকে **keyword** varible বের করে নিয়ে আসব। এবং  যদি ি keyword exist না করে তবে,  একটা empty object **{}** create হবে আর যদি **keyword** exist করে তবে, **_name_** নামের একটা object variable declare করে **_keyword_** দিয়ে **_query function_** এ implement করে তারপর পুরা object **_this_** টাকেই return করে দিব
 
 ####
+> এখানের **name** varible টা কোন variable ই নয় বরং এটা একটা নির্দেরশনা যেহেতু  আমরা search field এ কোন কিছুর নাম লিখেই search করব তাই সেই **keyword** টাকে আগে **"$regex"** symbol দিয়ে মুরিয়ে নিতে হবে যা তারপর allproducts এর **name** keyword এর সাথে match করার চেষ্টাকরবে আর result বের করে নিয়ে আসবে । যদি চাইতাম **description** এর উপরে search চালাতে তাহলে variable এর নামও description রাখতে হত।
 > এখানে **name** variable এ  **$regex , $options** হচ্ছে node এর default method আর **$options** এর value **"i"** মানে হচ্ছে **case insensitive**
 > এখানে একটা সুক্ষ্ম জিনিস বুঝার আছে , **constructor** এর সাহায্যে আমরা **query** key এর value হিসেবে **query** function কে recive করছি  **কিন্তু** **search()** function এ গিয়ে আবার  **query** key এর value হিসেবে আমরা **find** method থেকে  পাওয়া **array of object** কে set করছি তাই যখন  return হিসেবে **this**  কে পাঠাচ্ছি সেখানে  এমন একটা object return হচ্ছে যেখানে**query** key এর value  হচ্ছে একতা **array of object** not that previous **query function** 
 
@@ -120,7 +121,7 @@ exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
 // Get All Product
 exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
-  const apiFeature = new ApiFeatures(Product.find(), req.query)
+  const apiFeature = new ApiFeatures(productModel.find(), req.query)
     .search()
   let products = await apiFeature.query;
   
@@ -296,7 +297,7 @@ exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
 // Get All Product
 exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
-  const apiFeature = new ApiFeatures(Product.find(), req.query)
+  const apiFeature = new ApiFeatures(productModel.find(), req.query)
     .search()
     .filter();
   let products = await apiFeature.query;
@@ -337,14 +338,16 @@ exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) =>
 
 ### Implement pagination feature : [1:44:48 - dthfgfgfgjfgjfjfj]
 ####
-> implement **pagination** feature based on **total product count, item to show perpage, total result after feltering or searching** etc.
+> **pagination** feature implement করব based on **total product count, item to show perpage, total result after feltering or searching** etc.
+> এবং পাশাপাশি  total product এর মোট সংখ্যা বের করব যাতে  fontend এ pagination এর জন্য button নিতে পারি
+> **no Of Total filtered item based on query** টা বের করে নিলেও ভাল হত হয় ত পরে বের করবে
 ####
 9. এবার 66PP_ECOMMERCE/backend/utils/**apiFeatures.js**" file এ **_pagination()_** function বানাতে হবে যেখানে,  এটা একটা parameter recieve করবে যখন 6PP_ECOMMERCE/backend/controllers/**productController.js** file এ একে invoke করা হবে
 > এই parameter টা হচ্ছে প্রতি page এ কতটা করে item দেখাতে হবে তার সংখ্যা । এটা মুলত **frontend** থেকে **productController.js** file হয়ে **apiFeatures.js** file এ আসবে এছাড়া আরো কিছু   data যা **currentPage, skipItem** নির্ণয়ে লাগবে সেগুলোও আসবে **frontend** থেকে
 
 ####
 > এখানে **pagination()** function এ প্রথমে **currentPage, skipItem** নির্ণয় করব তারপর এগুলোর সাহায্যে **query function** এ **limit().skip()**  method implement করে যা পাব তা **query** keyword এর value হিসেবে assign করে পুরা **this** কেই return করে দিব
->> প্রসংগত আবার মনে করিয়ে দেই  এই **query function** হচ্ছে  **productController.js**  থেকে পাওয়া **product.find()** method টা ই
+>> প্রসংগত আবার মনে করিয়ে দেই  এই **query function** হচ্ছে  **productController.js**  থেকে পাওয়া **productModel.find()** method টা ই
 
 ####
 ####
@@ -482,10 +485,12 @@ exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
 exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
  const resultPerPage = 8;
+ const productsCount = await productModel.countDocuments();
  
-  const apiFeature = new ApiFeatures(Product.find(), req.query)
+  const apiFeature = new ApiFeatures(productModel.find(), req.query)
     .search()
-    .filter();
+    .filter()
+    .pagination(resultPerPage);
   let products = await apiFeature.query;
   
     res.status(200).json({
@@ -514,9 +519,9 @@ exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) =>
 ```
 
 ####
-11. এবার postman software এ test করব mongDb id last এর digit 9 কে অন্যকিছু দিয়ে replace 
+11. এবার postman software এ test করব 
 ####
-![postman success screenshot](https://i.ibb.co/CMMbW76/Capture.png)
+![postman success screenshot](https://i.ibb.co/M2rxgT3/xcv.png)
 ####
 
 
