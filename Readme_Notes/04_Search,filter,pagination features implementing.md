@@ -336,7 +336,7 @@ exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) =>
 
 
 
-### Implement pagination feature : [1:44:48 - dthfgfgfgjfgjfjfj]
+### Implement pagination feature : [1:44:48 - 1:52:18]
 ####
 > **pagination** feature implement করব based on **total product count, item to show perpage, total result after feltering or searching** etc.
 > এবং পাশাপাশি  total product এর মোট সংখ্যা বের করব যাতে  fontend এ pagination এর জন্য button নিতে পারি
