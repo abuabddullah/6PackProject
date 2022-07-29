@@ -207,16 +207,15 @@ module.exports = app;
 ####
 
 
-### Encrypting password during registering and if password is changed : [ 2:08:10 - 635d41gh41dfh ]
+### Encrypting password during registering and if password is changed : [ 2:08:10 - 2:12:28]
 ####
 8. এবার "6PP_ECOMMERCE/backend/models/**userModel.js**" file এ **bcryptjs** কে import করব তারপর **_userSchema_** এর উপরে **_"save"_** event apply করে একটা asynchronous analog function pass করব যা **_next_** function কে parameter হিসেবে নিবে এবং যদি password change করা হয়  অথবা user firstime register হয়  তাহলেই কেবল password **_hashing_** হবে নইলে **_next()_** function invoke হবে
 ####
 
-> এখানে analog function use করা হয়েছে কারন arrow function এ **this** keyword use করা যায় না
+> এখানে **_.pre()_** function mean করে হচ্ছে যদি কোন কারনে **_userSchema_** এর যেকোণ data change হয় তাহলে তা save হবার পূর্বেই যেন **hasing** কাজটা হয় আর analog function use করা হয়েছে কারন arrow function এ **this** keyword use করা যায় না
 >
 > this.isModified("password") method আমাদেরকে this বা **holder object** এর **_password_** field এর কোন modification হয়েছে কিনা তা track করতে সাহায্য করে 
 > bcrypt.hash() method আমাদেরকে encrypting এ সাহায্যে করে , এটা দুটা parameter নেয় একটা হল কোণ জিনিসকে **hashing** করা লাগবে আর ২য় হচ্ছে **hashing** এর streng কত হবে এক্ষেত্রে দেয়া হয়েছে **১০**
-
 ####
 ```http
 [[FILENAME : 6PP_ECOMMERCE/backend/models/userModel.js]]
@@ -269,7 +268,7 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpire: Date,
 });
 
-// hasing or encrypting password
+// hasing or encrypting password befor saving modification
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -289,4 +288,156 @@ module.exports = userModel;
 
 ####
 ![postman success screenshot](https://i.ibb.co/3ySR4wm/xcv.png)
+####
+
+
+
+### JWT impelementing : [2:12:28 - 2:17:20]
+####
+10. প্রথমে **JWT_SECRET & JWT_EXPIRE** এর জন্য দুটা **environment** variable বানাতে হবে 6PP_ECOMMERCE/backend/config/**config.env** file এ  
+####
+
+> JWT_SECRET generate করার জন্য আমরা terminal এর node এ **require('crypto').randomBytes(64).toString('hex')** এই code use করব
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/config.env]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+PORT=5000
+DB_URI="mongodb://localhost:27017/Ecommerce"
+JWT_SECRET=902c5afe4dd21930d732a3380b9bd69caa751760c43317cb763df12db49c9120c375946f305f3e8833556c7708766e643a280cfe10f3bfeb1fe10f08dfbb92bb
+JWT_EXPIRE=1d
+```
+####
+
+####
+11. এবার 6PP_ECOMMERCE/backend/models/**userModel.js** file এ **jsonwebtoken** কে import করে তারপর **_userSchema_** এর ভিতরে methods হসেবে **getJWTToken** function কে push করে দিব যা মূলত **_jwt.sign()_** method এর সাহায্যে **json web token** generate করে পাশাপাশি তা return ও করবে
+####
+
+> **jwt.sign()** method 3 তা parameter নেয় id, jwt_secret আর options এখানে option দেয়া আছে **expire**
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/models/userModel.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const mongoose = require("mongoose");
+const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const bcryptjs = require("bcryptjs");
+
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please Enter Your Name"],
+    maxLength: [30, "Name cannot exceed 30 characters"],
+    minLength: [4, "Name should have more than 4 characters"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please Enter Your Email"],
+    unique: true,
+    validate: [validator.isEmail, "Please Enter a valid Email"],
+  },
+  password: {
+    type: String,
+    required: [true, "Please Enter Your Password"],
+    minLength: [8, "Password should be greater than 8 characters"],
+    select: false,
+  },
+  avatar: {
+    public_id: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
+  role: {
+    type: String,
+    default: "user",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+});
+
+// hasing or encrypting password befor saving modification
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
+  }
+
+  this.password = await bcryptjs.hash(this.password, 10);
+});
+
+
+// JWT TOKEN
+userSchema.methods.getJWTToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
+
+
+
+const userModel = mongoose.model("User", userSchema);
+module.exports = userModel;
+```
+####
+
+####
+12. এবার 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ **getJWTToken** কে invoke করে **token** নিয়ে হবে এবং সব শেষে তা response এও দিয়ে দিতে হবে
+####
+
+> এই **getJWTToken** function টা **line-7** userShcema এর সাহায্যে **_user_** varibale এর ভিতরে already রয়েছে তাই import করা লাগে নি
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/userController.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const userModel = require("../models/userModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+
+// Register a User
+exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { name, email, password } = req.body;
+  
+    const user = await userModel.create({
+      name,
+      email,
+      password,
+      avatar: {
+        public_id: "myCloud.public_id",
+        url: "myCloud.secure_url",
+      },
+    });
+
+    const token = await user.getJWTToken()
+    
+      res.status(201).json({
+          success: true,
+          message: "user is created",
+          token,
+          user,
+      });
+  });
+```
+####
+
+12. এবার **postman software** দিয়ে project test করার হবে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/Vpptt71/xcv.png)
 ####

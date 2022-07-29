@@ -15,10 +15,13 @@ exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
         url: "myCloud.secure_url",
       },
     });
+
+    const token = user.getJWTToken();
     
       res.status(201).json({
           success: true,
           message: "user is created",
+          token,
           user,
       });
   });
