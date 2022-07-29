@@ -441,3 +441,340 @@ exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ####
 ![postman success screenshot](https://i.ibb.co/Vpptt71/xcv.png)
 ####
+
+
+
+
+### "POST Login function" and create "common response sending function" and "function to save token to coocke" in backend : [2:17:20 - 2:31:16]
+####
+13. 6PP_ECOMMERCE/backend/models/**userModel.js** file এ গিয়ে এবার **User login** করার সময় যে password দিচ্ছে আর আমাদের database এ সেই email এর against এ যে password আছে তা same কিনা check করার জন্য **_UserShema.methods.comparePassword()_** নামের একটা function বানাব যা bcryptjs এর default **_compare_** method এর সাহায্যে এই কাজকে সহজেই করে দিবে
+####
+
+> এখানে **bcryptjs.compare()** method টা দুটা parameter নেয় প্রথমটা হচ্ছে login in এর সময় user যে password টা দিচ্ছে আর ২য় টা হচ্ছে সেই email এর against এ database এ যে password আছে তা এবং return result হিসেবে এই function **boolean** value **true or false** কে return করে
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/models/userModel.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please Enter Your Name"],
+    maxLength: [30, "Name cannot exceed 30 characters"],
+    minLength: [4, "Name should have more than 4 characters"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please Enter Your Email"],
+    unique: true,
+    validate: [validator.isEmail, "Please Enter a valid Email"],
+  },
+  password: {
+    type: String,
+    required: [true, "Please Enter Your Password"],
+    minLength: [8, "Password should be greater than 8 characters"],
+    select: false,
+  },
+  avatar: {
+    public_id: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
+  role: {
+    type: String,
+    default: "user",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+});
+
+// hasing or encrypting password befor saving modification
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
+  }
+
+  this.password = await bcryptjs.hash(this.password, 10);
+});
+
+
+// JWT TOKEN
+userSchema.methods.getJWTToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
+
+
+// Compare Password
+userSchema.methods.comparePassword = async function (password) {
+  return await bcryptjs.compare(password, this.password);
+};
+
+
+
+const userModel = mongoose.model("User", userSchema);
+module.exports = userModel;
+```
+####
+
+
+14. 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ গিয়ে এবার **loginUser** নামের আরো একটা async function বানাতে হবে যা আমাদের user কে login করাবে website এ
+####
+
+> line-39 এ আমাদের **findOne()** method implement করার পরে **.select("+password")** কে inclue করা হয়েছে কারন আমরা আগেই যখন **userSchema** define করেছিলাম তখন **userSchema.password.select: false** করেছিলাম যাতে কেউ যদি user এর কোন information কে **GET** করতে চায় তাহলে সব info পেলেও যাতে password না পায় কিন্তু এখানে যখন user **logiin** হচ্ছে ্তখন তার login কে successful করার জন্য **password** টাও কিন্তু লাগবে তাই এই **.select("+password")** method দিয়ে আমি database কে বলে দিচ্ছি, **"শুনো user কে find করে তার সব info দাও এবং পাশাপাশি তার password টাও দিতে হবে বুঝলা?"**
+> 
+> আর **comparePassword** function টা **userModel** এর সাহায্যে already **user** variable এর ভিতরে ঢুকে গিয়েছে তাই import করা লাগে নাই
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/userController.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const userModel = require("../models/userModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+
+// Register a User
+exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { name, email, password } = req.body;
+  
+    const user = await userModel.create({
+      name,
+      email,
+      password,
+      avatar: {
+        public_id: "myCloud.public_id",
+        url: "myCloud.secure_url",
+      },
+    });
+
+    const token = user.getJWTToken();
+    
+      res.status(201).json({
+          success: true,
+          message: "user is created",
+          token,
+          user,
+      });
+  });
+
+  // Login User
+  exports.loginUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { email, password } = req.body;
+  
+    // checking if user has given password and email both
+  
+    if (!email || !password) {
+      return next(new ErrorHandler("Please Enter Email & Password", 400));
+    }
+  
+    const user = await userModel.findOne({ email }).select("+password");
+  
+    if (!user) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+  
+    const isPasswordMatched = await user.comparePassword(password);
+  
+    if (!isPasswordMatched) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+    const token = user.getJWTToken();
+    
+    res.status(200).json({
+      success: true,
+      message: "user is logged in",
+      token,
+      user,
+    });
+  });
+```
+####
+
+####
+15. এবার **loginUser** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**userRoute.js**" file এ **loginUser** function কে import করে router.route().post() method দিয়ে আরেকটা নতুন POST API এর route বানাতে হবে 
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/routes/userRoute.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const express = require("express");
+const { registerUser, loginUser } = require("../controllers/userController");
+
+const router = express.Router();
+
+
+router.route("/register").post(registerUser);
+router.route("/login").post(loginUser);
+
+
+module.exports = router;
+```
+####
+
+16. এবার **postman software** দিয়ে project test করার হবে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/3cSK22P/xcv.png)
+####
+
+####
+17. এবার একটা common function বানাব যার সাহায্যে যদি user **login/register/updateinfo** etc করতে চায় তাহলে সে auto token পাবে, token টা coockie তে saved হবে এবং পাশাপাশি auto res send হবে frontend এ । এর জন্য প্রথমে একতা file create করে নিতে হবে **utils** folder এ 6PP_ECOMMERCE/backend/utils/**jwtToken.js** নামের
+18. এখন **jwtToken.js** file এ **sendToken** নামের একটা function create করতে হবে যা ৩ টা parameter recieve করবে user, statusCode এবং res 
+19. এরপর এই **sendToken** function ৩টা কাজ কয়েক্টা কাজ হবে এবং সব শেষে এই **sendToken** function কে exports করে দিতে হবে
+
+> **user.getJWTToken()** এর সাহায্যে jwt token কে recieve করে **token** নামক variable এ assign করে দিব
+> **cookie** তে token কে save করার জন্য 3টা mendatory parameter লাগে **storeageName**, **what to store**(এক্ষেত্রে **toke**) আর **options** লাগে যেখানে token টা কতদিন পর expire হবে, এরকম আরো কিছু (যদি চাই) আর অবশ্যই **httpOnly: true** করে দিতে হয় । তাই এই features সম্বনিত একটা **options** নামের object variable create করব
+> **res.status().coockie().json({})** এর সাহায্যে token **cookie** তে save  হবে পাশাপাশি frontend এ response ও send হবে
+>
+>> এখানে এখনো  **COOKIE_EXPIRE** environment variable বানানো নাই এখন বানাতে হবে
+>> **expire** date এ current **login/register/updateInfo** time এর সাথে **COOKIE_EXPIRE** এর duration কে mili second format এ store করতে হয়
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/utils/jwtToken.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+// Create Token and saving in cookie
+
+const sendToken = (user, statusCode, res) => {
+  const token = user.getJWTToken();
+
+  // options for cookie
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  res.status(statusCode).cookie("token", token, options).json({
+    success: true,
+    user,
+    token,
+  });
+};
+
+module.exports = sendToken;
+```
+####
+
+
+20. এবার COOKIE_EXPIRE এর জন্য environment variable বানাতে হবে 6PP_ECOMMERCE/backend/config/config.env file এ
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/config.env]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+PORT=5000
+DB_URI="mongodb://localhost:27017/Ecommerce"
+JWT_SECRET=902c5afe4dd21930d732a3380b9bd69caa751760c43317cb763df12db49c9120c375946f305f3e8833556c7708766e643a280cfe10f3bfeb1fe10f08dfbb92bb
+JWT_EXPIRE=5d
+COOKIE_EXPIRE=5
+```
+####
+
+
+22. এবার 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ **sendToken** কে import করে নিব তারপর **loginUser,registerUser** function এর শেষে যেখানে **token** কে get করা হয়েছে এবং অথবা res কে send করা হয়েছে সেখানে এদের replace করে **sendToken** function use করবে 
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/userController.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const userModel = require("../models/userModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+const sendToken = require("../utils/jwtToken");
+
+// Register a User
+exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { name, email, password } = req.body;
+  
+    const user = await userModel.create({
+      name,
+      email,
+      password,
+      avatar: {
+        public_id: "myCloud.public_id",
+        url: "myCloud.secure_url",
+      },
+    });
+
+    /* const token = user.getJWTToken();    
+      res.status(201).json({
+          success: true,
+          message: "user is created",
+          token,
+          user,
+      }); */
+
+      
+    sendToken(user, 201, res);
+
+
+  });
+
+  // Login User
+  exports.loginUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { email, password } = req.body;
+  
+    // checking if user has given password and email both
+  
+    if (!email || !password) {
+      return next(new ErrorHandler("Please Enter Email & Password", 400));
+    }
+  
+    const user = await userModel.findOne({ email }).select("+password");
+  
+    if (!user) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+  
+    const isPasswordMatched = await user.comparePassword(password);
+  
+    if (!isPasswordMatched) {
+      return next(new ErrorHandler("Invalid email or password", 401));
+    }
+
+
+    /* const token = user.getJWTToken();    
+    res.status(200).json({
+      success: true,
+      message: "user is logged in",
+      token,
+      user,
+    }); */
+
+    
+    sendToken(user, 200, res);
+  });
+```
+####
+
+23. এবার **postman software** দিয়ে project test করার হবে **coockie** কে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/PTHQwV0/xcv.png)
+####
