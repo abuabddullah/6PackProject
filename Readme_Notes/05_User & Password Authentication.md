@@ -15,7 +15,7 @@
 > এখানে **jsonwebtoken** এর সাহায্যে token generate হবে যা আমাদের authorized user কে identify করতে সাহায্য করবে
 > এখানে **validator** এর সাহায্যে email, password ets field কে validate করা হবে যাতে user থেকে exactly true information পাওয়া যায় 
 > এখানে **nodemailer** এর সাহায্যে email, password, change password related কাজ যা emailing এর সাহয্যে করা হয় তা আমরা করতে পারব
-> এখানে **cookie-parser** এর সাহায্যে jsonwebtoken কে backend server এ save করব frontend এর local storage এ save করা less secured
+> এখানে **cookie-parser** এর সাহায্যে jsonwebtoken কে backend server এ save করব frontend এর local storage এ save করা less secured তাই আমরা **cookie** তে save করব কিন্তু আবার যখন user এর autentication check করা লাগবে তখন এই **cookie-parser** token কে cookie থেকে parse করে আমাদের দিবে
 > এখানে **body-parser** এর সাহায্যে email, password, change password related কাজ যা emailing এর সাহয্যে করা হয় তা আমরা করতে পারব
 ####
 ####
@@ -435,11 +435,15 @@ exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ```
 ####
 
-12. এবার **postman software** দিয়ে project test করার হবে
+12. এবার **postman software & jwt.io website** দিয়ে project test করার হবে
 ####
+
+> এই প্রজেক্ট এ কিন্তু **getJWTToken** function এর **jwt.sign()** method এ আমরা **email** দেইনি দিয়েছি **id** তাই **docoded()** method যখন apply হবে তখন আমরা result এ {"id", "iat", "exp"} ই পাব অন্য দিকে **"Jhankar vai"** এর project এ আমরা **email** use করেছিলাম তাই {"email", "iat", "exp"} পেয়েছিলাম
 
 ####
 ![postman success screenshot](https://i.ibb.co/Vpptt71/xcv.png)
+####
+![postman success screenshot](https://i.ibb.co/JcG8qHc/xcv.png)
 ####
 
 
@@ -778,3 +782,363 @@ exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ####
 ![postman success screenshot](https://i.ibb.co/PTHQwV0/xcv.png)
 ####
+
+
+### Creating logOut function in controller file : [2:38:18 - 2:41:17]
+
+> video তে **logOut** function এর আগে **verifyJWT** function create করেছে কিন্তু আমি আগে **logout** function দিচ্ছি কারন **verifyJWT** function কে test করতে গেলে logout এর দরকার পরে
+
+####
+24. 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ গিয়ে **logoutUser** নামের একটা async function বানাব যেখানে প্রথমে **res** হিসেবে **cookie** এর token এর value কে null করে দিব । আর তার option এর expired করে দিব শেষে একটা message **res** হিসেবে send করে দিব
+####
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/userController.js]]
+
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const userModel = require("../models/userModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+const sendToken = require("../utils/jwtToken");
+
+// Register a User
+exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  const user = await userModel.create({
+    name,
+    email,
+    password,
+    avatar: {
+      public_id: "myCloud.public_id",
+      url: "myCloud.secure_url",
+    },
+  });
+
+  /* const token = user.getJWTToken();    
+    res.status(201).json({
+        success: true,
+        message: "user is created",
+        token,
+        user,
+    }); */
+
+
+  sendToken(user, 201, res);
+
+
+});
+
+// Login User
+exports.loginUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // checking if user has given password and email both
+
+  if (!email || !password) {
+    return next(new ErrorHandler("Please Enter Email & Password", 400));
+  }
+
+  const user = await userModel.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+
+  /* const token = user.getJWTToken();    
+  res.status(200).json({
+    success: true,
+    message: "user is logged in",
+    token,
+    user,
+  }); */
+
+
+  sendToken(user, 200, res);
+});
+
+
+// logout user
+exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+
+  res.status(200).json({
+    success: true,
+    message: "user is logged out",
+  });
+});
+```
+####
+25. 6PP_ECOMMERCE/backend/routes/**userRoute.js** file এ গিয়ে **logoutUser** এর জন্য একটা **_router.route().get()_** নামের **GET** req বানাব
+####
+
+> **_pHero_** তে এগুলো আমরা **firebase** দিয়ে করেছিলাম
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/routes/userRoute.js]]
+
+const express = require("express");
+const { registerUser, loginUser, logoutUser } = require("../controllers/userController");
+
+const router = express.Router();
+
+
+router.route("/register").post(registerUser);
+router.route("/login").post(loginUser);
+router.route("/logout").post(logoutUser);
+
+
+module.exports = router;
+```
+####
+
+26. এবার **postman software** দিয়ে project test করার হবে **logoutUser** কে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/NYKTR7Q/xcv.png)
+####
+
+
+
+
+
+### Creating protected route by verifyJWT function to identify authenticated users : [2:31:16 - 2:38:18,logooutUser, 2:41:17 - 645ghb463d4h65gh4]
+
+> ধরেন আপনি কেবল মাত্র যারা logged in কেবল তাদের কেই **_updateProduct,deleteProduct_** এর access দিবেন তাহলে কি করতে হবে?
+>> একটা **_verifyJWT_** function বানিয়ে routing করার সময় **_updateProduct,deleteProduct_** এর আগে **_verifyJWT_** কে বসিয়ে দিতে হবে
+
+####
+27. 6PP_ECOMMERCE/backend/**app.js** file এ গিয়ে **cookie-parser** কে import করে নিব তারপর **_app.use()_** method এর সাহায্যে **cookie-parser** কে *middleweare** হিসেবে invoke করব
+####
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/app.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const express = require("express");
+const cors = require('cors')
+const cookieParser = require("cookie-parser");
+
+
+const app = express();
+
+
+app.use(cors())
+app.use(express.json())
+app.use(cookieParser());
+
+
+
+// Route Imports
+const productRoute = require("./routes/productRoute");
+const userRoute = require("./routes/userRoute");
+const errorMiddleware = require("./middleware/error");
+
+
+
+// invoking
+app.use("/api/v1", productRoute);
+app.use("/api/v1", userRoute);
+
+
+// last placing Middleware for Errors
+app.use(errorMiddleware);
+
+
+module.exports = app;
+```
+####
+
+
+28. 6PP_ECOMMERCE/backend/**middleware** folder এ গিয়ে authenticated or loggedIn user identify করার function code করার জন্য 6PP_ECOMMERCE/backend/middleware/**auth.js** নামের একটা file বানাবো
+####
+
+> basically এখানেও **controller** functions গুলার মত function বানাব কিন্তু এদের কাজ যেহেতু শুধু user, user-power identify করা তাই আলাদা জায়গায় করা হচ্ছে
+
+####
+29. এবার 6PP_ECOMMERCE/backend/middleware/**auth.js** file এ **_verifyJWT_** নামের একটা async function বানাব যেখানে **_req.cookies_** থেকে আমরা **_token_** টাকে বের করে নিব আর তারপর একে **_jwt.verify()_** method এর সাহায্যে **decode** করে তা **_decodedData_** নামের variable এ assign করব তার পর database collection or model এ **.findById()** method এর সাহায্যে **id** দিয়ে userInfo কে বের করে এনে **req** এর ভিতরে **_user_** key create করে তার value হিসবে userInfo কে push করে দিব আর সব শেষে **_next()_** function কে invoke করব
+####
+
+> আর হ্যা, এক্ষেত্রে প্রজনিয় সব কিছু(jwt, userModel, ErrorHandler, catchAsyncErrorsMiddleware) কে আগেই import করে নিতে হবে
+> এখানে যে **next()** function কে invoke করা হয়েছে এর কাজ হচ্ছে verifing এর কাজ শেষ হয়ে গেল **router** folder এ routing এর সময় যে যে route এ **_verifyJWT_** function কে use করা হয়েছে তার immidiate পরেরে function এর কাজ শুরু করা
+>> এই function এর সব কাজ আমরা **_pHero_** তে করেছি শুধু মাত্র token টা এখানে আমরা backend এই cookie থেকে বের করে নিয়েছি আর **jhankar** ভাই frontend থেকে body তে করে **_API_** req এর সময় পাঠিয়ে দিতেন 
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/middleware/auth.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+const catchAsyncErrorsMiddleware = require("./catchAsyncErrorsMiddleware");
+
+exports.verifyJWT = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { token } = req.cookies;
+    if (!token) {
+        return next(new ErrorHandler("Please Login to access this resource", 401));
+    }
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET); // it returns {"id", "iat", "exp"}
+    const userInfo = await userModel.findById(decodedData.id);
+    req.user = userInfo;
+    next();
+})
+```
+####
+
+30. এবার test করার জন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **verifyJWT** কে import করে তারপর আগের **updateProduct,deleteProduct** function এর route এর আগে  **verifyJWT** বসিয়ে দিব যার ফলে route গুলো protected route হয়ে যাবে
+####
+
+> 
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const express = require("express");
+const {
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails,
+} = require("../controllers/productController");
+const { verifyJWT } = require("../middleware/auth");
+
+
+
+const router = express.Router();
+
+
+
+router.route("/products").get(getAllProducts);
+router.route("/product/new").post(verifyJWT,createProduct); // AdminRoute
+
+// router.route("/product/:id").put(verifyJWT,updateProduct).delete(verifyJWT,deleteProduct).get(getProductDetails); // allowed
+router.route("/product/:id").put(verifyJWT,updateProduct).delete(verifyJWT,deleteProduct) // AdminRoute
+router.route("/product/:id").get(getProductDetails);
+
+
+
+
+
+
+module.exports = router;
+```
+####
+
+31. এবার **postman software** দিয়ে project test করার হবে **verifyJWT** কে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/vZPLTxS/xcv.png)
+####
+
+
+
+
+### Creating protected route by verifyUserRole function to identify Admin users : [2:41:17 - 2:47:44]
+
+> ধরেন আপনি কেবল মাত্র যারা logged in এবং admin কেবল তাদের কেই **_updateProduct,deleteProduct_** এর access দিবেন তাহলে কি করতে হবে?
+>> আরো একটা **_verifyUserRole_** function বানিয়ে routing করার সময় **_verifyJWT_** এর পরে কিন্তু **_updateProduct,deleteProduct_** এর আগে **_verifyUserRole_** কে বসিয়ে দিতে হবে
+
+####
+32. এবার 6PP_ECOMMERCE/backend/middleware/**auth.js** file এ **_verifyUserRole_** নামের একটা async function বানাব যেখানে parameter হিসেবে **_"admin"_** role কে পাব এবার এর ভিতরে check করব parameter এর role কি database এর user এর role কিনা **যদি না থাকে** তাহলে **_error message_** কে res হিসেবে পাঠিয়ে দিব আর **যদি থাকে** তাহলে **_next()_** function কে invoke করব
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/middleware/auth.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+const catchAsyncErrorsMiddleware = require("./catchAsyncErrorsMiddleware");
+
+// verify log in and token generation
+exports.verifyJWT = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { token } = req.cookies;
+    if (!token) {
+        return next(new ErrorHandler("Please Login to access this resource", 401));
+    }
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET); // it returns {"id", "iat", "exp"}
+    const userInfo = await userModel.findById(decodedData.id);
+    req.user = userInfo;
+    next();
+})
+
+// verfy user role "admin"
+exports.verifyUserRole = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new ErrorHandler(`Role: ${req.user.role} is not allowed to access this resouce `,403));
+        }
+        next();
+    };
+};
+```
+####
+
+33. এবার test করার জন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_verifyJWT_** এর পরে কিন্তু **_updateProduct,deleteProduct_** এর আগে **_verifyUserRole_** কে বসিয়ে দিতে হবে
+####
+
+> বিস্তারিত বর্ণনা ঃ router.route("/product/new").post(verifyJWT,verifyUserRole,createProduct)
+>
+>> উপরোক্ত route টি থেকে আমরা আন্দাজ করতে পারি যে যদি কোন একটা নতুন product কে database এ create করতে চাই তাহলে user কে একাধারে logged-In থাকতে হবে ও পাশাপাশি তার role ও admin হতে হবে যা এই দু **verifyJWT,verifyUserRole** functioin দ্বারা identify করা হচ্ছে। 
+>
+> Wroking Process :
+>> প্রথমে user কোন protected route এ ঢুকতে গেলে আগে তার logging-in verification হবে **verifyJWT** function এ এখানে শুরুতে **res.cookies** থেকে token টা নিয়ে সেটাকে **docode** করে user এর **id** কে বের করে আনা হবে তার পর database থেকে এই **id** এর সাপেক্ষে **.findById()** method দিয়ে user এর info কে বের করে নিয়ে **req** এর ভিতরে **user** key তে save করে নেয়া হবে । এরপর **next()** function কে invoke করে route এর immidiate function কে **verifyUserRole** এর কাছে হস্তান্তর করা হবে এটা check করার জন্য যে user কি admin কিনা? এবার সেখান থেকে একটা callback function কে return করতে হবে
+>
+>> **verifyUserRole** এর ভিতরের callback function এ conditioning করতে হবে যে parameter এর role ও database এর user এর একই কিনা **যদি না থাকে** তাহলে **_error message_** কে res হিসেবে পাঠিয়ে দিব আর **যদি থাকে** তাহলে **_next()_** function কে invoke করব । এবার এই **next()** function কে invoke করে route এর immidiate function কে **createProduct** এর কাছে হস্তান্তর করা হবে
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const express = require("express");
+const {
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails,
+} = require("../controllers/productController");
+const { verifyJWT, verifyUserRole } = require("../middleware/auth");
+
+
+
+const router = express.Router();
+
+
+
+router.route("/products").get(getAllProducts);
+router.route("/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
+
+// router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed
+router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
+router.route("/product/:id").get(getProductDetails);
+
+
+
+
+
+
+module.exports = router;
+```
+####
+
+34. এবার **postman software** দিয়ে project test করার হবে **verifyUserRole** কে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/q54WFMy/xcv.png)
+####
+
+

@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails,
 } = require("../controllers/productController");
+const { verifyJWT, verifyUserRole } = require("../middleware/auth");
 
 
 
@@ -10,12 +11,11 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(createProduct); // AdminRoute
+router.route("/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
 
-// router.route("/product/:id").put(updateProduct).delete(deleteProduct).get(getProductDetails); // allowed
-router.route("/product/:id").put(updateProduct).delete(deleteProduct) // AdminRoute
+// router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed
+router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
 router.route("/product/:id").get(getProductDetails);
-
 
 
 
