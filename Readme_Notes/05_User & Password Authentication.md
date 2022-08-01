@@ -1,6 +1,6 @@
-## 05_User & Password Authentication
+## 05_User & Password Authentication & tracking product creator id
 
-#### xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#### userSchema,register,login,logout,verifyJWT,verifyUserRole etc ....
 
 ### User Schema creating : [ 01:52:20 - 02:00:38 ]
 
@@ -1099,7 +1099,9 @@ exports.verifyUserRole = (...roles) => {
 > Wroking Process :
 >> প্রথমে user কোন protected route এ ঢুকতে গেলে আগে তার logging-in verification হবে **verifyJWT** function এ এখানে শুরুতে **res.cookies** থেকে token টা নিয়ে সেটাকে **docode** করে user এর **id** কে বের করে আনা হবে তার পর database থেকে এই **id** এর সাপেক্ষে **.findById()** method দিয়ে user এর info কে বের করে নিয়ে **req** এর ভিতরে **user** key তে save করে নেয়া হবে । এরপর **next()** function কে invoke করে route এর immidiate function কে **verifyUserRole** এর কাছে হস্তান্তর করা হবে এটা check করার জন্য যে user কি admin কিনা? এবার সেখান থেকে একটা callback function কে return করতে হবে
 >
->> **verifyUserRole** এর ভিতরের callback function এ conditioning করতে হবে যে parameter এর role ও database এর user এর একই কিনা **যদি না থাকে** তাহলে **_error message_** কে res হিসেবে পাঠিয়ে দিব আর **যদি থাকে** তাহলে **_next()_** function কে invoke করব । এবার এই **next()** function কে invoke করে route এর immidiate function কে **createProduct** এর কাছে হস্তান্তর করা হবে
+>>> একটা জিনিস মনে রাখতে হবে যে সর্ববাম থেকে ডানের দিকে যত function আসতে থাকবে তারা তার postion এর পূর্বের সকল function এ ঘটিত updated info গুলো পাবে। যেমন, **verifyJWT** function এ **req** এর ভিতরে **user** key set করে দেয়াতে তার পরবর্তি **verifyUserRole,createProduct** functions দুটো **req.user** এর access পাবে
+>
+>> এবার **verifyUserRole** এর ভিতরের callback function এ conditioning করতে হবে যে parameter এর role ও database এর user এর একই কিনা **যদি না থাকে** তাহলে **_error message_** কে res হিসেবে পাঠিয়ে দিব আর **যদি থাকে** তাহলে **_next()_** function কে invoke করব । এবার এই **next()** function কে invoke করে route এর immidiate function কে **createProduct** এর কাছে হস্তান্তর করা হবে
 
 ####
 ```http
@@ -1140,5 +1142,217 @@ module.exports = router;
 ####
 ![postman success screenshot](https://i.ibb.co/q54WFMy/xcv.png)
 ####
+
+
+### Tracking product creator userInfo in db : [2:47:44 - 2:50:25]
+
+> এতক্ষন আমদের 6PP_ECOMMERCE/backend/models/**productModel.js** file এর productSchema তে ক product টাকে create করল তার **id**/email ও save করে রাখব
+
+####
+35. এবার 6PP_ECOMMERCE/backend/models/**productModel.js** file এর productSchema তে যে user এর skeleton টা comment out করা ছিল এখন একে uncomment করে database এ user এর **id** saving এর ব্যবস্থা করে দিব
+
+> এখানে user এর type **string** এর বদলে **mongoose.Schema.ObjectId** set করা হয়েছে কারন আমরা জানি monodb তে id **ObjectId** দিয়ে মুড়ানো থাকে
+>
+>> এখানে user এর schema বানাতে যে **ref: "User"** করা হয়েছে তা আমি বুঝিনি
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/models/productModel.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const mongoose = require("mongoose");
+
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please Enter product Name"],
+    trim: true,
+  },
+  description: {
+    type: String,
+    required: [true, "Please Enter product Description"],
+  },
+  price: {
+    type: Number,
+    required: [true, "Please Enter product Price"],
+    maxLength: [8, "Price cannot exceed 8 characters"],
+  },
+  ratings: {
+    type: Number,
+    default: 0,
+  },
+  images: [
+    {
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+  category: {
+    type: String,
+    required: [true, "Please Enter Product Category"],
+  },
+  Stock: {
+    type: Number,
+    required: [true, "Please Enter product Stock"],
+    maxLength: [4, "Stock cannot exceed 4 characters"],
+    default: 1,
+  },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  numOfReviews: {
+    type: Number,
+    default: 0,
+  },
+  reviews: [
+    {
+      user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      rating: {
+        type: Number,
+        required: true,
+      },
+      comment: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// module.exports = mongoose.model("Product", productSchema);
+const productModel = mongoose.model("Product", productSchema);
+module.exports = productModel;
+```
+####
+
+36. এবার 6PP_ECOMMERCE/backend/controllers/**productController.js** file এর **createProduct** function এ database এ product create করার আগে **req.user** থেকে user এর **id** টাকে নিয়ে **req.body.user** এ save করে দিব
+####
+
+> উল্লেখ্য এখানে **req.body** এর সব information frontend থেকে পেলেও নতুন করে **req.body** তে একটা **user** নামের key generate করে তার value হিসেবে routes এর সময় **verifyJWT** থেকে সৃষ্ট **req.user** এর শুধু **id** কে নেয়া হয়েছে
+
+####
+```http
+[[FILENAME : 6PP_ECOMMERCE/backend/controllers/productController.js]]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const ApiFeatures = require("../utils/apiFeatures");
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const productModel = require("../models/productModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+
+
+// create a product - AdminRoute
+exports.createProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    req.body.user = req.user.id; // verifyJWT থেকে প্রাপ্ত
+    const product = await productModel.create(req.body);
+    res.status(201).json({
+        success: true,
+        product,
+    });
+})
+
+// update a product - AdminRoute
+exports.updateProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const updateInfo = req.body;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+    const updatedProduct = await productModel.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
+    res.status(200).json({
+        success: true,
+        updatedProduct,
+    });
+})
+
+
+// delete a product - AdminRoute
+exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    await product.remove();
+    // await productModel.findByIdAndDelete(id); // এটাও চলবে
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted",
+    });
+})
+
+
+
+// Get All Product
+exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
+
+    const resultPerPage = 2;
+    const productsCount = await productModel.countDocuments();
+
+    const apiFeature = new ApiFeatures(productModel.find(), req.query)
+        .search()
+        .filter()
+        .pagination(resultPerPage);
+    let products = await apiFeature.query;
+
+    res.status(200).json({
+        success: true,
+        message: "getAllProducts route is working",
+        products,
+    });
+});
+
+
+// Get Product details by ID
+exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "getProductDetails route is working",
+        product,
+    });
+})
+
+```
+####
+
+37. এবার **postman software** দিয়ে project test করার হবে **user সহ product** কে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/1MMTrPk/xcv.png)
+####
+
+
 
 
