@@ -2,7 +2,7 @@
 
 #### nodemailer, forgot password, reset password, change password etc ....
 
-### ForgotPassword by help of nodemailer : [ 2:50:25 - 54fsd4g65df4g65dg46sd5g465g4df56g4 ]
+### ForgotPassword by help of nodemailer : [ 2:50:25 - 3:15:06]
 
 > **ForgotPassword** feature enable করার জন্য করনিয় ঃ
 >
@@ -11,6 +11,10 @@
 >> ৩ | তারপর **sendEmail** funciton বানাতে হবে যা **nodemailer** function এর সাহায্যে user কে link সহ একটা email sent করবে 
 >
 >> ২ | **sendEmail** funciton কে invoke করার জন্য **userContoller.js** file এ **forgotPassword** নামের asycn function create করতে হবে
+>
+>> ৪ | এরপর maiing system enable করতে হবে **google mail** এ গিয়ে 
+>
+>> ৫ | এবার **postman software** দিয়ে **forgot password** এর জন্য post request দিলে দেখা যাবে user এর email এ admin এর email থেকে একটা **reset password link** এর mail sent হয়েছে যদিও এখনো এই **mail link** টা deactivated তাই এরপরে **mail link** টাকে activate করতে হবে
 
 ####
 1. এবার 6PP_ECOMMERCE/backend/models/userModel.js file এ **crypto**  কে import করে তারপর userSchema এর ভিতরে methods হসেবে **getResetPasswordToken** function কে push করে দিব যা মূলত forget password এর জন্য request করলে একটা নতুন token generate করে **userSchema.resetPasswordToken & userSchema.resetPasswordExpire** এ add করে দিবে দিবে পাশাপাশি এই funciton থেকে **resetToken** কে return করে দিবে।
@@ -125,10 +129,252 @@ module.exports = userModel;
 ```
 ####
 
-37. এবার **postman software** দিয়ে project test করার হবে **54fsd4g65df4g65dg46sd5g465g4df56g4** কে
+2. এবার **gmail** এর সাথে **nodemailer** কে attached করতে হবে,
+
+####
+> 
+>>goto : [https://myaccount.google.com/security?hl=en](https://myaccount.google.com/security?hl=en)
+> 
+>>enable **2 steps verification** if not enabled yet
+> 
+>>click **App Passwords** just bellow **2-step verification**
+> 
+>>confirm pass and **set app and device name** and it will give you a **16 digit** password whichi we will have to use in our code.
+####
+
+3. এবার **nodmailer & gmail** এর সাথে mailing করার জন্য আমাদের বেশ কিছু **environment** variable বানাতে হবে 6PP_ECOMMERCE/backend/config/**config.env** file এ,
+
+####
+>
+>>SMPT_HOST, SMPT_PORT & SMPT_SERVICE হুবহু same থাকবে এটা gmail এর নিজস্ব system
+>
+>>SMPT_MAIL : **owoner** এর mail address যার id থেকে mail যাবে requester বা user দের কাছে
+>
+>>SMPT_PASSWORD : gmail এর **App Passwords** থেকে পাওয়া **16 digit** password
+>>> এখানে account holder এর gmail pass দিলে হবে না বরং **16 digit** এর **App Passwords** দিতে হবে
+####
+
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/config/config.env]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+PORT=5000
+DB_URI="mongodb://localhost:27017/Ecommerce"
+JWT_SECRET=902c5afe4dd21930d732a3380b9bd69caa751760c43317cb763df12db49c9120c375946f305f3e8833556c7708766e643a280cfe10f3bfeb1fe10f08dfbb92bb
+JWT_EXPIRE=5d
+COOKIE_EXPIRE=5
+
+SMPT_HOST=smtp.gmail.com
+SMPT_PORT=465
+SMPT_SERVICE=gmail
+SMPT_MAIL=asifaowadud@gmail.com
+SMPT_PASSWORD=zltsrtlbgibmqlnu
+```
+####
+
+4. এবার **utils** folder এ 6PP_ECOMMERCE/backend/utils/**sendEmail.js** file বানাবো, সেখানে **_nodemailer_** কে import করে নিব, তারপর **_sendEmail_** নামের একটা async function বানাব যেটাই মূলত mail sending এর যতরকম action নেয়া দরকার like, **transporter,mail details** creating এবং সবশেষে **transporter.sendMail()** function এর সাহায্যে mail sent করা
+####
+
+> এখানে **transporter** মূলত **website holder** এর information carry করে
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/utils/sendEmail.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const nodeMailer = require("nodemailer");
+
+const sendEmail = async (options) => {
+    const transporter = nodeMailer.createTransport({
+        host: process.env.SMPT_HOST,
+        port: process.env.SMPT_PORT,
+        service: process.env.SMPT_SERVICE,
+        auth: {
+            user: process.env.SMPT_MAIL,
+            pass: process.env.SMPT_PASSWORD,
+        },
+    });
+
+    const mailDetails = {
+        from: process.env.SMPT_MAIL,
+        to: options.email,
+        subject: options.subject,
+        text: options.message,
+    };
+
+    await transporter.sendMail(mailDetails);
+};
+
+module.exports = sendEmail;
+```
+####
+
+5. ds5fg453 6PP_ECOMMERCE/backend/controllers/userController.js
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/controllers/userController.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const userModel = require("../models/userModel");
+const sendEmail = require("../sendEmail");
+const ErrorHandler = require("../utils/ErrorHandler");
+const sendToken = require("../utils/jwtToken");
+
+// Register a User
+exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  const user = await userModel.create({
+    name,
+    email,
+    password,
+    avatar: {
+      public_id: "myCloud.public_id",
+      url: "myCloud.secure_url",
+    },
+  });
+
+  /* const token = user.getJWTToken();    
+    res.status(201).json({
+        success: true,
+        message: "user is created",
+        token,
+        user,
+    }); */
+
+
+  sendToken(user, 201, res);
+
+
+});
+
+// Login User
+exports.loginUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // checking if user has given password and email both
+
+  if (!email || !password) {
+    return next(new ErrorHandler("Please Enter Email & Password", 400));
+  }
+
+  const user = await userModel.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+
+  /* const token = user.getJWTToken();    
+  res.status(200).json({
+    success: true,
+    message: "user is logged in",
+    token,
+    user,
+  }); */
+
+
+  sendToken(user, 200, res);
+});
+
+
+// logout user
+exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+
+  res.status(200).json({
+    success: true,
+    message: "user is logged out",
+  });
+});
+
+// Forgot Password
+exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const user = await userModel.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Get ResetPassword Token
+  const resetToken = user.getResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  const resetPasswordUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/password/reset/${resetToken}`;
+
+  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: `6PP_Ecommerce Password Recovery`,
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Email sent to ${user.email} successfully`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+```
+####
+
+6. ds5fg453 6PP_ECOMMERCE/backend/routes/**userRoute.js** 
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/routes/userRoute.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const express = require("express");
+const { registerUser, loginUser, logoutUser, forgotPassword } = require("../controllers/userController");
+
+const router = express.Router();
+
+
+router.route("/register").post(registerUser);
+router.route("/login").post(loginUser);
+router.route("/logout").get(logoutUser);
+router.route("/password/forgot").post(forgotPassword);
+
+
+module.exports = router;
+```
+####
+
+7. এবার **postman software** দিয়ে project test করার হবে **54fsd4g65df4g65dg46sd5g465g4df56g4** কে
 ####
 
 ####
-![postman success screenshot](https://i.ibb.co/1MMTrPk/xcv.png)
+![postman success screenshot](https://i.ibb.co/SVSZKXc/xcv.png)
+####
+
+8. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **54fsd4g65df4g65dg46sd5g465g4df56g4** কে
+####
+![postman success screenshot](https://i.ibb.co/P64k0Ft/Screenshot-2.png)
 ####
 

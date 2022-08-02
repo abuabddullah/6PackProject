@@ -105,3 +105,13 @@ at 10:36:03 *history+redirect* is used and at 10:36:53 on login page navigate li
 12:27:43 done review part just *replace react-rating with MUI Rating compo*
 12:30:50 uninstalling react-rating cause using MUI rating compo
 12:33:15 review done now work on admin protected routes
+
+
+
+
+All .env variables
+####
+
+####
+![postman success screenshot](https://i.ibb.co/LRbw4D3/Screenshot-2.png)
+####
