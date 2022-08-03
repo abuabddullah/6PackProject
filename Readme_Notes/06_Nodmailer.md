@@ -217,6 +217,7 @@ module.exports = sendEmail;
 5. এখন 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ প্রথমে **_sendEmail_** function কে import করে নিতে হবে তারপর **forgetPassword** এর জন্য একটা async function বানাতে হবে যেটা frontend থেকে **req.body** তে user এর email recieve করবে তারপর **_getResetPasswordToken_** function কে invoke করার মাধ্যমে **userSchema** থেকে নতুন generated একটা token পাবে তারপর **email body** বানিয়ে **_message_** variable এ assign করানো হুবে এবং সবশেষে **_sendEmail_** function কে invoke করে email sent করা হবে
 
 > **userModel** file  এর **_getResetPasswordToken_** function এ যদিও নতুন token generate হয়ে **userSchema** তে add হয় কিন্তু save হয় না save হয় **userController.js** file এ **_user.save({ validateBeforeSave: false })_** method এর কারনে
+> **_forgotPassword_** mail এ যে link পাঠানো হবে তাতে যাতে commonURL **_/api/v1/_** include থাকে
 
 ####
 ```http
@@ -322,7 +323,7 @@ exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
   const resetPasswordUrl = `${req.protocol}://${req.get(
     "host"
-  )}/password/reset/${resetToken}`;
+  )}/api/v1/password/reset/${resetToken}`;
 
   const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
 
@@ -384,3 +385,111 @@ module.exports = router;
 ![postman success screenshot](https://i.ibb.co/P64k0Ft/Screenshot-2.png)
 ####
 
+
+
+
+### resetPassword by help of nodemailer : [ 3:15:06 - 3:22:21]
+
+> **resetPassword** feature enable করার জন্য করনিয় ঃ
+
+####
+9. এবার 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ **crypto**  কে import করে তারপর 5644dfg4h65fh46h4
+####
+
+> এখানে **d6g4df65g4df65g4d65g465gh4**
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/controllers/userController.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+frg7b5674df65h465hb4
+
+```
+####
+
+10. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **sent email document** কে
+####
+![postman success screenshot](https://i.ibb.co/P64k0Ft/Screenshot-2.png)
+####
+
+
+
+
+### re-register,faulty token, expired token errorhandle with custom error message : [ 3:22:21 - 6d5f4565df45g65dg465+g]
+
+> **resetPassword** কি ঃ
+
+####
+> lksdflkjldsgj-error
+![postman success screenshot](https://i.ibb.co/Vxc6425/xcv.png)
+####
+> lksdflkjldsgj-error
+![postman success screenshot](https://i.ibb.co/Vxc6425/xcv.png)
+####
+> lksdflkjldsgj-error
+![postman success screenshot](https://i.ibb.co/Vxc6425/xcv.png)
+####
+
+####
+9. এবার 6PP_ECOMMERCE/backend/middleware/**error.js** file এ 
+####
+
+> এখানে **d6g4df65g4df65g4d65g465gh4**
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/middleware/error.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const ErrorHandler = require("../utils/ErrorHandler");
+
+const errorMiddleware = (err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    err.message = err.message || "Internal Server Error";
+
+    // console.log(err.stack);
+    // Wrong Mongodb Id error
+    if (err.name === "CastError") {
+      const message = `Resource not found. Invalid: ${err.path}`;
+      err = new ErrorHandler(message, 400);
+    }
+
+    
+
+  // Mongoose duplicate key error
+  if (err.code === 11000) {
+    const message = `Duplicate ${Object.keys(err.keyValue)} Entered`;
+    err = new ErrorHandler(message, 400);
+  }
+
+  // Wrong JWT error
+  if (err.name === "JsonWebTokenError") {
+    const message = `Json Web Token is invalid, Try again `;
+    err = new ErrorHandler(message, 400);
+  }
+
+  // JWT EXPIRE error
+  if (err.name === "TokenExpiredError") {
+    const message = `Json Web Token is Expired, Try again `;
+    err = new ErrorHandler(message, 400);
+  }
+
+    res.status(err.statusCode).json({
+        success: false,
+        message: err.message,
+    });
+}
+module.exports = errorMiddleware;
+```
+####
+
+10. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **sent email document** কে
+####
+> lksdflkjldsgj-error
+![postman success screenshot](https://i.ibb.co/TLYyg0k/Screenshot-1.png)
+####
+> lksdflkjldsgj-error
+![postman success screenshot](https://i.ibb.co/TLYyg0k/Screenshot-1.png)
+####
+> lksdflkjldsgj-error
+![postman success screenshot](https://i.ibb.co/TLYyg0k/Screenshot-1.png)
+####
