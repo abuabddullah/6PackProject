@@ -84,7 +84,8 @@ exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
 // Forgot Password
 exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
-  const user = await userModel.findOne({ email: req.body.email });
+  const email = req.body.email;
+  const user = await userModel.findOne({ email });
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));

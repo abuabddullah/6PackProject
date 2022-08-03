@@ -177,7 +177,10 @@ SMPT_PASSWORD=zltsrtlbgibmqlnu
 4. এবার **utils** folder এ 6PP_ECOMMERCE/backend/utils/**sendEmail.js** file বানাবো, সেখানে **_nodemailer_** কে import করে নিব, তারপর **_sendEmail_** নামের একটা async function বানাব যেটাই মূলত mail sending এর যতরকম action নেয়া দরকার like, **transporter,mail details** creating এবং সবশেষে **transporter.sendMail()** function এর সাহায্যে mail sent করা
 ####
 
-> এখানে **transporter** মূলত **website holder** এর information carry করে
+> প্রথমত বলতে হয় **_sendEmail_** funtion যা একতা **object type parameter**  recieved করবে অর্থাৎ এইখানে ব্যবহৃত **options** parameter টা মূলত একটা object যে mailing details related information like, **mailSub, reciever email, mail message** must must hold করে থাকবে
+> এখানে **transporter** variable মূলত **website holder** এর information carry করে যেখানে কিছু information থাকে যা depend করে কোন ধরনের **maililng tool** use করা হচ্ছে like **gmail** আর হচ্ছে **sender person information**
+> এবার **mailDetails** variable বানাতে হয় যাতে **sender email, reciever email, subject, message** define করা থাকে
+> সবশেষে **transporter.sendMail(mailDetails)** method এর সাহায্যে sent করা হয়
 
 ####
 ```http
@@ -211,7 +214,9 @@ module.exports = sendEmail;
 ```
 ####
 
-5. ds5fg453 6PP_ECOMMERCE/backend/controllers/userController.js
+5. এখন 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ প্রথমে **_sendEmail_** function কে import করে নিতে হবে তারপর **forgetPassword** এর জন্য একটা async function বানাতে হবে যেটা frontend থেকে **req.body** তে user এর email recieve করবে তারপর **_getResetPasswordToken_** function কে invoke করার মাধ্যমে **userSchema** থেকে নতুন generated একটা token পাবে তারপর **email body** বানিয়ে **_message_** variable এ assign করানো হুবে এবং সবশেষে **_sendEmail_** function কে invoke করে email sent করা হবে
+
+> **userModel** file  এর **_getResetPasswordToken_** function এ যদিও নতুন token generate হয়ে **userSchema** তে add হয় কিন্তু save হয় না save হয় **userController.js** file এ **_user.save({ validateBeforeSave: false })_** method এর কারনে
 
 ####
 ```http
@@ -303,7 +308,8 @@ exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
 // Forgot Password
 exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
-  const user = await userModel.findOne({ email: req.body.email });
+  const email = req.body.email;
+  const user = await userModel.findOne({ email });
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
@@ -344,7 +350,7 @@ exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ```
 ####
 
-6. ds5fg453 6PP_ECOMMERCE/backend/routes/**userRoute.js** 
+6. এবার **_forgotPasswor_** এর জন্য 6PP_ECOMMERCE/backend/routes/**userRoute.js** file এ **_router.route().post()_** method এর সাহায্যে একতা post API create করতে হবে
 
 ####
 ```http
