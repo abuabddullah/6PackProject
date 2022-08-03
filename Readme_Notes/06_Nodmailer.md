@@ -372,14 +372,14 @@ module.exports = router;
 ```
 ####
 
-7. এবার **postman software** দিয়ে project test করার হবে **54fsd4g65df4g65dg46sd5g465g4df56g4** কে
+7. এবার **postman software** দিয়ে project test করার হবে **forgot password request** কে
 ####
 
 ####
 ![postman success screenshot](https://i.ibb.co/SVSZKXc/xcv.png)
 ####
 
-8. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **54fsd4g65df4g65dg46sd5g465g4df56g4** কে
+8. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **sent email document** কে
 ####
 ![postman success screenshot](https://i.ibb.co/P64k0Ft/Screenshot-2.png)
 ####
