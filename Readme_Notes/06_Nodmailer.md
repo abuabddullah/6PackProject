@@ -393,48 +393,213 @@ module.exports = router;
 > **resetPassword** feature enable করার জন্য করনিয় ঃ
 
 ####
-9. এবার 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ **crypto**  কে import করে তারপর 5644dfg4h65fh46h4
+9. এবার 6PP_ECOMMERCE/backend/controllers/**userController.js** file এ **crypto**  কে import করে তারপর **forgotPassword** request এর থেকে যে **token** generate হয়েছে তার সাহায্যে user কে **_findOne_** করে তার password কে reset করে দিব
 ####
-
-> এখানে **d6g4df65g4df65g4d65g465gh4**
+>
+>> এখানে **_crypto.createHash().update(req.params.token).digest()_** method আমাদের url এর params থেকে token কে recive করে পাশাপাশি take hashin করে **_resetPasswordToken_** varible এ assign করে দেয়
+>
+>> **_resetPasswordExpire: { $gt: Date.now() }_** এর মানে হচ্ছে যদি userSchema তে save করা **resetPasswordExpire** key এর date expired না হয় তাহলে **_findOne_** method implement করতে হবে
+>
+>> **_user.password = req.body.password_** এর মানে হচ্ছে user যে নতুন pasword দিল অর্থাৎ **confirmed** password কে user এর final password হিসেবে assign করে **_user.save()_** method এর সাহায্যে save করে দিচ্ছি
+>
+>> সব শেষে **sendToken(user, 200, res)** method এর সাহায্যে token কে frontend এ পাঠিয়ে দিচ্ছি
 
 ####
 ```http
 [[FOLDERNAME : 6PP_ECOMMERCE/backend/controllers/userController.js]
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-frg7b5674df65h465hb4
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const userModel = require("../models/userModel");
+const sendEmail = require("../sendEmail");
+const ErrorHandler = require("../utils/ErrorHandler");
+const sendToken = require("../utils/jwtToken");
+const crypto = require("crypto");
+
+// Register a User
+exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  const user = await userModel.create({
+    name,
+    email,
+    password,
+    avatar: {
+      public_id: "myCloud.public_id",
+      url: "myCloud.secure_url",
+    },
+  });
+
+  /* const token = user.getJWTToken();    
+    res.status(201).json({
+        success: true,
+        message: "user is created",
+        token,
+        user,
+    }); */
+
+
+  sendToken(user, 201, res);
+
+
+});
+
+// Login User
+exports.loginUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // checking if user has given password and email both
+
+  if (!email || !password) {
+    return next(new ErrorHandler("Please Enter Email & Password", 400));
+  }
+
+  const user = await userModel.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+
+  /* const token = user.getJWTToken();    
+  res.status(200).json({
+    success: true,
+    message: "user is logged in",
+    token,
+    user,
+  }); */
+
+
+  sendToken(user, 200, res);
+});
+
+
+// logout user
+exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+
+
+  res.status(200).json({
+    success: true,
+    message: "user is logged out",
+  });
+});
+
+// Forgot Password
+exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const email = req.body.email;
+  const user = await userModel.findOne({ email });
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Get ResetPassword Token
+  const resetToken = user.getResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  const resetPasswordUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/password/reset/${resetToken}`;
+
+  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: `6PP_Ecommerce Password Recovery`,
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Email sent to ${user.email} successfully`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+// Reset Password
+exports.resetPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  // creating token hash
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = await userModel.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(
+      new ErrorHandler(
+        "Reset Password Token is invalid or has been expired",
+        400
+      )
+    );
+  }
+
+  if (req.body.password !== req.body.confirmPassword) {
+    return next(new ErrorHandler("Password does not match", 400));
+  }
+
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  sendToken(user, 200, res);
+});
+
 
 ```
 ####
 
-10. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **sent email document** কে
+10. এবার **gmail** এ গিয়ে **token** কে copy করে **postman software** এ test করব
 ####
-![postman success screenshot](https://i.ibb.co/P64k0Ft/Screenshot-2.png)
+![postman success screenshot](https://i.ibb.co/F0QMMZk/Screenshot-1.png)
 ####
 
 
 
 
-### re-register,faulty token, expired token errorhandle with custom error message : [ 3:22:21 - 6d5f4565df45g65dg465+g]
+### re-register,faulty token, expired token errorhandle with custom error message : [ 3:22:21 - 3:25:18]
 
-> **resetPassword** কি ঃ
+> বেশ কিছু **error** থাকে যা আমরা চাইলে **custom message create** করে আমাদের মত করে handle করে রাখতে পারি যেমন,
+>> কেউ একই **email** দিয়ে যদি আবারো **register** করতে চায় তাহলে একধরনের **_"E11000 duplicate key error collection: Ecommerce.users index: email_1 dup key: { email: \"asif@asif.asif\" }"_** err আসে যা বুঝা কঠিন
+>
+>> যদি JWT token এ **wronng or expired**  থাকে তাহলে একধরনের err আসে যা বুঝা কঠিন
+>
+> এই নিচের দেখানো system এ আমরা আমাদের নিজেরদের মত কোন একটা specific err এর জন্য specific কোন error message দেখাতে পারি
 
 ####
-> lksdflkjldsgj-error
+> re-register default-error
 ![postman success screenshot](https://i.ibb.co/Vxc6425/xcv.png)
 ####
-> lksdflkjldsgj-error
-![postman success screenshot](https://i.ibb.co/Vxc6425/xcv.png)
-####
-> lksdflkjldsgj-error
-![postman success screenshot](https://i.ibb.co/Vxc6425/xcv.png)
-####
 
 ####
-9. এবার 6PP_ECOMMERCE/backend/middleware/**error.js** file এ 
+9. এবার 6PP_ECOMMERCE/backend/middleware/**error.js** file এ re-register,faulty token, expired token এর জন্য আলাদা আলাদা function create করে error গুলো handle করব
 ####
 
-> এখানে **d6g4df65g4df65g4d65g465gh4**
+> এখানে **console.log(err.stack)** কে console করলে দেখতে পারব প্রতিটা **_err_** এর জন্য specific **_code_** or **_name_** আছে যার সাপেক্ষে আমরা **_custom error message_** create করে তাদের push করব
 
 ####
 ```http
@@ -482,14 +647,8 @@ module.exports = errorMiddleware;
 ```
 ####
 
-10. এবার **gmail** এ গিয়ে mail sent হয়েছে কিনা test করার হবে **sent email document** কে
+10. এবার **postman software** এ test করব
 ####
-> lksdflkjldsgj-error
-![postman success screenshot](https://i.ibb.co/TLYyg0k/Screenshot-1.png)
-####
-> lksdflkjldsgj-error
-![postman success screenshot](https://i.ibb.co/TLYyg0k/Screenshot-1.png)
-####
-> lksdflkjldsgj-error
-![postman success screenshot](https://i.ibb.co/TLYyg0k/Screenshot-1.png)
+> re-register custom-error
+![postman success screenshot](https://i.ibb.co/jT0YcTf/Screenshot-1.png)
 ####
