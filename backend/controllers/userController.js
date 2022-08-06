@@ -5,6 +5,14 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const sendToken = require("../utils/jwtToken");
 const crypto = require("crypto");
 
+
+/* 
+===================================
+User Authentication related APIs
+===================================
+*/
+
+
 // Register a User
 exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -157,4 +165,21 @@ exports.resetPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 200, res);
+});
+
+
+/* 
+===================================
+User profile related APIs
+===================================
+*/
+
+// Get User Detail
+exports.getUserDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const user = await userModel.findById(req.user.id);
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
 });
