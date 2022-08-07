@@ -115,7 +115,7 @@ exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res,
 
     if (isReviewExist) {
         product.reviews.forEach((rev) => {
-            if (rev.user.toString() === req.user._id.toString()) 
+            if (rev.user.toString() === req.user._id.toString())
                 (rev.rating = rating), (rev.comment = comment);
         });
     } else {
@@ -124,11 +124,11 @@ exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res,
     }
 
     // find avg review rating
-    let sumOftotalReviews = 0;
+    let sumOfAllRating = 0;
     product.reviews.forEach(review => {
-        sumOftotalReviews += review.rating;
-    }),
-        avgRating = sumOftotalReviews / product.reviews.length;
+        sumOfAllRating += review.rating;
+    });
+    const avgRating = sumOfAllRating / product.reviews.length;
     product.ratings = avgRating;
 
     await product.save({ validateBeforeSave: false });
@@ -149,7 +149,7 @@ exports.getProductAllReviews = catchAsyncErrorsMiddleware(async (req, res, next)
     if (!product) {
         return next(new ErrorHandler(`Product not found`, 404));
     }
-const reviews = product.reviews;
+    const reviews = product.reviews;
     res.status(200).json({
         success: true,
         message: "get All Product Reviews route is working",
@@ -157,3 +157,66 @@ const reviews = product.reviews;
     });
 })
 
+// delete a Review of user
+exports.deleteProductReview = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const reviewId = req.query.id;
+    const productId = req.query.productId;
+
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    const reviews = product.reviews.filter(review => review._id.toString() !== reviewId.toString());
+    const numOfReviews = reviews.length;
+
+    // updating avg review rating
+    let sumOfAllRating = 0;
+    reviews.forEach(review => {
+        sumOfAllRating += review.rating;
+    });
+
+    let ratings = 0;
+    if (reviews.length === 0) {
+        ratings = 0;
+    } else {
+        const avgRating = sumOfAllRating / reviews.length;
+        ratings = avgRating;
+    }
+
+    await productModel.findByIdAndUpdate(productId, {
+        reviews,
+        numOfReviews,
+        ratings,
+    },
+        {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false,
+        });
+        
+
+    /* 
+    // delete a review from product.reviews as alternative
+        product.reviews = reviews;
+        product.numOfReviews = reviews.length;
+    
+        // updating avg review rating
+        let sumOftotalReviews = 0;
+        reviews.forEach(review => {
+            sumOftotalReviews += review.rating;
+        }),
+            avgRating = sumOftotalReviews / reviews.length;
+        product.ratings = avgRating;
+    
+        await product.save({ validateBeforeSave: false });
+     */
+
+
+    res.status(200).json({
+        success: true,
+        message: "Product review deleted successfully",
+        product,
+    });
+})

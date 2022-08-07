@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails, createNupdateProductReview, getProductAllReviews,
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails, createNupdateProductReview, getProductAllReviews, deleteProductReview,
 } = require("../controllers/productController");
 const { verifyJWT, verifyUserRole } = require("../middleware/auth");
 
@@ -38,7 +38,7 @@ product review related APIs
 
 
 router.route("/review").put(verifyJWT, createNupdateProductReview);
-router.route("/reviews").get(getProductAllReviews);
+router.route("/reviews").get(getProductAllReviews).delete(verifyJWT,deleteProductReview);
 
 
 
