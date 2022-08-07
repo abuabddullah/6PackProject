@@ -11,10 +11,10 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
+router.route("/admin/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
 
 // router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed
-router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
+router.route("/admin/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
 router.route("/product/:id").get(getProductDetails);
 
 

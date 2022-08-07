@@ -151,7 +151,7 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(createProduct);
+router.route("/admin/product/new").post(createProduct);
 
 
 
@@ -164,7 +164,7 @@ module.exports = router;
 ```
 
 ####
-5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_http://localhost:5000/api/v1/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
+5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_http://localhost:5000/api/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
 ####
 
 ####
@@ -314,8 +314,8 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(createProduct);
-router.route("/product/:id").put(updateProduct).delete(deleteProduct);
+router.route("/admin/product/new").post(createProduct);
+router.route("/admin/product/:id").put(updateProduct).delete(deleteProduct);
 
 
 
@@ -459,10 +459,10 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(createProduct); // AdminRoute
+router.route("/admin/product/new").post(createProduct); // AdminRoute
 
-// router.route("/product/:id").put(updateProduct).delete(deleteProduct).get(getProductDetails); // allowed
-router.route("/product/:id").put(updateProduct).delete(deleteProduct) // AdminRoute
+// router.route("/admin/product/:id").put(updateProduct).delete(deleteProduct).get(getProductDetails); // allowed
+router.route("/admin/product/:id").put(updateProduct).delete(deleteProduct) // AdminRoute
 router.route("/product/:id").get(getProductDetails);
 
 

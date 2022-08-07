@@ -28,6 +28,7 @@
 03:29:00 creat route for getting user details
 03:33:30 create route for update password
 03:37:15 update profile PUT api created
+03:37:52 add *'/admin'* before all the admin route in *productRoute.js* or *userRoute.js* file for more visual understanding
 03:42:10 get all users and andmin check any user by I'd API created
 03:47:00 admin route to update user to admin and admin delete user API created
 4:00:43 give review or edit it review+ get avg review of. Product API created

@@ -1023,10 +1023,10 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(verifyJWT,createProduct); // AdminRoute
+router.route("/admin/product/new").post(verifyJWT,createProduct); // AdminRoute
 
-// router.route("/product/:id").put(verifyJWT,updateProduct).delete(verifyJWT,deleteProduct).get(getProductDetails); // allowed
-router.route("/product/:id").put(verifyJWT,updateProduct).delete(verifyJWT,deleteProduct) // AdminRoute
+// router.route("/admin/product/:id").put(verifyJWT,updateProduct).delete(verifyJWT,deleteProduct).get(getProductDetails); // allowed
+router.route("/admin/product/:id").put(verifyJWT,updateProduct).delete(verifyJWT,deleteProduct) // AdminRoute
 router.route("/product/:id").get(getProductDetails);
 
 
@@ -1092,7 +1092,7 @@ exports.verifyUserRole = (...roles) => {
 33. এবার test করার জন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_verifyJWT_** এর পরে কিন্তু **_updateProduct,deleteProduct_** এর আগে **_verifyUserRole_** কে বসিয়ে দিতে হবে
 ####
 
-> বিস্তারিত বর্ণনা ঃ router.route("/product/new").post(verifyJWT,verifyUserRole,createProduct)
+> বিস্তারিত বর্ণনা ঃ router.route("/admin/product/new").post(verifyJWT,verifyUserRole,createProduct)
 >
 >> উপরোক্ত route টি থেকে আমরা আন্দাজ করতে পারি যে যদি কোন একটা নতুন product কে database এ create করতে চাই তাহলে user কে একাধারে logged-In থাকতে হবে ও পাশাপাশি তার role ও admin হতে হবে যা এই দু **verifyJWT,verifyUserRole** functioin দ্বারা identify করা হচ্ছে। 
 >
@@ -1121,10 +1121,10 @@ const router = express.Router();
 
 
 router.route("/products").get(getAllProducts);
-router.route("/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
+router.route("/admin/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
 
 // router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed
-router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
+router.route("/admin/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
 router.route("/product/:id").get(getProductDetails);
 
 

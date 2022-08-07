@@ -174,6 +174,7 @@ User profile related APIs
 ===================================
 */
 
+
 // Get User Detail
 exports.getUserDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
   const user = await userModel.findById(req.user.id);
@@ -183,3 +184,128 @@ exports.getUserDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
     user,
   });
 });
+
+
+// update User password
+exports.updatePassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const user = await userModel.findById(req.user.id).select("+password");
+
+  const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Old password is incorrect", 400));
+  }
+
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(new ErrorHandler("password does not match", 400));
+  }
+
+  user.password = req.body.newPassword;
+
+  await user.save();
+
+  sendToken(user, 200, res);
+});
+
+
+// update User Profile
+exports.updateProfile = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+  const user = await userModel.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "user profile updated",
+    user,
+  });
+});
+
+
+/* 
+===================================
+User profile related Admin APIs
+===================================
+*/
+
+
+// Get all users(adminRoute)
+exports.getAllUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const users = await userModel.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+// Get single user (adminRoute)
+exports.getSingleUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+// update user role to admin (adminRoute)
+exports.updateUserRole = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const roleUpdatingData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  const user = await userModel.findByIdAndUpdate(req.params.id, roleUpdatingData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "user role updated successfully",
+    user,
+  });
+})
+
+// delete user (adminRoute)
+exports.deleteUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler(`User does not exist with Id: ${req.params.id}`));
+  }
+
+
+  /* 
+  //deleting avatar image
+  const imageId = user.avatar.public_id;
+  await cloudinary.v2.uploader.destroy(imageId);
+ */
+
+  await user.remove();
+  res.status(200).json({
+    success: true,
+    message: "user deleted successfully",
+  });
+})

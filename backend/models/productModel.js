@@ -15,10 +15,6 @@ const productSchema = new mongoose.Schema({
     required: [true, "Please Enter product Price"],
     maxLength: [8, "Price cannot exceed 8 characters"],
   },
-  ratings: {
-    type: Number,
-    default: 0,
-  },
   images: [
     {
       public_id: {
@@ -47,6 +43,10 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   numOfReviews: {
+    type: Number,
+    default: 0,
+  },
+  ratings: {
     type: Number,
     default: 0,
   },

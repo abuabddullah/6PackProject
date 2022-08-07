@@ -87,3 +87,52 @@ exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) =>
         product,
     });
 })
+
+
+/* 
+===================================
+product review related APIs
+===================================
+*/
+
+
+// create n update product review
+exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { productId, rating, comment } = req.body;
+
+    const ratingInfo = {
+        user: req.user._id,
+        name: req.user.name,
+        rating,
+        comment,
+    };
+
+    const product = await productModel.findById(productId);
+
+    const isReviewExist = product.reviews.find(review => review.user == req.user._id); // review.user is an id (mongoose.Schema.ObjectId)
+
+    if (isReviewExist) {
+        return next(new ErrorHandler(`You have already reviewed this product`, 400));
+    } else {
+        product.reviews.push(ratingInfo);
+        product.numOfReviews = product.reviews.length;
+    }
+
+    // find avg review rating
+    const sumOftotalReviews = 0;
+    product.reviews.forEach(review => {
+        sumOftotalReviews += review.rating;
+    }),
+        avgRating = sumOftotalReviews / product.reviews.length;
+    product.ratings = avgRating;
+
+    await product.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true,
+        message: "Product review done successfully",
+        product,
+    });
+})
+
+
