@@ -2,7 +2,7 @@
 
 #### createProductReview+updateProductReview etc ....
 
-### createNupdateProductReview : [ 03:47:00 - d56f4gd441df32g4dg4 ]
+### createNupdateProductReview : [ 03:47:00 - 4:00:43 ]
 
 
 > এখানে বেশ কয়েকটা জিনিস কে মাথায় নিয়ে কাজ করতে হবে
@@ -106,37 +106,471 @@ const productModel = mongoose.model("Product", productSchema);
 module.exports = productModel;
 ```
 ####
-2. এজন্য 6PP_ECOMMERCE/backend/controllers/**productController.js** file এ **_createProductReview_**  নামের async function create করতে হবে যেখানে 6v4654s654s65465f4sd654s6dv4sdf6d
+2. এজন্য 6PP_ECOMMERCE/backend/controllers/**productController.js** file এ **_createNupdateProductReview_**  নামের async function create করতে হবে যেখানে,
 ####
 
 > এখানে বেশ কয়েকটা জিনিস কে মাথায় নিয়ে কাজ করতে হবে
+>
+>> user এর **id** এর against এ আগে থেকেই **product** এর  review আছে কিনা check করার সময় আমরা **_.find()_** method এর ভিতর **_review.user.toString()_** method use করেছি কারন **productScema** এর **reviews** array তে **_user_** key এর value হিসেবে user এর **id** থাকে এবং এগুলা থাকে **_mongoose.Schema.ObjectId_** format এ তাই আগে string এ রূপান্তরিত করে নিতে হবে
 
 ####
 ```http
 [[FOLDERNAME : 6PP_ECOMMERCE/backend/controllers/productController.js]
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-sdf41f65ds4f
+const ApiFeatures = require("../utils/apiFeatures");
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const productModel = require("../models/productModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+
+
+// create a product - AdminRoute
+exports.createProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    req.body.user = req.user.id; // verifyJWT থেকে প্রাপ্ত
+    const product = await productModel.create(req.body);
+    res.status(201).json({
+        success: true,
+        product,
+    });
+})
+
+// update a product - AdminRoute
+exports.updateProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const updateInfo = req.body;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+    const updatedProduct = await productModel.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
+    res.status(200).json({
+        success: true,
+        updatedProduct,
+    });
+})
+
+
+// delete a product - AdminRoute
+exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    await product.remove();
+    // await productModel.findByIdAndDelete(id); // এটাও চলবে
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted",
+    });
+})
+
+
+
+// Get All Product
+exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
+
+    const resultPerPage = 2;
+    const productsCount = await productModel.countDocuments();
+
+    const apiFeature = new ApiFeatures(productModel.find(), req.query)
+        .search()
+        .filter()
+        .pagination(resultPerPage);
+    let products = await apiFeature.query;
+
+    res.status(200).json({
+        success: true,
+        message: "getAllProducts route is working",
+        products,
+    });
+});
+
+
+// Get Product details by ID
+exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "getProductDetails route is working",
+        product,
+    });
+})
+
+
+/* 
+===================================
+product review related APIs
+===================================
+*/
+
+
+// create n update product review
+exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { productId, rating, comment } = req.body;
+
+    const ratingInfo = {
+        user: req.user._id,
+        name: req.user.name,
+        rating: Number(rating),
+        comment,
+    };
+
+    const product = await productModel.findById(productId);
+
+    const isReviewExist = product.reviews.find(review => review.user.toString() == req.user._id); // review.user is an id (mongoose.Schema.ObjectId)
+
+    console.log(isReviewExist);
+
+    if (isReviewExist) {
+        product.reviews.forEach((rev) => {
+            if (rev.user.toString() === req.user._id.toString()) 
+                (rev.rating = rating), (rev.comment = comment);
+        });
+    } else {
+        product.reviews.push(ratingInfo);
+        product.numOfReviews = product.reviews.length;
+    }
+
+    // find avg review rating
+    let sumOftotalReviews = 0;
+    product.reviews.forEach(review => {
+        sumOftotalReviews += review.rating;
+    }),
+        avgRating = sumOftotalReviews / product.reviews.length;
+    product.ratings = avgRating;
+
+    await product.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true,
+        message: "Product review done successfully",
+        product,
+    });
+})
+
+
+
 ```
 ####
 
-3. এজন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_createProductReview_**  function কে import করে এর জন্য একটা 65d4fg65df456dfg4456g41fd6
-####
-
-> এখানে 465xcf456xdfg4dxf65df56g4ছি
+3. এবার 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_createNupdateProductReview_**  function কে import করে এর জন্য একটা **_.put()_** route বানাতে হবে
 
 ####
 ```http
 [[FOLDERNAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-654cxvvb41xc56f41d511b145dch
+const express = require("express");
+const {
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails, createNupdateProductReview,
+} = require("../controllers/productController");
+const { verifyJWT, verifyUserRole } = require("../middleware/auth");
+
+
+
+const router = express.Router();
+
+
+
+router.route("/products").get(getAllProducts);
+router.route("/product/:id").get(getProductDetails);
+
+
+
+/* 
+===================================
+AdminRoute related APIs
+===================================
+*/
+
+
+router.route("/admin/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
+
+// router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed
+router.route("/admin/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
+
+
+
+/* 
+===================================
+product review related APIs
+===================================
+*/
+
+
+
+router.route("/review").put(verifyJWT, createNupdateProductReview);
+
+
+
+
+module.exports = router;
 ```
 ####
 
-4. এবার **postman software** দিয়ে project test করার হবে **_createProductReview_** কে
+4. এবার **postman software** দিয়ে project test করার হবে **_createNupdateProductReview_** কে
 ####
 
 ####
-![postman success screenshot](https://i.ibb.co/TRQ0C6H/Screenshot-1.png)
+![postman success screenshot](https://i.ibb.co/hf6PrD6/Screenshot-1.png)
+####
+
+
+
+
+
+### getProductAllReviews : [ 4:00:43 - d56f4gd441df32g4dg4 ]
+
+> এবার আমরা কোন specific product এর উপরে ভিন্ন ভিন্ন মানুষের দেয়া সবগুল reviews দেখার features implement করব
+
+5. এজন্য 6PP_ECOMMERCE/backend/controllers/**productController.js** file এ **_getProductAllReviews_**  নামের async function create করতে হবে যেখানে 
+####
+
+>
+>> frontend এর সাহায্যে product এর **id** query তে recieve করা হবে
+>
+>> backend এ এই প্রাপ্ত **productId** এর সাপেক্ষে database থেকে **product**-কে বের করে আনা হবে
+>
+>> সব শেষে এই **product** এর **_reviews_** arr কে **_res_** হিসেবে পাঠিয়ে দেয়া হবে
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/controllers/productController.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const ApiFeatures = require("../utils/apiFeatures");
+const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
+const productModel = require("../models/productModel");
+const ErrorHandler = require("../utils/ErrorHandler");
+
+
+// create a product - AdminRoute
+exports.createProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    req.body.user = req.user.id; // verifyJWT থেকে প্রাপ্ত
+    const product = await productModel.create(req.body);
+    res.status(201).json({
+        success: true,
+        product,
+    });
+})
+
+// update a product - AdminRoute
+exports.updateProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const updateInfo = req.body;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+    const updatedProduct = await productModel.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
+    res.status(200).json({
+        success: true,
+        updatedProduct,
+    });
+})
+
+
+// delete a product - AdminRoute
+exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    await product.remove();
+    // await productModel.findByIdAndDelete(id); // এটাও চলবে
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted",
+    });
+})
+
+
+
+// Get All Product
+exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
+
+    const resultPerPage = 2;
+    const productsCount = await productModel.countDocuments();
+
+    const apiFeature = new ApiFeatures(productModel.find(), req.query)
+        .search()
+        .filter()
+        .pagination(resultPerPage);
+    let products = await apiFeature.query;
+
+    res.status(200).json({
+        success: true,
+        message: "getAllProducts route is working",
+        products,
+    });
+});
+
+
+// Get Product details by ID
+exports.getProductDetails = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "getProductDetails route is working",
+        product,
+    });
+})
+
+
+/* 
+===================================
+product review related APIs
+===================================
+*/
+
+
+// create n update product review
+exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const { productId, rating, comment } = req.body;
+
+    const ratingInfo = {
+        user: req.user._id,
+        name: req.user.name,
+        rating: Number(rating),
+        comment,
+    };
+
+    const product = await productModel.findById(productId);
+
+    const isReviewExist = product.reviews.find(review => review.user.toString() == req.user._id); // review.user is an id (mongoose.Schema.ObjectId)
+
+    console.log(isReviewExist);
+
+    if (isReviewExist) {
+        product.reviews.forEach((rev) => {
+            if (rev.user.toString() === req.user._id.toString()) 
+                (rev.rating = rating), (rev.comment = comment);
+        });
+    } else {
+        product.reviews.push(ratingInfo);
+        product.numOfReviews = product.reviews.length;
+    }
+
+    // find avg review rating
+    let sumOftotalReviews = 0;
+    product.reviews.forEach(review => {
+        sumOftotalReviews += review.rating;
+    }),
+        avgRating = sumOftotalReviews / product.reviews.length;
+    product.ratings = avgRating;
+
+    await product.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true,
+        message: "Product review done successfully",
+        product,
+    });
+})
+
+
+// get all product reviews of a product
+exports.getProductAllReviews = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const productId = req.query.id;
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+const reviews = product.reviews;
+
+    res.status(200).json({
+        success: true,
+        message: "get All Product Reviews route is working",
+        reviews,
+    });
+})
+
+
+```
+####
+
+6. এজন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_getProductAllReviews_**  function কে import করে এর জন্য একটা **_.get()_** rotue বানাতে হবে
+
+####
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+const express = require("express");
+const {
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails, createNupdateProductReview, getProductAllReviews,
+} = require("../controllers/productController");
+const { verifyJWT, verifyUserRole } = require("../middleware/auth");
+
+
+
+const router = express.Router();
+
+
+
+router.route("/products").get(getAllProducts);
+router.route("/product/:id").get(getProductDetails);
+
+
+
+/* 
+===================================
+AdminRoute related APIs
+===================================
+*/
+
+
+router.route("/admin/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
+
+// router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed
+router.route("/admin/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct) // AdminRoute
+
+
+
+/* 
+===================================
+product review related APIs
+===================================
+*/
+
+
+
+router.route("/review").put(verifyJWT, createNupdateProductReview);
+router.route("/reviews").get(getProductAllReviews);
+
+
+
+
+module.exports = router;
+```
+####
+
+7. এবার **postman software** দিয়ে project test করার হবে **_get_** কে
+####
+
+####
+![postman success screenshot](https://i.ibb.co/6HJW5z5/Screenshot-1.png)
 ####
 
 
@@ -288,7 +722,7 @@ sdf41f65ds4f
 
 ### update prod545gb56d4d4dg4165fgb4h46file : [ 03:47:00 - d56f4gd441df32g4dg4 ]
 
-10. এজন্য 6PP_ECOMMERCE/backend/controllers/**productController.js** file এ **_createProductReview_**  নামের async function create করতে হবে যেখানে 6v4654s654s65465f4sd654s6dv4sdf6d
+10. এজন্য 6PP_ECOMMERCE/backend/controllers/**productController.js** file এ **_getProductAllReviews_**  নামের async function create করতে হবে যেখানে 6v4654s654s65465f4sd654s6dv4sdf6d
 ####
 
 > এখানে sd51s41xd65146541s35g
@@ -301,7 +735,7 @@ sdf41f65ds4f
 ```
 ####
 
-11. এজন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_createProductReview_**  function কে import করে এর জন্য একটা 65d4fg65df456dfg4456g41fd6
+11. এজন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_getProductAllReviews_**  function কে import করে এর জন্য একটা 65d4fg65df456dfg4456g41fd6
 ####
 
 > এখানে 465xcf456xdfg4dxf65df56g4ছি
@@ -314,9 +748,9 @@ sdf41f65ds4f
 ```
 ####
 
-12. এবার **postman software** দিয়ে project test করার হবে **_createProductReview_** কে
+12. এবার **postman software** দিয়ে project test করার হবে **_get_** কে
 ####
 
 ####
-![postman success screenshot](https://i.ibb.co/TRQ0C6H/Screenshot-1.png)
+![postman success screenshot](https://i.ibb.co/6HJW5z5/Screenshot-1.png)
 ####

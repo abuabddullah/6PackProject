@@ -103,23 +103,28 @@ exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res,
     const ratingInfo = {
         user: req.user._id,
         name: req.user.name,
-        rating,
+        rating: Number(rating),
         comment,
     };
 
     const product = await productModel.findById(productId);
 
-    const isReviewExist = product.reviews.find(review => review.user == req.user._id); // review.user is an id (mongoose.Schema.ObjectId)
+    const isReviewExist = product.reviews.find(review => review.user.toString() == req.user._id); // review.user is an id (mongoose.Schema.ObjectId)
+
+    console.log(isReviewExist);
 
     if (isReviewExist) {
-        return next(new ErrorHandler(`You have already reviewed this product`, 400));
+        product.reviews.forEach((rev) => {
+            if (rev.user.toString() === req.user._id.toString()) 
+                (rev.rating = rating), (rev.comment = comment);
+        });
     } else {
         product.reviews.push(ratingInfo);
         product.numOfReviews = product.reviews.length;
     }
 
     // find avg review rating
-    const sumOftotalReviews = 0;
+    let sumOftotalReviews = 0;
     product.reviews.forEach(review => {
         sumOftotalReviews += review.rating;
     }),
@@ -135,4 +140,20 @@ exports.createNupdateProductReview = catchAsyncErrorsMiddleware(async (req, res,
     });
 })
 
+
+// get all product reviews of a product
+exports.getProductAllReviews = catchAsyncErrorsMiddleware(async (req, res, next) => {
+    const productId = req.query.id;
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+        return next(new ErrorHandler(`Product not found`, 404));
+    }
+const reviews = product.reviews;
+    res.status(200).json({
+        success: true,
+        message: "get All Product Reviews route is working",
+        reviews,
+    });
+})
 
