@@ -277,10 +277,10 @@ exports.myAllOrders = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ```
 ####
 
-7. এজন্য 6PP_ECOMMERCE/backend/routes/**orderRoute.js** file এ **_getSingleOrderDetails & myAllOrders_**  function কে import করে এর জন্য একটা 65d4fg65df456dfg4456g41fd6
+7. এজন্য 6PP_ECOMMERCE/backend/routes/**orderRoute.js** file এ **_getSingleOrderDetails & myAllOrders_**  function কে import করে এর জন্য **_.get()_** route বানাতে হবে
 ####
 
-> এখানে 465xcf456xdfg4dxf65df56g4ছি
+> এখানে order related সকল route গুলো অবশ্যি logged in user ও কিছু কিছু ক্ষেত্র বিশেষে admin authorised user রা কেবল access পাবে
 
 ####
 ```http
@@ -316,7 +316,7 @@ module.exports = router;
 ![postman success screenshot](https://i.ibb.co/wLwnf33/Screenshot-1.png)
 ####
 
-8. এবার **postman software** দিয়ে project test করার হবে **_myAllOrders_** কে
+9. এবার **postman software** দিয়ে project test করার হবে **_myAllOrders_** কে
 ####
 
 ####
@@ -333,10 +333,15 @@ module.exports = router;
  
 > **getAllOrders, deleteOrder** feature enable করার জন্য করনিয় ঃ
  
-xx. এবার 6PP_ECOMMERCE/backend/controllers/**orderController.js** file এ xf5465f65ds65fd4sd654
+10. এবার 6PP_ECOMMERCE/backend/controllers/**orderController.js** file এ  **_getAllOrders & deleteOrder_**  নামের async function create করতে হবে যেখানে এ দুটোই **AdminRoute**
  
  
-> এখানে **d6g4df65g4df65g4d65g465gh4**
+> 
+>> এখানে **_getAllOrders_** functin এ
+>>> সবগুলো **orders** পাবার পাশাপাশি এর উপর **_.forEach()_** method apply করে **orders** এর **_totalAmmout_** ও জানতে হবে যাতে পরবর্তিতে **payment** related কাজ করা যায়
+>
+>> আর **_deleteOrder_** functin এ
+>>> frontend থেকে **req.params** থেকে order এর **id** পাঠাতে হবে
  
 ####
 ```http
@@ -452,10 +457,7 @@ exports.deleteOrder = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ```
 ####
  
-xx. এবার 6PP_ECOMMERCE/backend/routers/**orderRouter.js** file এ xf5465f65ds65fd4sd654
- 
- 
-> এখানে **d6g4df65g4df65g4d65g465gh4**
+11. এবার 6PP_ECOMMERCE/backend/routers/**orderRouter.js** file এ **_getAllOrders & deleteOrder_** এর জন্য যথাক্রমে **_.get() & .delete()_** নামের **AdminRoute** create করতে হবে
  
 ####
 ```http
@@ -494,12 +496,12 @@ module.exports = router;
 ```
 ####
  
-10. এবার **postman software** এ গিয়ে test করার হবে **getAllOrders** কে
+12. এবার **postman software** এ গিয়ে test করার হবে **_getAllOrders_** কে
 ####
 ![postman success screenshot](https://i.ibb.co/y0vBNnb/Screenshot-2.png)
 ####
  
-10. এবার **postman software** এ গিয়ে test করার হবে **deleteOrder** কে
+13. এবার **postman software** এ গিয়ে test করার হবে **_deleteOrder_** কে
 ####
 ![postman success screenshot](https://i.ibb.co/Y7b94hP/Screenshot-2.png)
 ####
@@ -509,11 +511,12 @@ module.exports = router;
  
 > **updateOrder** feature enable করার জন্য করনিয় ঃ
  
-xx. এবার 6PP_ECOMMERCE/backend/controllers/**orderController.js** file এ **_updateStock_** নামের async fucntion বানাতে হবে যা দুটা parameter নেয় **_id & quantity_** । এবং অন্য আরেকটি  **_updateOrder_** নামের async fucntion বানাতে হবে যেখানে বিভিন্ন ধাপে ধাপে verification করে ** update করবে এবং সেই অনুযায়ী product এর **stock quantity** update করবে **_updateStock_** fucntion কে invoke করার মাধ্যমে
+14. এবার 6PP_ECOMMERCE/backend/controllers/**orderController.js** file এ **_updateStock_** নামের async fucntion বানাতে হবে যা দুটা parameter নেয় **_id & quantity_** । এবং অন্য আরেকটি  **_updateOrder_** নামের async fucntion বানাতে হবে যেখানে বিভিন্ন ধাপে ধাপে verification করে ** update করবে এবং সেই অনুযায়ী product এর **stock quantity** update করবে **_updateStock_** fucntion কে invoke করার মাধ্যমে
  
- 
-> এখানে **_updateStock_** fucntion তার recieve করা **_id_** parameter দিয়ে database থেকে **product** কে খুজে বের করে এনে তার **stock** ammount থেকে **_quantity_** parameter এর ammount বিয়োগ করে stock **save** করে রাখএ
-> এখানে **_updateOrder_** fucntion frontend থেকে **req.params.id & req.body.status**
+>
+>> এখানে **_updateStock_** fucntion তার recieve করা **_id_** parameter দিয়ে database থেকে **product** কে খুজে বের করে এনে তার **stock** ammount থেকে **_quantity_** parameter এর ammount বিয়োগ করে stock **save** করে রাখএ
+>
+>> এখানে **_updateOrder_** fucntion frontend থেকে **req.params & req.body** যথাক্রমে order **id** ও order এর **status** recieve করব
  
 ####
 ```http
@@ -669,10 +672,7 @@ exports.updateOrder = catchAsyncErrorsMiddleware(async (req, res, next) => {
 ```
 ####
  
-xx. এবার 6PP_ECOMMERCE/backend/routers/**orderRouter.js** file এ xf5465f65ds65fd4sd654
- 
- 
-> এখানে **d6g4df65g4df65g4d65g465gh4**
+15. এবার 6PP_ECOMMERCE/backend/routers/**orderRouter.js** file এ  **_updateOrder_**  function কে import করে এর জন্য **_.put()_** route বানাতে হবে
  
 ####
 ```http
@@ -712,188 +712,7 @@ module.exports = router;
 ```
 ####
  
-10. এবার **postman software** এ গিয়ে test করার হবে **updateOrder** কে
+16. এবার **postman software** এ গিয়ে test করার হবে **updateOrder** কে
 ####
 ![postman success screenshot](https://i.ibb.co/b33smWz/Screenshot-2.png)
-####
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### createOrder  : [ 04:14:30 - d56f4gd441df32g4dg4 ]
-
-6. এজন্য প্রথমে 6PP_ECOMMERCE/backend/**controllers** folder এ 6PP_ECOMMERCE/backend/controllers/**orderController.js** file create করতে হবে এবং  **_orderModel_** কে import করে নিতে হবে। এরপর **_createNewOrder_** নামের async function create করতে হবে যেখানে frontend থেকে যাবতীয় ordering related info আসবে আর তারপর **_await orderModel.create({})_** method এর সাহায্যে একটা নতুন order create হবে আর শেষে একটা **success messasge** response হিসেবে যাবে
-####
-
-> এখানে 
-
-####
-```http
-[[FOLDERNAME : 6PP_ECOMMERCE/backend/controllers/orderController.js]
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-sdf41f65ds4f
-```
-####
-
-7. এজন্য 6PP_ECOMMERCE/backend/routes/**productRoute.js** file এ **_deleteReview_**  function কে import করে এর জন্য একটা 65d4fg65df456dfg4456g41fd6
-####
-
-> এখানে 465xcf456xdfg4dxf65df56g4ছি
-
-####
-```http
-[[FOLDERNAME : 6PP_ECOMMERCE/backend/routes/productRoute.js]
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-654cxvvb41xc56f41d511b145dch
-```
-####
-
-8. এবার **postman software** দিয়ে project test করার হবে **_deleteReview_** কে
-####
-
-####
-![postman success screenshot](https://i.ibb.co/6HJW5z5/Screenshot-1.png)
 ####
