@@ -225,7 +225,7 @@ module.exports = sendEmail;
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
 const userModel = require("../models/userModel");
-const sendEmail = require("../sendEmail");
+const sendEmail = require("../utils/sendEmail");
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendToken = require("../utils/jwtToken");
 
@@ -410,7 +410,7 @@ module.exports = router;
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
 const userModel = require("../models/userModel");
-const sendEmail = require("../sendEmail");
+const sendEmail = require("../utils/sendEmail");
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendToken = require("../utils/jwtToken");
 const crypto = require("crypto");
