@@ -36,8 +36,8 @@ entry point : backend/server.js
 ```http
 npm i express mongoose dotenv cors
 ```
-
 ####
+
 6. এবার "6PP_ECOMMERCE/backend/**app.js**" file এ **express, cors** কে import করে তা দিয়ে **app** বানিয়ে **_app.use()_** method দিয়ে **_cors() & express.json()_** function কে invoke করে তারপর app কে এই file থেকে **export** করে দিয়ে হবে যাতে অন্য file থেকেও এই app টার access পাওয়া যায়
 ####
 

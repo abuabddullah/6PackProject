@@ -716,3 +716,11 @@ module.exports = router;
 ####
 ![postman success screenshot](https://i.ibb.co/b33smWz/Screenshot-2.png)
 ####
+
+
+
+## যে সব Topics বাদ রয়ে গেলঃ
+>
+>> **payment** related **_APIs,Model,Route_** etc
+>
+>> **cloudnary** related tasks
