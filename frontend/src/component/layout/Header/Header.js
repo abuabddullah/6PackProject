@@ -1,14 +1,15 @@
 import React from 'react';
 import { ReactNavbar } from "overlay-navbar"
 import logo from "./../../../images/logo2.png"
-import { FaCartPlus, FaSearch, FaUserAlt } from "react-icons/fa";  
+import { FaCartPlus, FaSearch, FaUserAlt } from "react-icons/fa";
 
 
 const options = {
-    logo: logo,
     burgerColorHover: "#eb4034", // এটা menuIcon এ hover effect দেয়
 
+
     // logo related options
+    logo: logo,
     logoWidth: "20vmax",
     logoHoverSize: "10px",
     logoHoverColor: "#eb4034",
@@ -18,7 +19,7 @@ const options = {
     navColor2: "rgba(35, 35, 35,.05)",
     navColor3: "rgba(35, 35, 35,.025)",
     navColor4: "rgba(35, 35, 35,.01)",
-    
+
     // navContent postining options
     nav1justifyContent: "flex-end",
     nav2justifyContent: "flex-end",
@@ -46,22 +47,24 @@ const options = {
 const Header = () => {
     return (
         <ReactNavbar {...options}
-        
-        // icons related optios
-        profileIcon= {true} 
-        ProfileIconElement= {FaUserAlt} 
-        profileIconUrl= "/login" 
-        profileIconColor= "rgba(35, 35, 35,0.8)"
-        profileIconColorHover= "#eb4034"
-        searchIcon= {true} 
-        SearchIconElement= {FaSearch} 
-        searchIconColor= "rgba(35, 35, 35,0.8)"
-        searchIconColorHover= "#eb4034"
-        cartIcon= {true} 
-        CartIconElement= {FaCartPlus} 
-        cartIconColor= "rgba(35, 35, 35,0.8)"
-        cartIconColorHover= "#eb4034"
-        cartIconMargin= "1vmax"
+
+            // icons related optios
+            profileIcon={true}
+            ProfileIconElement={FaUserAlt}
+            profileIconUrl="/login"
+            profileIconColor="rgba(35, 35, 35,0.8)"
+            profileIconColorHover="#eb4034"
+
+            searchIcon={true}
+            SearchIconElement={FaSearch}
+            searchIconColor="rgba(35, 35, 35,0.8)"
+            searchIconColorHover="#eb4034"
+
+            cartIcon={true}
+            CartIconElement={FaCartPlus}
+            cartIconColor="rgba(35, 35, 35,0.8)"
+            cartIconColorHover="#eb4034"
+            cartIconMargin="1vmax"
         />
     );
 };

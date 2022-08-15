@@ -39,7 +39,7 @@
 04:26:00 check my orders, single order details route
 04:42:00 get all order,get stock of order, update order status, delete ordervetc
 04:46:00 react dependencies and environment setup done
-04:53:00 overly nav created and webfont package installed for robot google font
+4:51:57 overly nav created and webfont package installed for robot google font
 05:06:00 classy home banner with scroll on click effect created
 05:12:00 react stars or react rating implemented and options declaration done of it
 05:18:00 home.js decorating done
