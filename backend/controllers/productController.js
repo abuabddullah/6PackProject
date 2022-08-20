@@ -56,7 +56,7 @@ exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
 // Get All Product
 exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
-    const resultPerPage = 2;
+    const resultPerPage = 9;
     const productsCount = await productModel.countDocuments();
 
     const apiFeature = new ApiFeatures(productModel.find(), req.query)
@@ -68,6 +68,8 @@ exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "getAllProducts route is working",
+        resultPerPage,
+        productsCount,
         products,
     });
 });

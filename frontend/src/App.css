@@ -1,6 +1,23 @@
+*{  
+  scroll-behavior: smooth;
+}
+
 a{
   text-decoration: none;
 }
+img {
+  max-width: 100%;
+}
+
+
+.container{
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+
+
+/* 
 .App {
   text-align: center;
 }
@@ -38,10 +55,4 @@ a{
   to {
     transform: rotate(360deg);
   }
-}
-
-
-.container{
-  max-width: 1280px;
-  margin: 0 auto;
-}
+} */

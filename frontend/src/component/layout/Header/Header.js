@@ -5,6 +5,7 @@ import { FaCartPlus, FaSearch, FaUserAlt } from "react-icons/fa";
 
 
 const options = {
+    burgerColor: "rgba(115, 114, 114,1)",
     burgerColorHover: "#eb4034", // এটা menuIcon এ hover effect দেয়
 
 
@@ -15,10 +16,10 @@ const options = {
     logoHoverColor: "#eb4034",
 
     // navColor options
-    navColor1: "rgba(35, 35, 35,.075)",
-    navColor2: "rgba(35, 35, 35,.05)",
-    navColor3: "rgba(35, 35, 35,.025)",
-    navColor4: "rgba(35, 35, 35,.01)",
+    navColor1: "rgba(255, 255, 255,.75)",
+    navColor2: "rgba(255, 255, 255,.75)",
+    navColor3: "rgba(255, 255, 255,.75)",
+    navColor4: "rgba(255, 255, 255,.75)",
 
     // navContent postining options
     nav1justifyContent: "flex-end",

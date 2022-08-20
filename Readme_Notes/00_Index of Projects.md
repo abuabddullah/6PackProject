@@ -123,3 +123,59 @@ at 10:36:03 *history+redirect* is used and at 10:36:53 on login page navigate li
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 10_Document Title
+
+### KeyWord : [timestart - timeEnd]
+>
+>> _details details details details details details details details_
+>
+>> _details details details details details details details details_
+
+
+1. steps steps steps steps steps steps steps steps steps steps steps steps steps steps steps 
+####
+
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/path/path.js]
+""""""""""""""""""""""""""""""""""""""""""""""""""
+npm i express mongoose dotenv cors
+```
+####
+
+2. imgCaption imgCaption imgCaption imgCaption imgCaption imgCaption imgCaption imgCaption 
+####
+
+####
+![postman success screenshot](https://i.ibb.co/B3cPbkD/Screenshot-1.png)
+####

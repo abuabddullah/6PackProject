@@ -1,7 +1,13 @@
 .footer {
   background-color: #000000;
   color: #ffffff;
-  padding: 5vmax 3vmax;
+  padding: 5vmax 3vmax 1vmax 3vmax;
+}
+.footer p {
+  text-align: center;
+  font-weight: 700;
+  border-top: 1px solid #575757;
+  padding-top: 1vmax;
 }
 
 .footer-content {
@@ -44,6 +50,7 @@
   color: #eb4034;
   font-size: 3vmax;
   margin: 0;
+  font-family: "Roboto";
 }
 .midFooter p {
   margin: 0;

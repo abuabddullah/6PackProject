@@ -35,7 +35,69 @@ npm start
 ####
 
 
-3. এবার react app টাকে clean করে নিতে হবে অর্থাৎ সব অপ্রয়োজনিয় files/folder delete করে দিতে হবে
+3. এবার যেহেতু coding-practice এর সময় একই সাথে আমরা দুটা terminal on করব **_(fontend:3000 port, backend: 5000 port)_** তাই 6PP_ECOMMERCE/frontend/**_package.json_** file এ সবার শেষে **_proxy_** link add করে দিতে হবে
+
+>
+>> **_proxy_** link এর domain পাব **frontend terminal থেকে** শেষে শুদু **_backend port_** add হবে
+
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/frontend/package.json]
+""""""""""""""""""""""""""""""""""""""""""""""""""
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.8.4",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
+    "overlay-navbar": "^1.2.3",
+    "react": "^18.2.0",
+    "react-alert": "^7.0.3",
+    "react-alert-template-basic": "^1.0.2",
+    "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
+    "react-icons": "^4.4.0",
+    "react-rating-stars-component": "^2.2.0",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+    "web-vitals": "^2.1.4",
+    "webfontloader": "^1.6.28"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://192.168.0.104:5000"
+}
+
+```
 
 
 ### overlay-navbar : [04:46:00 - 4:49:46]

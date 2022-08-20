@@ -4,7 +4,7 @@ import googlePlay from "./../../../images/google-play.png"
 import appleStore from "./../../../images/app-store.png"
 const Footer = () => {
     return (
-        <div class="footer">
+        <div className="footer">
             <div className="container footer-content">
 
                 <div className="leftFooter">
@@ -27,6 +27,7 @@ const Footer = () => {
                     </ul>
                 </div>
             </div>
+            <p>All rights reserved @2022</p>
         </div>
     );
 };
