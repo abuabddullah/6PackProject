@@ -16,7 +16,7 @@ const Search = () => {
     }
     return (
         <>
-            <PageTitle title="Search A Product" />
+            <PageTitle title="Search" />
             <form className="searchBox" onSubmit={searchSubmitHandler}>
                 <input
                     type="text"

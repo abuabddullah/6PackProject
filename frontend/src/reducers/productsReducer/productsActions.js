@@ -8,9 +8,10 @@ import axios from "axios";
 //     return data;
 // })
 
-export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async (keyWord="") => {
+export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async ([keyWord="",currentPage=1,resultPerPage=3]) => {
     try {
-        const { data } = await axios.get(`http://localhost:5000/api/v1/products?keyword=${keyWord}`);
+        const link = `http://localhost:5000/api/v1/products?keyword=${keyWord}&page=${currentPage}&resultPerPage=${resultPerPage}`
+        const { data } = await axios.get(link);
         return data;
     } catch (err) {
         return err.message;

@@ -8,10 +8,12 @@ import { fetchAllProducts } from '../../reducers/productsReducer/productsActions
 import Loader from '../layout/Loader/Loader';
 import { toast } from 'react-toastify';
 import { clearFetchAllProductsErrors } from '../../reducers/productsReducer/productsSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const Home = () => {
+    const navigate = useNavigate();
     const { resultPerPage, productsCount, products, error, isLoading } = useSelector(store => store.products);
     const dispatch = useDispatch();
 
@@ -43,10 +45,19 @@ const Home = () => {
 
                 <div className="displayContainer" id="displayContainer">
                     {products &&
-                        products.map((product) => (
+                        products.slice(0, 4).map((product) => (
                             <ProductCard key={product._id} product={product} />
                         ))}
                 </div>
+
+                <p style={{ textAlign: "center" }}>
+                    <button 
+                    className="submitReview"
+                    onClick={() => navigate('/products')}
+                    >
+                        See more ...
+                    </button>
+                </p>
             </>}
         </>
     );

@@ -312,3 +312,20 @@ export const fetchProductById = createAsyncThunk("productDetails/fetchProductByI
 })
 ```
 ####
+
+
+
+### React Pagination : [6:49:56 - timeEnd]
+>
+>> _react pagination এর মাধমে আমরা **page wise** product কে show করাব_
+
+
+8. **_pagination_** এর জন্য প্রথমে library টাকে install দিতে হবে। সেই জন্য **_frontend_** folder কে terminal দিয়ে খুলে library টাকে install দিতে হবে।
+####
+
+```http
+[[FOLDERNAME : 6PP_ECOMMERCE/backend/path/path.js]
+""""""""""""""""""""""""""""""""""""""""""""""""""
+npm i react-js-pagination
+```
+####

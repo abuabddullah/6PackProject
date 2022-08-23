@@ -92,6 +92,11 @@
   border: 1px solid rgba(0, 0, 0, 0.329);
 }
 
+.resultPerPage {
+  margin-left: 2vmax;
+  border-radius: 5px !important;
+}
+
 @media screen and (max-width: 600px) {
   .filterBox {
     width: 20vmax;
@@ -104,4 +109,42 @@
   .category-link {
     font: 400 1.8vmax "Roboto";
   }
+}
+.pagination {
+  margin: 6vmax;
+  text-align: center;
+}
+.pagination button,
+.pagination select {
+  color: black;
+  padding: 10px;
+  border: 1px solid tomato;
+  margin: 0px;
+  background-color: white;
+}
+.pagination button:hover,
+.pagination select:hover {
+  background-color: rgb(238, 238, 238);
+  color: tomato;
+  cursor: pointer;
+}
+.pagination button:first-child,
+.pagination select:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.pagination button:disabled, .pagination button[disabled],
+.pagination select:disabled,
+.pagination select[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+.pagination select {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.pagination .selected {
+  background: tomato;
+  color: white;
 }/*# sourceMappingURL=Products.css.map */
