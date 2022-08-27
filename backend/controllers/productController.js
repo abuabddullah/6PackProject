@@ -300,7 +300,6 @@ exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "getAllProducts route is working",
-        resultPerPage,
         productsCount,
         products,
     });

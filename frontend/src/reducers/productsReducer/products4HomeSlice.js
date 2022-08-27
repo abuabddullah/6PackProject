@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { fetchAllProducts } from './productsActions';
+import { fetchAllProductsAtHome } from './productsActions';
 
-const productsSlice = createSlice({
+const products4HomeSlice = createSlice({
     name: 'products',
     initialState: {
         productsCount: 0,
@@ -10,21 +10,21 @@ const productsSlice = createSlice({
         isLoading: false,
     },
     reducers: {
-        clearFetchAllProductsErrors: (state, action) => {
+        clearFetchAllProducts4HomeErrors: (state, action) => {
             state.error = null;
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchAllProducts.pending, (state, action) => {
+        builder.addCase(fetchAllProductsAtHome.pending, (state, action) => {
             state.isLoading = true;
         });
-        builder.addCase(fetchAllProducts.fulfilled, (state, action) => {
+        builder.addCase(fetchAllProductsAtHome.fulfilled, (state, action) => {
             state.resultPerPage = action.payload.resultPerPage;
             state.productsCount = action.payload.productsCount;
             state.products = action.payload.products;
             state.isLoading = false;
         });
-        builder.addCase(fetchAllProducts.rejected, (state, action) => {
+        builder.addCase(fetchAllProductsAtHome.rejected, (state, action) => {
             state.error = action.payload;
             state.isLoading = false;
         });
@@ -32,5 +32,5 @@ const productsSlice = createSlice({
 
 });
 
-export const { clearFetchAllProductsErrors} = productsSlice.actions;
-export default productsSlice.reducer;
+export const { clearFetchAllProducts4HomeErrors} = products4HomeSlice.actions;
+export default products4HomeSlice.reducer;

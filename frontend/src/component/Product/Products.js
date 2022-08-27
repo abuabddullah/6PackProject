@@ -80,7 +80,7 @@ const Products = () => {
             toast.error(error, { id: 'fetchAllProducts_error' });
             dispatch(clearFetchAllProductsErrors());
         }
-        dispatch(fetchAllProducts([keyWord, currentPage, resultPerPage]));
+        dispatch(fetchAllProducts({keyWord, currentPage, resultPerPage}));
 
 
         setNoOfPages(Math.ceil(productsCount / resultPerPage));
