@@ -7,6 +7,7 @@ import "./ProductCard.css"
 
 
 const ProductCard = ({ product }) => {
+    console.log(product);
     const options = {
         count: 5,
         value: product.ratings,
@@ -17,7 +18,7 @@ const ProductCard = ({ product }) => {
     }
     return (
         <Link className="productCard" to={`/product/${product._id}`}>
-            <img src={product.image} alt={product.name} />
+            <img src={product.images[0].url} alt={product.name} />
             <p>{product.name}</p>
             <div>
                 <ReactStars {...options} />{" "}
