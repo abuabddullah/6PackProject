@@ -7,7 +7,7 @@ import "./ProductCard.css"
 
 
 const ProductCard = ({ product }) => {
-    console.log(product);
+    // console.log(product);
     const options = {
         count: 5,
         value: product.ratings,

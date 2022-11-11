@@ -1,13 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { products4HomeAPI } from "../reducers/productsReducer/products4HomeAPI";
 import productsReducer from "./../reducers/productsReducer/productsSlice";
 import productDetailsReducer from "./../reducers/productsReducer/singleProductSlice";
-import products4HomeReducer from "./../reducers/productsReducer/products4HomeSlice";
 const store = configureStore({
     reducer: {
         products: productsReducer,
         productDetails: productDetailsReducer,
-        products4Home: products4HomeReducer,
+        [products4HomeAPI.reducerPath]: products4HomeAPI.reducer, // x
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(products4HomeAPI.middleware), // x
 })
 
 export default store;
