@@ -530,7 +530,181 @@ export default SingleProductDetails;
 
 ####
 
-# Redux RTK Query (MERN Watch Shop)
+# Redux for "cartItems" (MERN Watch Shop)
+
+> cartItem vs fetchItem এর redux এর প্রয়োগটা একটু আলাদা
+>
+> > fetchItem এ আমরা কোন data কে backend থেকে API এর সাহায্যে forntend এ নিয়ে আসি এবং তারপর বিভিন্ন components এ প্রয়োজন মত ব্যাবহার করি
+>
+> > অন্যদিকে cartItem এ আমরা fetchItem থেকে আনা data মধ্যে থেকে নির্দিষ্ট কিছ্য data কে নিয়ে internal কোন state এ রাখি তারপর সেখান থেকে প্রয়োজন মত বিভিন্ন components এ ব্যাবহার করি
+
+1. frontend\src\*\*_features_** folder এ frontend\src\features\ **_cartSlice.js_\*\* নামের একটা file বানাব যেখানে **createSlice** কে import করে তার সাহায্যে **cartSlice** বানাইয়ে তাকে সবার শেষে default export করে দিতে হবে
+2. এরপর **createSlice** ভিতরে যথাযথ **name,initalState,reducers,extraReducers** দিতে হবে যার সাহয্যে cart এর কোণ কিছু **addTocart / removeFromCart / emptizeCart** etc action fucntion বানিয়ে নিচে export করে দিতে হবে
+   > > initalState এ তিনটা জিনিস নিব
+   > >
+   > > > একটা **cartItems** array যেখানে click করে করে cart এর জন্য item যোগ হবে
+   > >
+   > > > **cartTotalAmmount** যে ammount টাই মূল payment
+   > >
+   > > > আর **cartTotalQuantity**
+   >
+   > > আবার reducers এর ভিতরেই যত carting করার fucntion দরকার তা সব declare করব
+
+```http
+filePath: frontend\src\features\cartSlice.js
+"""""""""""""""""""""""""""""""""""""""
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  cartItems: [],
+  cartTotalQuantity: 0,
+  cartTotalAmmount: 0,
+};
+
+// here "state" reffering to the current state-of-initialState and "action.payload" is the clicked item from the UI
+/** steps for "addToCart" action-function
+ * 1. find the clicked item in the cartItems array(if it exists)
+ * 2. if it exists, then increase the quantity of that item
+ * 3. if it doesn't exist, then diplicate the item and increase cartQuantity by 1 and add the item to the cartItems array
+ *   */
+
+const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: {
+    addToCart: (state, action) => {
+      const itemIndex = state.cartItems.findIndex((item) => item.id === action.payload.id);
+      if (itemIndex >= 0) {
+        state.cartItems[itemIndex].cartQuantity += 1;
+      } else {
+        const temptItem = { ...action.payload, cartQuantity: 1 };
+        state.cartItems.push(temptItem);
+      }
+
+        // state.cartTotalQuantity += 1;
+        // state.cartTotalAmmount += action.payload.price;
+    },
+  },
+  extraReducers: {},
+});
+
+export const { addToCart } = cartSlice.actions;
+
+export default cartSlice.reducer;
+
+
+```
+
+3. এবার frontend\src\ **index.js** file এ **_cartReducer_** কে import করে **store** এর সাথে linked করে দিব
+
+```http
+filePath: frontend\src\index.js
+"""""""""""""""""""""""""""""""""""""""
+
+import { configureStore } from "@reduxjs/toolkit";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import { productsAPI } from "./features/productsAPI";
+import productsReducer, { fetchProducts } from "./features/productsSlice";
+import cartReducer from "./features/cartSlice";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+
+const store = configureStore({
+  reducer: {
+    products: productsReducer,
+    cart: cartReducer,
+    [productsAPI.reducerPath]: productsAPI.reducer, // x
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productsAPI.middleware), // x
+});
+
+store.dispatch(fetchProducts());
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+```
+
+4. frontend\src\Components\Home\*\*Home.js** file এর যেই button এর সাথে **carting functionality** engage করতে চাই সেখানে **onClick** এ **handleAddToCart(arg)** function add করব তারপর এর ভিতরে **_disPatch_** এর সাহায্যে **_addToCart(arg)_\*\* action-function কে call করব
+   > > অবশ্যই অবশ্যই **_addToCart(arg)_** action-function কে **_disPatch_** করার পূর্বে **useDisPatch & addToCart** কে নিজ নিজ file থেকে import করে নিতে হবে
+
+```http
+filePath: frontend\src\Components\Home\Home.js
+""""""""""""""""""""""""""""""""""""""""""""""
+
+
+import React from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../features/cartSlice";
+import { useGetAllProductsQuery } from "./../../features/productsAPI";
+
+const Home = () => {
+  const { data, error, isLoading } = useGetAllProductsQuery();
+  const dispatch = useDispatch();
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+  };
+
+  return (
+    <div className="home-container">
+      {isLoading ? (
+        <p>Loading . . .</p>
+      ) : error ? (
+        <p>An Error Occured</p>
+      ) : (
+        <>
+          <h2>All Collections are available</h2>
+          <hr />
+          <div className="products">
+            {data &&
+              data.map((product) => (
+                <div key={product.id} className="product">
+                  <h3>{product.name}</h3>
+                  <img src={product.image} alt={product.name} />
+                  <div className="details">
+                    <span>Price</span>
+                    <span className="price">{product.price}</span>
+                  </div>
+                  <button onClick={() => handleAddToCart(product)}>
+                    Add to Cart
+                  </button>
+                </div>
+              ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Home;
+
+
+
+```
+
+####
+
+# Redux RTK Query for "fetchItem" (MERN Watch Shop)
 
 > > Redux **RTK Query** মূলত redux tool kit এরই একটা advanced feature so এটা use করতে হলে পূর্বে বর্ণনা অনুযায়ী **redux tool kit** implemented থাকতে হবে
 >
