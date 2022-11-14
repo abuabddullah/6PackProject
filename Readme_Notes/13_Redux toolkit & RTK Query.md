@@ -554,36 +554,68 @@ export default SingleProductDetails;
 filePath: frontend\src\features\cartSlice.js
 """""""""""""""""""""""""""""""""""""""
 
+/** here "state = initialState" reffering to the current-state of initialState and "action.payload = product" which is the clicked item from the UI
+ * for cartItems: if localstorage has cartItems then parse it to JSON and assign it to cartItems, else assign empty array to cartItems
+ * for cartTotalQuantity: if localstorage has cartItems then parse it to JSON and assign it to cartItems, else assign 0 to cartTotalQuantity
+ * for cartTotalAmmount: if localstorage has cartItems then parse it to JSON and assign it to cartItems, else assign 0 to cartTotalAmmount
+ *   */
+
+/** steps for "addToCart" action-function
+ * 1. find the clicked item in the cartItems array(if it exists)
+ * 2. if it exists, then increase the quantity of that item
+ * 3. if it doesn't exist, then duplicate the item and increase cartQuantity by 1 and add the item to the cartItems array
+ * 4. then we need to add the cartItems in the localStorage
+ *   */
+
+
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const initialState = {
-  cartItems: [],
+  cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [],
   cartTotalQuantity: 0,
   cartTotalAmmount: 0,
 };
 
-// here "state" reffering to the current state-of-initialState and "action.payload" is the clicked item from the UI
-/** steps for "addToCart" action-function
- * 1. find the clicked item in the cartItems array(if it exists)
- * 2. if it exists, then increase the quantity of that item
- * 3. if it doesn't exist, then diplicate the item and increase cartQuantity by 1 and add the item to the cartItems array
- *   */
+
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      const itemIndex = state.cartItems.findIndex((item) => item.id === action.payload.id);
+      const itemIndex = state.cartItems.findIndex(
+        (item) => item.id === action.payload.id
+      );
       if (itemIndex >= 0) {
         state.cartItems[itemIndex].cartQuantity += 1;
+        toast.info(
+          `"${state.cartItems[itemIndex].name}" cart Quantity : ${state.cartItems[itemIndex].cartQuantity}`,
+          {
+            position: "bottom-left",
+            /* autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined, */
+          }
+        );
       } else {
         const temptItem = { ...action.payload, cartQuantity: 1 };
         state.cartItems.push(temptItem);
+        toast.success(`${action.payload.name} added to cart`, {
+          position: "bottom-left",
+          /* autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined, */
+        });
       }
 
-        // state.cartTotalQuantity += 1;
-        // state.cartTotalAmmount += action.payload.price;
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
   },
   extraReducers: {},
@@ -592,6 +624,7 @@ const cartSlice = createSlice({
 export const { addToCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
 
 
 ```

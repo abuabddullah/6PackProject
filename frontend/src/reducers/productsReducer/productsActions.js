@@ -9,9 +9,9 @@ import axios from "axios";
 // })
 
 
-export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async ({keyWord="",currentPage=1,resultPerPage=3}) => {
+export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async ({keyWord="",page=1,limit=3}) => {
     try {
-        const link = `http://localhost:5000/api/v1/products?keyword=${keyWord}&page=${currentPage}&resultPerPage=${resultPerPage}`
+        const link = `http://localhost:5000/api/v1/products?keyword=${keyWord}&page=${page}&limit=${limit}`
         const { data } = await axios.get(link);
         return data;
     } catch (err) {

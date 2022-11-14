@@ -287,14 +287,13 @@ exports.deleteProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
 // Get All Product
 exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
-    console.log(req.query);
-    const resultPerPage = req.query.resultPerPage;
+    const limit = req.query.limit;
     const productsCount = await productModel.countDocuments();
 
     const apiFeature = new ApiFeatures(productModel.find(), req.query)
         .search()
         .filter()
-        .pagination(resultPerPage);
+        .pagination(limit);
     let products = await apiFeature.query;
 
     res.status(200).json({
