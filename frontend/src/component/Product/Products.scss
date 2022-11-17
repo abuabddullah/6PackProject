@@ -92,7 +92,7 @@
   }
 }
 
-.filterBox>fieldset {
+.filterBox > fieldset {
   border: 1px solid rgba(0, 0, 0, 0.329);
 }
 
@@ -124,8 +124,8 @@
   button,
   select {
     color: black;
-    padding: 10px;
-    border: 1px solid tomato;
+    padding: 10px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
     margin: 0px;
     // border-radius: 5px;
     background-color: white;

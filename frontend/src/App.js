@@ -1,16 +1,16 @@
-import './App.css';
-import Header from "./component/layout/Header/Header.js"
-import Footer from "./component/layout/Footer/Footer.js"
-import NotFound from "./component/layout/NotFound/NotFound.js"
-import Home from "./component/Home/Home.js"
-import { Route, Routes, useRoutes } from 'react-router-dom';
-import WebFont from "webfontloader";
 import { useEffect } from 'react';
-import SingleProductDetails from './component/Product/SingleProductDetails';
+import { Route, Routes } from 'react-router-dom';
+import WebFont from "webfontloader";
+import './App.css';
+import Home from "./component/Home/Home.js";
+import Footer from "./component/layout/Footer/Footer.js";
+import Header from "./component/layout/Header/Header.js";
+import NotFound from "./component/layout/NotFound/NotFound.js";
 import Products from './component/Product/Products.js';
 import Search from './component/Product/Search.js';
+import SingleProductDetails from './component/Product/SingleProductDetails';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -60,3 +60,21 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+/* 
+const parentObj = {
+    name: "parent",
+    child: {
+        name: "immidateChild",
+        age: 30,
+        child: {
+            name: "grandChild",
+            age: 10,
+        }},
+      };
+
+      const { name, child: { name: childName, age: childAge, child: { name: grandChildName, age: grandChildAge } } } = parentObj; */

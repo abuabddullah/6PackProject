@@ -1,12 +1,11 @@
 ## 14_MUI-Carousel,Paginition,Search,Filtering
 
->
->> using MUI to design component Paginition,Search,Filtering
+> > using MUI to design component Paginition,Search,Filtering
 
 ### installing React Material UI Carousel : [6:05:02 - timeEnd]
 
-
 1. **React Material UI Carousel** কে use করার জন্য নিম্নোক্ত package গুলা **fronend** folder এর terminal এ installed থাকতে হবে
+
 ####
 
 ```http
@@ -18,13 +17,13 @@ npm install @mui/material
 npm install @mui/icons-material
 npm install @mui/styles
 ```
+
 ####
-
-
 
 ### using React Material UI Carousel in SingleProductDetails Component
 
 2. **Carousel** কে **React Material UI Carousel** থেকে import করে নিচের মত করে use করতে হবে
+
 ####
 
 ```http
@@ -32,8 +31,8 @@ npm install @mui/styles
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  import React, { useEffect } from 'react';
 import Carousel from 'react-material-ui-carousel'
- 
- 
+
+
  const SingleProductDetails = () => {
  return (
         <>
@@ -56,16 +55,17 @@ import Carousel from 'react-material-ui-carousel'
 
 export default SingleProductDetails;
 ```
+
 ####
 
 ### implementing MUI- Search in Search component : [6:42:12 - timeEnd]
 
 3. প্রথমে প্রয়োজনিয় data আর design দিয়ে component কে সাজাতে হবে
 
->
->> এখানে **_Search.js_** component এ আপাতত কেবল একটা form নেয়া হয়েছে যেখানে **Search-button** click করলে input এর লিখাটা **console** এ দেখাবে
+> > এখানে **_Search.js_** component এ আপাতত কেবল একটা form নেয়া হয়েছে যেখানে **Search-button** click করলে input এর লিখাটা **console** এ দেখাবে
 
 ####
+
 ```http
 [[FOLDERNAME : 6PP_ECOMMERCE\frontend\src\component\Product\Search.js]
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -96,14 +96,14 @@ const Search = () => {
 
 export default Search;
 ```
+
 ####
 
 4. এবার **_useNavigate()_** hook এর সাহায্যে **keyWord** এর উপর basis করে **location** কে navigate করব
 
+> > এখানে **_navigate_** কিন্তু **keyWord.trim()** এর উপর করা হয়েছে কারন এই **_.trime()_** method টা কোন **string** এর আগে ও পরের সব **whitespace** থাকে তা out করে দিয়ে exact keyword টা পেতে সাহায্যে করে
 >
->> এখানে **_navigate_** কিন্তু **keyWord.trim()** এর উপর করা হয়েছে কারন এই **_.trime()_** method টা কোন **string** এর আগে ও পরের সব **whitespace** থাকে তা out করে দিয়ে exact keyword টা পেতে সাহায্যে করে
->
->> **_useHistory() & history.push()_** is replaced by **_useNavigate() & navigate()_**
+> > **_useHistory() & history.push()_** is replaced by **_useNavigate() & navigate()_**
 
 ####
 
@@ -143,9 +143,11 @@ const Search = () => {
 
 export default Search;
 ```
+
 ####
 
 5. এবার **_App.js_** file এ এই **navigation** এর against এ **route** বানাতে হবে যেন সেটা **Products** component এ যায়
+
 ####
 
 ```http
@@ -167,7 +169,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  //loading font from webfontloader  
+  //loading font from webfontloader
   useEffect(() => {
     WebFont.load({
       google: {
@@ -181,14 +183,14 @@ function App() {
       <Header />
 
       <Routes>
-        <Route path="/" element={<Home />} />        
+        <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
 
-        
+
         <Route path="/products" element={<Products />} />
         <Route path="/products/:keyWord" element={<Products />} />
 
-        
+
         <Route path="/product/:_id" element={<SingleProductDetails />} />
 
         <Route path="*" element={<NotFound />} />
@@ -215,9 +217,11 @@ function App() {
 export default App;
 
 ```
+
 ####
 
 6. তারপর **Products** component এ **_useParams_** hook use করে searching **_keyWord_** কে বের করে নিয়ে আসব আর **_fetchAllProducts()_** action কে dispatch করার সময় এই **_keyWord_** কে **argument** হিসেবে pass করে দিব
+
 ####
 
 ```http
@@ -265,15 +269,14 @@ const Products = () => {
 
 export default Products;
 ```
+
 ####
 
+7. তারপর **productsActions** file এর **_fetchAllProducts_** action-function এ **_keyWord_** parameter কে recive করাব আর এই **_keyWord_** এর সাপেক্ষেই **fetching** করাব
 
-7. তারপর **productsActions** file এর **_fetchAllProducts_** action-function এ **_keyWord_** parameter কে recive করাব আর এই **_keyWord_** এর সাপেক্ষেই **fetching**  করাব
-
+> > আগে যখন সরাসরি all product fetching হচ্ছিল তখন কোন parameter দেয়া লাগে নাই কিন্তু এখন যেহেতু **search** feature implement করেছি তাই **_keyWord_** এর সাপেক্ষেই **fetching** করাতে হবে
 >
->> আগে যখন সরাসরি all product fetching হচ্ছিল তখন কোন parameter দেয়া লাগে নাই কিন্তু এখন যেহেতু **search** feature implement করেছি তাই **_keyWord_** এর সাপেক্ষেই **fetching** করাতে হবে
->
->> **_keyWord_** parameter এর initial value **খালি string** দেয়া হয়েছে যাতে কোন keyWord না থাকলে automatically সব products চলে আসে কোন **error** না খায়
+> > **_keyWord_** parameter এর initial value **খালি string** দেয়া হয়েছে যাতে কোন keyWord না থাকলে automatically সব products চলে আসে কোন **error** না খায়
 
 ####
 
@@ -311,16 +314,15 @@ export const fetchProductById = createAsyncThunk("productDetails/fetchProductByI
     }
 })
 ```
+
 ####
 
-
-
 ### React Pagination : [6:49:56 - timeEnd]
->
->> _react pagination এর মাধমে আমরা **page wise** product কে show করাব_
 
+> > _react pagination এর মাধমে আমরা **page wise** product কে show করাব_
 
 8. **_pagination_** এর জন্য প্রথমে library টাকে install দিতে হবে। সেই জন্য **_frontend_** folder কে terminal দিয়ে খুলে library টাকে install দিতে হবে।
+
 ####
 
 ```http
@@ -328,4 +330,5 @@ export const fetchProductById = createAsyncThunk("productDetails/fetchProductByI
 """"""""""""""""""""""""""""""""""""""""""""""""""
 npm i react-js-pagination
 ```
+
 ####
