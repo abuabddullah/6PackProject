@@ -564,7 +564,33 @@ filePath: frontend\src\features\cartSlice.js
  * 1. find the clicked item in the cartItems array(if it exists)
  * 2. if it exists, then increase the quantity of that item
  * 3. if it doesn't exist, then duplicate the item and increase cartQuantity by 1 and add the item to the cartItems array
- * 4. then we need to add the cartItems in the localStorage
+ * 4. then increase the cartTotalAmmount by the price of the clicked item
+ * 6. then increase the cartTotalQuantity by 1
+ * 5. then we need to add the cartItems in the localStorage
+ *   */
+
+/** steps for "removeFromCart" action-function
+ * 1. segregate the non-clicked items from the cartItems array
+ * 2. set the replace the previous items array with the segregated items in the cartItems array
+ * 3. then decrease the cartTotalAmmount by the price of the clicked item's total pirce
+ * 4. then decrease the cartTotalQuantity by the clicked item's total quantity
+ * 5. then we need to add the cartItems in the localStorage
+ *   */
+
+/** steps for "increaseQuantityById" action-function
+ * 1. find the index of the clicked item in the cartItems array
+ * 2. increase the cartQuantity of the clicked item by 1
+ * 3. then increase the cartTotalQuantity by 1
+ * 4. then increase the cartTotalAmmount by the price of the clicked item
+ * 5. then we need to add the cartItems in the localStorage
+ *   */
+
+/** steps for "decreaseQuantityById" action-function
+ * 1. find the index of the clicked item in the cartItems array
+ * 2. put condition if the cartQuantity of the clicked item is greater than 1 then decrease the cartQuantity of the clicked item by 1
+ * 3. then decrease the cartTotalQuantity by 1
+ * 4. then decrease the cartTotalAmmount by the price of the clicked item
+ * 5. then we need to add the cartItems in the localStorage
  *   */
 
 
@@ -573,8 +599,8 @@ import { toast } from "react-toastify";
 
 const initialState = {
   cartItems: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [],
-  cartTotalQuantity: 0,
-  cartTotalAmmount: 0,
+  cartTotalQuantity: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")).reduce((previousValue, item) => previousValue + Number(item.cartQuantity), 0) : 0,
+  cartTotalAmmount: localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")).reduce((previousValue, item) => previousValue + Number(item.cartQuantity) * Number(item.price), 0) : 0,
 };
 
 
@@ -614,16 +640,52 @@ const cartSlice = createSlice({
           progress: undefined, */
         });
       }
-
+      state.cartTotalQuantity += 1;
+      state.cartTotalAmmount += Number(action.payload.price);
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    },
+    removeFromCart: (state, action) => {
+      const restsItems = state.cartItems.filter( item => item.id !== action.payload.id);
+      state.cartItems = restsItems;
+      state.cartTotalQuantity -= action.payload.cartQuantity;
+      state.cartTotalAmmount -= Number(action.payload.price) * Number(action.payload.cartQuantity);
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    },
+    increaseQuantityById: (state, action) => {
+      const itemIndex = state.cartItems.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.cartItems[itemIndex].cartQuantity += 1;
+      state.cartTotalQuantity += 1;
+      state.cartTotalAmmount += Number(action.payload.price);
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    },
+    decreaseQuantityById: (state, action) => {
+      const itemIndex = state.cartItems.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      if (state.cartItems[itemIndex].cartQuantity > 1) {
+        state.cartItems[itemIndex].cartQuantity -= 1;
+        state.cartTotalQuantity -= 1;
+        state.cartTotalAmmount -= Number(action.payload.price);
+        localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+      }
+    },
+    clearCart: (state) => {
+      state.cartItems = [];
+      state.cartTotalQuantity = 0;
+      state.cartTotalAmmount = 0;
+      localStorage.removeItem("cartItems");
     },
   },
   extraReducers: {},
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart,removeFromCart,increaseQuantityById,decreaseQuantityById,clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+
 
 
 
@@ -730,6 +792,155 @@ const Home = () => {
 };
 
 export default Home;
+
+
+
+```
+
+5. frontend\src\Components\Cart\ **_Cart.js_** file এর যেই button এর সাথে **clearCart functionality** engage করতে চাই সেখানে **onClick** এ **handleClearCart()** function add করব তারপর এর ভিতরে **_disPatch_** এর সাহায্যে \*\*_clearCart()_\*\* action-function কে call করব
+   > > অবশ্যই অবশ্যই **_clearCart()_** action-function কে **_disPatch_** করার পূর্বে **useDisPatch & clearCart** কে নিজ নিজ file থেকে import করে নিতে হবে
+
+```http
+filePath: frontend\src\Components\Cart\Cart.js
+""""""""""""""""""""""""""""""""""""""""""""""
+
+
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import CartItemComponent from "./CartItemComponent";
+import { clearCart } from "../../features/cartSlice";
+
+const Cart = () => {
+  const { cartItems, cartTotalQuantity, cartTotalAmmount } = useSelector(
+    (state) => state.cart
+  );
+  const dispatch = useDispatch();
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
+  return (
+    <div className="cart-container">
+      <h2>Shopping Cart</h2>
+      {!cartItems.length ? (
+        <div className="cart-empty">
+          <img
+            src="https://i.ibb.co/BjBJQJw/boy-mother-shopping-grocery-jpg.jpg"
+            height="200"
+            alt="empty-cart-ho-home"
+          />
+          <h3>Your cart is empty</h3>
+          <p>Looks like you haven't added anything yet</p>
+          <div className="start-shopping">
+            <Link to="/home">
+              <BsArrowLeft />
+              <span>Start Shopping</span>
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div className="titles">
+            <h3 className="product-title">Product</h3>
+            <h3 className="price">Price</h3>
+            <h3 className="quantity">Quantity</h3>
+            <h3 className="total">Total</h3>
+          </div>
+          <div className="cart-items borderTop">
+            {cartItems?.map((cartItem) => (
+              <CartItemComponent key={cartItem.id} cartItem={cartItem} />
+            ))}
+          </div>
+          <div className="cart-summary">
+            <button className="clear-cart" onClick={() => handleClearCart()}>
+              Clear Cart
+            </button>
+            <div className="cart-checkout">
+              <div className="subtotal">
+                <span>Subtotal</span>
+                <span className="ammount">${cartTotalAmmount}</span>
+              </div>
+              <p>Taxes and Shipping Calculate at Checkout</p>
+              <button>Checkout</button>
+              <div className="continue-shopping">
+                <Link to="/home">
+                  <BsArrowLeft />
+                  <span>Continue Shopping</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Cart;
+
+
+
+
+```
+
+6. frontend\src\Components\Cart\ **_CartItemComponent.js_** file এর যেই button এর সাথে **decreaseQuantityById, increaseQuantityById, removeFromCart functionality** engage করতে চাই সেখানে **onClick** এ **handleRemoveFromCart(cartItem),handleIncreaseQtyById(cartItem),handleDecreaseQtyById(cartItem)** function add করব তারপর এর ভিতরে **_disPatch_** এর সাহায্যে \*\*_decreaseQuantityById(cartItem),increaseQuantityById(cartItem),removeFromCart(cartItem)_\*\* action-function কে call করব
+   > > অবশ্যই অবশ্যই **_decreaseQuantityById(cartItem),increaseQuantityById(cartItem),removeFromCart(cartItem)_** action-function কে **_disPatch_** করার পূর্বে **useDisPatch & decreaseQuantityById,increaseQuantityById,removeFromCart** কে নিজ নিজ file থেকে import করে নিতে হবে
+
+```http
+filePath: frontend\src\Components\Cart\CartItemComponent.js
+""""""""""""""""""""""""""""""""""""""""""""""
+
+
+import React from "react";
+import { useDispatch } from "react-redux";
+import { decreaseQuantityById, increaseQuantityById, removeFromCart } from "../../features/cartSlice";
+
+const CartItemComponent = ({ cartItem }) => {
+  const dispatch = useDispatch();
+  const handleRemoveFromCart = (cartItem) => {
+    dispatch(removeFromCart(cartItem));
+  };
+  const handleIncreaseQtyById = (cartItem) => {
+    dispatch(increaseQuantityById(cartItem));
+  };
+  const handleDecreaseQtyById = (cartItem) => {
+    dispatch(decreaseQuantityById(cartItem));
+  };
+  return (
+    <div className="cart-item">
+      <div className="cart-product">
+        <div className="">
+          <img className="" src={cartItem.image} alt={cartItem.name} />
+          <div>
+            <h3>{cartItem.name}</h3>
+            <p>{cartItem.desc.slice(0, 40) + "..."}</p>
+            <button onClick={() => handleRemoveFromCart(cartItem)}>
+              Remove
+            </button>
+          </div>
+        </div>
+        <div className="cart-product-price ">${cartItem.price}</div>
+        <div className="cart-product-quantity ">
+          <button
+          onClick={() => handleDecreaseQtyById(cartItem)}
+          >-</button>
+          <div className="count">{cartItem.cartQuantity}</div>
+          <button
+          onClick={() => handleIncreaseQtyById(cartItem)}
+          >+</button>
+        </div>
+        <div className="cart-product-total-price ">
+          ${cartItem.price * cartItem.cartQuantity}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CartItemComponent;
+
+
 
 
 
