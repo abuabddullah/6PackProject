@@ -4,7 +4,7 @@ import googlePlay from "./../../../images/google-play.png"
 import appleStore from "./../../../images/app-store.png"
 const Footer = () => {
     return (
-        <div className="footer">
+        <footer className="footer">
             <div className="container footer-content">
 
                 <div className="leftFooter">
@@ -14,10 +14,11 @@ const Footer = () => {
                         <a href="#" target="_blank"><img src={appleStore} alt="appleStore" /></a>
                     </div>
                 </div>
+
                 <div className="midFooter">
-                    <h1>6 Pack Projects</h1>
-                    <p><strong>road to 6 pack</strong></p>
+                    <h1>road to 6pack</h1>
                 </div>
+                
                 <div className="rightFooter">
                     <h5>Follow Us</h5>
                     <ul>
@@ -28,7 +29,7 @@ const Footer = () => {
                 </div>
             </div>
             <p>All rights reserved @2022</p>
-        </div>
+        </footer>
     );
 };
 

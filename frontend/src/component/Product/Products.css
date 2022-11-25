@@ -12,8 +12,9 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0 5vmax;
+  padding-bottom: 3vmax;
   justify-content: center;
-  min-height: 30vh;
+  min-height: 70vh;
 }
 
 .paginationBox {
@@ -71,6 +72,12 @@
   top: 10vmax;
   left: 4vmax;
 }
+.filterBox > p,
+.filterBox legend {
+  font: 500 1vmax "Roboto";
+  color: rgba(0, 0, 0, 0.678);
+  margin-bottom: 1vmax;
+}
 
 .categoryBox {
   padding: 0%;
@@ -98,11 +105,21 @@
 }
 
 @media screen and (max-width: 600px) {
+  .products {
+    min-height: 0vh;
+  }
   .filterBox {
     width: 20vmax;
     position: static;
     margin: auto;
   }
+
+  .filterBox > p,
+  .filterBox legend {
+    font-size: 1.5vmax;
+    font-weight: 700;
+  }
+
   .page-link {
     font: 300 1.7vmax "Roboto";
   }
@@ -117,10 +134,11 @@
 .pagination button,
 .pagination select {
   color: black;
-  padding: 10px 20px;
   border: 1px solid rgba(0, 0, 0, 0.25);
   margin: 0px;
   background-color: white;
+  /* padding: 5px 10px; */
+  font-size: 2.2vmax;
 }
 .pagination button:hover,
 .pagination select:hover {
@@ -133,7 +151,8 @@
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
-.pagination button:disabled, .pagination button[disabled],
+.pagination button:disabled,
+.pagination button[disabled],
 .pagination select:disabled,
 .pagination select[disabled] {
   border: 1px solid #999999;
@@ -147,4 +166,4 @@
 .pagination .selected {
   background: tomato;
   color: white;
-}/*# sourceMappingURL=Products.css.map */
+} /*# sourceMappingURL=Products.css.map */

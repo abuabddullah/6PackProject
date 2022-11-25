@@ -317,18 +317,61 @@ export const fetchProductById = createAsyncThunk("productDetails/fetchProductByI
 
 ####
 
-### React Pagination : [6:49:56 - timeEnd]
+### React Pagination : [6:49:56 - 06:59:00]
 
-> > _react pagination এর মাধমে আমরা **page wise** product কে show করাব_
+> যদিও ভিডিওতে **_pagination_** এর জন্য custom library use করেছে but আমি manual pagination componnet use করেছি
 
-8. **_pagination_** এর জন্য প্রথমে library টাকে install দিতে হবে। সেই জন্য **_frontend_** folder কে terminal দিয়ে খুলে library টাকে install দিতে হবে।
+8. **_pagination_** এর জন্য প্রথমে একটা **_ProductsPagination_** component বানাব যেটা props হিসেবে **setPage,page,noOfPages,setLimit** এদের recive করে তারপর প্রয়োজন মত design করে নিব নিচের code follow করে
 
 ####
 
 ```http
-[[FOLDERNAME : 6PP_ECOMMERCE/backend/path/path.js]
+[[FOLDERNAME : frontend\src\component\Product\ProductsPagination.js]
 """"""""""""""""""""""""""""""""""""""""""""""""""
-npm i react-js-pagination
+import React from "react";
+
+const ProductsPagination = ({setPage,page,noOfPages,setLimit}) => {
+  return (
+    <div className="pagination">
+      <>
+        <button onClick={() => setPage(0)}>⇤</button>
+        <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+          «
+        </button>
+        {[...Array(noOfPages).keys()].map((pNum, index) => (
+          <button
+            key={index}
+            className={page === pNum ? "selected" : ""}
+            onClick={() => setPage(pNum)}
+          >
+            {pNum + 1}
+          </button>
+        ))}
+        <button
+          disabled={page === noOfPages - 1}
+          onClick={() => setPage(page + 1)}
+          className="btn btn-primary text-white"
+        >
+          »
+        </button>
+        <button onClick={() => setPage(noOfPages - 1)}>⇥</button>
+      </>
+      <select onChange={(e) => setLimit(e.target.value)}>
+        <option value="3" selected>
+          3
+        </option>
+        <option value="6">6</option>
+        <option value="9">9</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+  );
+};
+
+export default ProductsPagination;
+
 ```
 
 ####
+
+5. তারপর frontend\src\component\Product\ **_Products.js_** page এ **ProductsPagination** component কে call করে দিব

@@ -12,7 +12,7 @@ const ProductCard = ({ product }) => {
         count: 5,
         value: product.ratings,
         edit: false,
-        size: window.innerWidth < 768 ? 12 : 20,
+        size: window.innerWidth < 768 ? 9 : 20,
         isHalf: true,
         activeColor: "#eb4034",
     }

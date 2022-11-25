@@ -1,4 +1,5 @@
 import React from "react";
+import "./ProductsPagination.css";
 
 const ProductsPagination = ({setPage,page,noOfPages,setLimit}) => {
   return (

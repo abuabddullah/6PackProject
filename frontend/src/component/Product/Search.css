@@ -10,7 +10,7 @@
   top: 0%;
   left: 0;
 }
-.searchBox > input[type=text] {
+.searchBox > input[type="text"] {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.274);
   background-color: white;
   border: none;
@@ -23,7 +23,7 @@
   box-sizing: border-box;
   height: 8%;
 }
-.searchBox > input[type=submit] {
+.searchBox > input[type="submit"] {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.274);
   height: 8%;
   border-radius: 0%;
@@ -36,19 +36,19 @@
   color: white;
   transition: all 0.5s;
 }
-.searchBox > input[type=submit]:hover {
+.searchBox > input[type="submit"]:hover {
   background-color: rgb(55, 97, 214);
 }
 
 @media screen and (max-width: 600px) {
-  .searchBox > input[type=text] {
-    width: 100%;
+  .searchBox > input[type="text"] {
+    width: 65%;
     font: 300 4vw cursive;
-    height: 10%;
+    height: 6.5%;
   }
-  .searchBox > input[type=submit] {
-    height: 10%;
-    width: 30%;
+  .searchBox > input[type="submit"] {
+    height: 6.5%;
+    width: 19.5%;
     font: 300 4vw "Roboto";
   }
-}/*# sourceMappingURL=Search.css.map */
+} /*# sourceMappingURL=Search.css.map */

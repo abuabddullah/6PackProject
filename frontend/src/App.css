@@ -13,3 +13,24 @@ img {
   max-width: 1280px;
   margin: 0 auto;
 }
+
+/* ==============================
+filePath: frontend\src\component\layout\NotFound\NotFound.js
+============================== */
+
+.not-found {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.not-found h2 {
+  font-size: 100px;
+}
+.not-found p {
+  font-size: 30px;
+}

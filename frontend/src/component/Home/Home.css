@@ -20,7 +20,7 @@
   top: 0%;
   left: 0;
   -webkit-clip-path: polygon(100% 68%, 0 100%, 100% 100%);
-          clip-path: polygon(100% 68%, 0 100%, 100% 100%);
+  clip-path: polygon(100% 68%, 0 100%, 100% 100%);
   max-width: 100%;
 }
 .banner h1 {
@@ -76,4 +76,4 @@
   margin: 2vmax;
   transition: all 0.5s;
   padding-bottom: 0.5vmax;
-}/*# sourceMappingURL=Home.css.map */
+} /*# sourceMappingURL=Home.css.map */
