@@ -137,8 +137,7 @@
   border: 1px solid rgba(0, 0, 0, 0.25);
   margin: 0px;
   background-color: white;
-  /* padding: 5px 10px; */
-  font-size: 2.2vmax;
+  padding: 5px 10px;
 }
 .pagination button:hover,
 .pagination select:hover {
@@ -166,4 +165,13 @@
 .pagination .selected {
   background: tomato;
   color: white;
-} /*# sourceMappingURL=Products.css.map */
+}
+
+@media (max-width: 600px) {
+  .pagination button,
+  .pagination select {
+    font-size: 2.2vmax;
+    padding: 2.5px 5px;
+  }
+}
+/*# sourceMappingURL=Products.css.map */
