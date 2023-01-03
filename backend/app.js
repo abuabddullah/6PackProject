@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require('cors')
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
 
 
 const app = express();
@@ -9,6 +11,10 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 app.use(cookieParser());
+
+// for integrating cloudinary
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 
 

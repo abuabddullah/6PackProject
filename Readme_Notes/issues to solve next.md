@@ -1,0 +1,5 @@
+- profile picture এর mb limit altert করে দিতে হবে registration এর সময়
+- **base 64** error দিচ্ছে যদি picture size লিমিট cross করে
+- default ভাবে **public/Profile.png** pic টা নিচ্ছে না registration এর সময়
+- can't split error দিচ্ছে কারন এখানে আমরা cookies থেক token header এর ভিতরে করে backend এ পাঠাচ্ছি যেটা হবার কথা ছিল হচ্ছে backend থেকেই req.cookie থেকে token নিয়ে কাজ করেবে এই change টা হয়েছে **auth.js** file এ. যার ফলে এখন **_postman_** এর যেকোন testing ই fail করছে কারন সেখানে **backend থেকেই req.cookie থেকে token নিয়ে কাজ করেবে এই ভাবে set করা**
+- **updateProfile** component এ edit profile এ গিয়ে যদি profile edit করি ও **_navigate("/account)_** তাহলে দেখা যায় যে আগের userProfileInfo ই থেকে যাচ্ছে আর **account.js** page এ navigate হয়ে আসার পর **edit profile** button এ চাপলে error দিচ্ছে; এটা থেকে বাচার জন্য যদি **_dispatch(getMyProfile())_** করি তাহলে site crash করছে

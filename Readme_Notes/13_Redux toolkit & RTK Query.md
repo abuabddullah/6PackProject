@@ -1073,3 +1073,369 @@ export default Home;
 ```
 
 4. এবার frontend এবং backend এর both terminal run আছে কিনা ensure করে নিব তাহলেই browser এর **_Redux Dev Tool_** extension এ আমরা আমাদের কাংক্ষিত data পেয়ে যাব
+
+###
+
+# Redux Tool Kit for POST API request [for login-register]
+
+> > create actions for posting by the help of **createAsyncThunk,thunkAPI i.e {rejectWithValue}**
+>
+> > create slice file but in **extrareducers** put different different builder function for seperate **acitions-function**
+>
+> > dispatch actions-functions
+
+## Actions file for POST API request [for login-register]
+
+> > for **loginUser**,
+> >
+> > > **_userInfo_** parameter will be recieved while dispatching **_loginUser_** action-function in frontend\src\component\user\ **_LoginSignUp.js_** file
+> >
+> > > and _*{ rejectWithValue }*_ is destructured from the parameter named **_thunkAPI_**
+> > >
+> > > > i.e **_const { rejectWithValue } = thunkAPI_**
+> >
+> > for **registerNewUser**,
+> >
+> > > **"Content-Type": "multipart/form-data"** cause during registration we are going to use **cloudniary and multiple image file could be upload**
+> > >
+> > > > basically, যদি আমরা frontend থেকে কোন image,video ইত্যাদি file backend এ পাঠিয়ে থাকি তাহলে **_"Content-Type": "multipart/form-data"_** হবেনইলে **_"Content-Type": "application/json"_**
+
+```http
+filepath: frontend\src\reducers\productsReducer\userActions.js
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const loginUser = createAsyncThunk(
+    "user/loginUser",
+    async (userInfo, { rejectWithValue }) => {
+        try {
+            const config = { headers: { "Content-Type": "application/json" } };
+            const { data } = await axios.post(
+                "http://localhost:5000/api/v1/login",
+                userInfo,
+                config,
+            );
+            return data.user;
+        } catch (err) {
+            return rejectWithValue(err.response.data.message);
+        }
+    }
+
+)
+
+export const registerNewUser = createAsyncThunk(
+    "user/registerNewUser",
+    async (userData, { rejectWithValue }) => {
+        try {
+            const config = { headers: { "Content-Type": "multipart/form-data" } };
+            const { data } = await axios.post(
+                "http://localhost:5000/api/v1/register",
+                userData,
+                config,
+            );
+            return data.user;
+        } catch (err) {
+            return rejectWithValue(err.response.data.message);
+        }
+    }
+
+)
+
+
+
+```
+
+## userSlice file for POST API request [for login-register]
+
+```http
+filepath: frontend\src\reducers\productsReducer\userSlice.js
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+import { createSlice } from "@reduxjs/toolkit";
+import { loginUser, registerNewUser } from "./userActions";
+
+const initialState = {
+  userInfo: {},
+  error: null,
+  loading: false,
+  isAuthenticated: false,
+};
+
+const userSlice = createSlice({
+  name: "userInfo",
+  initialState,
+  reducers: {
+    clearUserErrors: (state, action) => {
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    /* * for login purpose * */
+    // Do something while pending if you want.
+    builder.addCase(loginUser.pending, (state, action) => {
+        state.loading = true;
+        state.isAuthenticated = false;
+    });
+    // Do something when passes.
+    builder.addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.userInfo = action.payload;
+    });
+    // Do something if fails.
+    builder.addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.userInfo = null;
+        state.error = action.payload;
+    });
+
+
+    /* * for registerUser purpose * */
+    // Do something while pending if you want.
+    builder.addCase(registerNewUser.pending, (state, action) => {
+        state.loading = true;
+        state.isAuthenticated = false;
+    });
+    // Do something when passes.
+    builder.addCase(registerNewUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.userInfo = action.payload;
+    });
+    // Do something if fails.
+    builder.addCase(registerNewUser.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.userInfo = null;
+        state.error = action.payload;
+    });
+  },
+});
+
+export const { clearUserErrors } = userSlice.actions;
+export default userSlice.reducer;
+
+```
+
+## dispatch the registerNewUser+loginUser action-functions for POST API request [for login-register]
+
+> > এখানে ফর্ম এ **_encType="multipart/form-data"_** দেয়া হয়েছে কারন এই form এর সাহায্যে আমরা image upload করব
+
+```http
+filepath: frontend\src\component\user\LoginSignUp.js
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+import FaceIcon from "@mui/icons-material/Face";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { loginUser, registerNewUser } from "../../reducers/productsReducer/userActions";
+import { clearUserErrors } from "../../reducers/productsReducer/userSlice";
+import Loader from "../layout/Loader/Loader";
+
+const LoginSignUp = () => {
+const navigate = useNavigate()
+
+  // for reducer related to login and register
+  const dispatch = useDispatch();
+  const { userInfo, error, loading, isAuthenticated } = useSelector(
+    (state) => state.userDetails
+  );
+
+  // for login form
+  const loginTab = useRef(null);
+  const registerTab = useRef(null);
+  const switcherTab = useRef(null);
+
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  // for register form
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const { name, email, password } = user;
+  const [avatar, setAvatar] = useState("/Profile.png");
+  const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
+
+  // api post handler
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { id: "loginUser_error" });
+      dispatch(clearUserErrors());
+    }
+    if(isAuthenticated){
+      navigate("/account")
+    }
+  }, [dispatch,error,navigate,isAuthenticated]);
+
+  // for login form
+  const switchTabs = (e, tab) => {
+    if (tab === "login") {
+      switcherTab.current.classList.add("shiftToNeutral");
+      switcherTab.current.classList.remove("shiftToRight");
+
+      registerTab.current.classList.remove("shiftToNeutralForm");
+      loginTab.current.classList.remove("shiftToLeft");
+    }
+    if (tab === "register") {
+      switcherTab.current.classList.add("shiftToRight");
+      switcherTab.current.classList.remove("shiftToNeutral");
+
+      registerTab.current.classList.add("shiftToNeutralForm");
+      loginTab.current.classList.add("shiftToLeft");
+    }
+  };
+
+  const loginSubmit = (e) => {
+    e.preventDefault();
+    console.log(loginEmail, loginPassword);
+    dispatch(loginUser({ email: loginEmail, password: loginPassword }));
+  };
+
+  // for register form
+  const registerSubmit = (e) => {
+    e.preventDefault();
+    const registerForm = new FormData();
+
+    registerForm.set("name", name);
+    registerForm.set("email", email);
+    registerForm.set("password", password);
+    registerForm.set("avatar", avatar);
+    dispatch(registerNewUser(registerForm));
+  };
+
+  /** for uploading image preview
+   * step 1: create a reader
+   * step 2: create a function to read the file during "onload"
+   * step 3: if file-loading done set the reader to read the file (like for preview)
+   *      onload has 3 readyState:= 0: not started / initial, 1: loading, 2: done
+   * step 4: set the reader to read the file as a data url
+   */
+  const registerDataChange = (e) => {
+    if (e.target.name === "avatar") {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setAvatarPreview(reader.result);
+          setAvatar(reader.result);
+        }
+      };
+
+      reader.readAsDataURL(e.target.files[0]);
+    } else {
+      setUser({ ...user, [e.target.name]: e.target.value });
+    }
+  };
+
+  return (
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <div className="LoginSignUpContainer">
+            <div className="LoginSignUpBox">
+              <div>
+                <div className="login_signUp_toggle">
+                  <p onClick={(e) => switchTabs(e, "login")}>LOGIN</p>
+                  <p onClick={(e) => switchTabs(e, "register")}>REGISTER</p>
+                </div>
+                <button ref={switcherTab}></button>
+              </div>
+              <form className="loginForm" ref={loginTab} onSubmit={loginSubmit}>
+                <div className="loginEmail">
+                  <MailOutlineIcon />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    required
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                  />
+                </div>
+                <div className="loginPassword">
+                  <LockOpenIcon />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    required
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                  />
+                </div>
+                <Link to="/password/forgot">Forget Password ?</Link>
+                <input type="submit" value="Login" className="loginBtn" />
+              </form>
+              <form
+                className="signUpForm"
+                ref={registerTab}
+                encType="multipart/form-data"
+                onSubmit={registerSubmit}
+              >
+                <div className="signUpName">
+                  <FaceIcon />
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    required
+                    name="name"
+                    value={name}
+                    onChange={registerDataChange}
+                  />
+                </div>
+                <div className="signUpEmail">
+                  <MailOutlineIcon />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    required
+                    name="email"
+                    value={email}
+                    onChange={registerDataChange}
+                  />
+                </div>
+                <div className="signUpPassword">
+                  <LockOpenIcon />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    required
+                    name="password"
+                    value={password}
+                    onChange={registerDataChange}
+                  />
+                </div>
+
+                <div id="registerImage">
+                  <img src={avatarPreview} alt="Avatar Preview" />
+                  <input
+                    type="file"
+                    name="avatar"
+                    accept="image/*"
+                    onChange={registerDataChange}
+                  />
+                </div>
+                <input type="submit" value="Register" className="signUpBtn" />
+              </form>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+export default LoginSignUp;
+
+
+
+```

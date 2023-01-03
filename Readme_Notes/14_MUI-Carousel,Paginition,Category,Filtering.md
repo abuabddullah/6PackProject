@@ -317,7 +317,7 @@ export const fetchProductById = createAsyncThunk("productDetails/fetchProductByI
 
 ####
 
-### React Pagination : [6:49:56 - 06:59:00]
+### Pagination,Filter (By priceRange+ratings+category) : [6:49:56 - 06:59:00]
 
 > যদিও ভিডিওতে **_pagination_** এর জন্য custom library use করেছে but আমি manual pagination componnet use করেছি
 
@@ -374,4 +374,215 @@ export default ProductsPagination;
 
 ####
 
-5. তারপর frontend\src\component\Product\ **_Products.js_** page এ **ProductsPagination** component কে call করে দিব
+9. **Price-range** এর জন্য **useState([])** এর সাহায্যে initial price declare করবে তারপর MUI এর react slider for range-slider use করব যার সাহায্যে custom price range সেট করা যাবে
+10. একই ভাবে **Ratings** এর জন্য **useState(0)** এর সাহায্যে initial ratings declare করবে তারপর MUI এর react slider for contiouns-slider use করব যার সাহায্যে custom ratings range সেট করা যাবে
+11. **Category** array declare করে তাকে map করে **useState("")** এর সাহায্যে Select-option এর category selection এর ব্যাবস্থা করব
+12. তারপর **dispatch** করার সময় **_keyWord, page, limit_** এর পাশাপাশি **_price,ratings, category_** কেউ দিয়ে দিব তদানুযায়ী data backend থেকে fetching করার জন্য
+
+```http
+filePath: frontend\src\component\Product\Products.js;
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+import { Slider, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { fetchAllProducts } from "../../reducers/productsReducer/productsActions";
+import { clearFetchAllProductsErrors } from "../../reducers/productsReducer/productsSlice";
+import ProductCard from "../Home/ProductCard";
+import Loader from "../layout/Loader/Loader";
+import PageTitle from "../layout/PageTitle/PageTitle";
+import "./Products.css";
+import ProductsPagination from "./ProductsPagination";
+
+const Products = () => {
+  const { keyWord } = useParams();
+  const { productsCount, products, error, isLoading } = useSelector(
+    (store) => store.products
+  );
+  const dispatch = useDispatch();
+
+  // for pagination
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(3);
+  const [noOfPages, setNoOfPages] = useState(0);
+
+  if (page > noOfPages) {
+    setPage(noOfPages - 1);
+  }
+  if (page < 0) {
+    setPage(0);
+  }
+
+  // for price range
+  const [price, setPrice] = useState([0, 250000]);
+  const handlePriceRange = (event, newValue) => {
+    setPrice(newValue);
+  };
+
+  // for rating
+  const [ratings, setRatings] = useState(0);
+
+  // for category
+  const categories = [
+    "All",
+    "Laptops",
+    "Footwear",
+    "Bottoms",
+    "Tops",
+    "Attire",
+    "Camera",
+    "Smartphones",
+    "Watches",
+    "Headphones",
+  ];
+  const [category, setCategory] = useState("");
+
+  // dispatching fetchAllProducts action
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { id: "fetchAllProducts_error" });
+      dispatch(clearFetchAllProductsErrors());
+    }
+    dispatch(fetchAllProducts({ keyWord, page, limit, price,ratings, category }));
+
+    setNoOfPages(Math.ceil(productsCount / limit));
+  }, [
+    dispatch,
+    error,
+    keyWord,
+    page,
+    limit,
+    productsCount,
+    noOfPages,
+    price,
+    ratings,
+    category,
+  ]);
+  return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <PageTitle title="PRODUCTS" />
+          <h2 className="productsHeading">Products</h2>
+
+          <div className="products">
+            {products &&
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+          </div>
+        </>
+      )}
+
+      <div className="filterBox">
+        <Typography>Price</Typography>
+        <Slider
+          size="small"
+          value={price}
+          onChange={handlePriceRange}
+          // valueLabelDisplay="on" // "on" always shows the value on the slider
+          valueLabelDisplay="auto" // "auto" shows the value on the slider when the user is interacting with it
+          aria-labelledby="range-slider"
+          min={0}
+          max={25000}
+        />
+
+        <Typography>Category</Typography>
+        <ul className="categoryBox">
+          {categories.map((category) => (
+            <li
+              className="category-link"
+              key={category}
+              onClick={() => setCategory(category)}
+            >
+              {category}
+            </li>
+          ))}
+        </ul>
+
+        <fieldset>
+          <Typography component="legend">Ratings Above</Typography>
+          <Slider
+            size="small"
+            value={ratings}
+            onChange={(e, newRatings) => setRatings(newRatings)}
+            aria-labelledby="continous-slider"
+            min={0}
+            max={5}
+            valueLabelDisplay="auto"
+          />
+        </fieldset>
+      </div>
+
+      {limit < productsCount && (
+        <ProductsPagination
+          setPage={setPage}
+          page={page}
+          noOfPages={noOfPages}
+          setLimit={setLimit}
+        />
+      )}
+    </>
+  );
+};
+
+export default Products;
+
+
+
+
+```
+
+13. এরপর **_productsActions.js_** file এ **_fetchAllProducts_** functin এও **_keyWord, page, limit_** এর পাশাপাশি **_price,ratings, category_** কে default value declareing এর মাধ্যমে parameter হিসেবে recieve করা হবে আর তদানুযায়ী **_link_** কে modify করা হবে
+    > > এখানে **price** এর range অনুযায়ী **[gte] & [lte]** key use করা হয়েছে
+    >
+    > > আর ratings এর জন্য আমরা যেহেতু একটা minimum ratings কে mention করে বলে দিতে চাই যে এত ratings এর উপরের জিনিস দেখাতে তাই শুধু **[gte]** key use করা হয়েছে
+    >
+    > > অন্যদিকে যদি কেবল **_category_** select করা হয় তখনি কেবল **_link_** এর শেষে **categroy** key কেও use করা হবে
+
+```http
+filePath: frontend\src\reducers\productsReducer\productsActions.js
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+
+
+// export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async () => {
+//     const { data } = await axios.get("http://localhost:5000/api/v1/products");
+//     return data;
+// })
+
+
+export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async ({keyWord="",page=1,limit=3,price=[0,25000],ratings=0,category}) => {
+    try {
+        let link = `http://localhost:5000/api/v1/products?keyword=${keyWord}&page=${page}&limit=${limit}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`
+
+        if(category && category !== "All"){
+            link += `&category=${category}`
+        }
+        const { data } = await axios.get(link);
+        return data;
+    } catch (err) {
+        return err.message;
+    }
+})
+
+
+
+export const fetchProductById = createAsyncThunk("productDetails/fetchProductById", async (id) => {
+    try {
+        const { data } = await axios
+        .get(`http://localhost:5000/api/v1/product/${id}`);
+        return data.product;
+    } catch (err) {
+        return err.message;
+    }
+})
+
+```

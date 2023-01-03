@@ -1,3 +1,142 @@
+# updating userProfile info name,email,pic
+
+## Update profile info:
+
+### frontend
+
+#### **profileSlice.js** slice file:
+
+> > এখানে reset functin টা **extrareducer** এ দেবার উপায় জানা না থাকায় **reducers** এ দিয়া কাজ চালানো হয়েছে
+> >
+> > > সামনে আরো অনেক গুলো function **extrareducer & reducers** এ add হবে like, delete user, reset profile remove user etc.
+
+```http
+filepath: frontend\src\reducers\productsReducer\profileSlice.js
+"""""""""""""""""""""""""""""""""""""""""""
+import { createSlice } from "@reduxjs/toolkit";
+import { updateUserProfile } from "./profileActions";
+
+const initialState = {
+    error: null,
+    loading: false,
+    isUpdatedUser: false,
+    isDeletedUser: false,
+    message: null,
+  };
+
+  const profileSlice = createSlice({
+    name: "userProfile",
+    initialState,
+    reducers: {
+      clearUserProfileErrors: (state, action) => {
+        state.error = null;
+      },
+      updateUserProfileReset: (state, action) => {
+        state.isUpdatedUser = false;
+      },
+    },
+    extraReducers: (builder) => {
+      /* * for login purpose * */
+      // Do something while pending if you want.
+      builder.addCase(updateUserProfile.pending, (state, action) => {
+        state.loading = true;
+        state.isUpdatedUser = false;
+      });
+      // Do something when passes.
+      builder.addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isUpdatedUser = action.payload.success;
+        state.message = action.payload.message;
+      });
+      // Do something if fails.
+      builder.addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.isUpdatedUser = false;
+        state.error = action.payload;
+      });
+    },
+  });
+
+  export const { clearUserProfileErrors,updateUserProfileReset } = profileSlice.actions;
+  export default profileSlice.reducer;
+
+```
+
+#### profileActions.js এ আপাতত updateUserProfile action:
+
+> > put request পাশাপাহি cookie এরর এর জন্য cookie কে frontend থেকে পাঠানো হচ্ছে।
+> >
+> > > সামনে আরো অনেক গুলো function add হবে like, delete user, reset profile remove user etc.
+
+```http
+filepath: frontend\src\reducers\productsReducer\profileActions.js
+"""""""""""""""""""""""""""""""""""""
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const updateUserProfile = createAsyncThunk(
+  "user/updateUserInfo",
+  async (userProfileData, { rejectWithValue }) => {
+    try {
+      // get token from cookie and send via get request
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+      const token = getCookie("token");
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await axios.put(
+        "http://localhost:5000/api/v1/me/update",
+        userProfileData,
+        config
+      );
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+
+```
+
+#### **_UpdateProfile.js_** route:
+
+> > redux store থেকে **_userProfile,userDetails_** কে নিয়ে নিব
+>
+> > usestate এর সাহায্যে **_name,email,avatar,avatarPreview_** variable গুলো নিব এদের initial value "" (empty string) দিব **userProfile** থেকে দিব না কারন যদি **userProfile** chaining করে করে দিলে তহন form এ আর data edit করা যায় না
+> >
+> > > শুধু মাত্র **avatarPreview** এর value দিব **"/Profile.png"** যাতে user কোণ pic select না করলেও এটা default ভাবে set হয়ে যায়
+>
+> > এবার কাংক্ষিত input field এর মাঝে value হিসেবে এই varibale গুলো আর onchange এ setVar গুলো বসিয়ে দিব
+> >
+> > > শুধুমাত্র avatar set করার জন্য কিছু steps আছে যা **updateProfileDataChange** fucntion এ লিখা হয়ছে
+>
+> > এবার **useEffect** এর ভিতরে যদি কিছু conditioning করে setVar-funct,eror-clearing করব আর যদি userProifleUpdate true হয় তাহলে
+> >
+> > > dispatch(getMyProfile());
+> >
+> > > navigate("/account");
+> >
+> > > dispatch(updateUserProfileReset());
+> >
+> > **বিদ্রঃ** updateUserProfileReset না করলে website crash খায়
+
+### backend
+
+#### updateProfile of userController.js
+
+> > avatar related কিছু new code add করা লাগছে যেখানে বলে দিচ্ছি যদি frontend থেকে কোণ avatar আসে তাহলে user id তা আগের যে ছবি ছিলে তার coloudniary id destroy করে নতুন ছবি কে upload করতে হবে
+
+```http
+filepath : backend\controllers\userController.js
+""""""""""""""""""""""""""""""""""""""""""
 const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
 const userModel = require("../models/userModel");
 const sendEmail = require("../utils/sendEmail");
@@ -6,7 +145,7 @@ const sendToken = require("../utils/jwtToken");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
 
-/* 
+/*
 ===================================
 User Authentication related APIs
 ===================================
@@ -32,7 +171,7 @@ exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
     },
   });
 
-  /* const token = user.getJWTToken();    
+  /* const token = user.getJWTToken();
     res.status(201).json({
         success: true,
         message: "user is created",
@@ -65,7 +204,7 @@ exports.loginUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
 
-  /* const token = user.getJWTToken();    
+  /* const token = user.getJWTToken();
   res.status(200).json({
     success: true,
     message: "user is logged in",
@@ -165,7 +304,7 @@ exports.resetPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
-/* 
+/*
 ===================================
 User profile related APIs
 ===================================
@@ -242,7 +381,7 @@ exports.updateProfile = catchAsyncErrorsMiddleware(async (req, res, next) => {
   });
 });
 
-/* 
+/*
 ===================================
 User profile related Admin APIs
 ===================================
@@ -315,7 +454,7 @@ exports.deleteUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
     );
   }
 
-  /* 
+  /*
   //deleting avatar image
   const imageId = user.avatar.public_id;
   await cloudinary.v2.uploader.destroy(imageId);
@@ -327,3 +466,21 @@ exports.deleteUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
     message: "user deleted successfully",
   });
 });
+
+
+```
+
+## Update Password:
+
+- **UpdatePassword.js** file এ থেকে form এর সাহায্যে **oldPassword,newPassword,confirmNewPassword** নিব আর **_dispatch(updateUserPassword(myPasswordForm))_** করব
+- **updateUserPassword** action function এ token সহ backend এ উপরোক্ত information গুলো পাঠাব যদিও token পাঠানোর দরকার ছিল না যদি backend থেকেই এটা **req.cookie** এর মাধ্যমে করা যেত
+- backend থেকে আমরা **data** হিসেবে **_{success: true,token,user,}_** এগুলো পাব যা **_ProfileSlice.js_** file এ গিয়ে requirement অনুযায়ী redux এ handle করব
+  > বিদ্রঃ successfull dispathching শেষে must,
+  >
+  > > dispatch(getMyProfile());
+  >
+  > > navigate("/account");
+  >
+  > > dispatch(updateUserProfileReset());
+  >
+  > বিশেষ ভাবে **updateUserProfileReset** না করলে error & site crash খাবে
