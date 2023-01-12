@@ -3,3 +3,7 @@
 - default ভাবে **public/Profile.png** pic টা নিচ্ছে না registration এর সময়
 - can't split error দিচ্ছে কারন এখানে আমরা cookies থেক token header এর ভিতরে করে backend এ পাঠাচ্ছি যেটা হবার কথা ছিল হচ্ছে backend থেকেই req.cookie থেকে token নিয়ে কাজ করেবে এই change টা হয়েছে **auth.js** file এ. যার ফলে এখন **_postman_** এর যেকোন testing ই fail করছে কারন সেখানে **backend থেকেই req.cookie থেকে token নিয়ে কাজ করেবে এই ভাবে set করা**
 - **updateProfile** component এ edit profile এ গিয়ে যদি profile edit করি ও **_navigate("/account)_** তাহলে দেখা যায় যে আগের userProfileInfo ই থেকে যাচ্ছে আর **account.js** page এ navigate হয়ে আসার পর **edit profile** button এ চাপলে error দিচ্ছে; এটা থেকে বাচার জন্য যদি **_dispatch(getMyProfile())_** করি তাহলে site crash করছে
+- **userPasswordsData** এর সাহায্যে password নতুন করে reset করার পর যদি logout করে refresh দেই তাহলে পুরনরায় user automatically logged in হয়ে যায় যা হবার কথা ছিল না মূলত এখানে দেখা যায় যে, password নতুন করে reset করার পর logout করে দিলেও cookie থেকে token টা মুছে না তাই এই ঝামেলা হয়।
+- backend এ থেকে mailing করার জন্য **forgotPassword** function এ যে লিংক্টা মেইল করা হচ্ছে সেটা change করে দেয়া হয়েছে পরে আবার ঠিক করা হবে
+- product filtering based pagination on **_AllProducts_** page
+- reset & forgot passwor এর জন্য আমাকে আপাতত frontend এর url এনে বসাতে হয়েছে কিন্তু যখন আমি এই প্রজেক্ট কোথাও deploy করব তখন কিন্তু এই লিঙ্ক চেঞ্জ করে আবার আগের protocol-link ই দিতে হবে

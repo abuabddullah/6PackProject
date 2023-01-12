@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { updateUserPassword, updateUserProfile } from "./profileActions";
+import { forgotUserPassword, resetUserPassword, updateUserPassword, updateUserProfile } from "./profileActions";
 
 const initialState = {
     error: null,
     loading: false,
     isUpdatedUser: false,
+    isResetPassword: false,
     isDeletedUser: false,
     message: null,
   };
@@ -57,6 +58,40 @@ const initialState = {
       builder.addCase(updateUserPassword.rejected, (state, action) => {
         state.loading = false;
         state.isUpdatedUser = false;
+        state.error = action.payload;
+      });
+
+
+      /* * for forgotUserPassword purpose * */
+      // Do something while pending if you want.
+      builder.addCase(forgotUserPassword.pending, (state, action) => {
+        state.loading = true;
+      });
+      // Do something when passes.
+      builder.addCase(forgotUserPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      });
+      // Do something if fails.
+      builder.addCase(forgotUserPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+
+      /* * for resetUserPassword purpose * */
+      // Do something while pending if you want.
+      builder.addCase(resetUserPassword.pending, (state, action) => {
+        state.loading = true;
+      });
+      // Do something when passes.
+      builder.addCase(resetUserPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isResetPassword = action.payload.success;
+      });
+      // Do something if fails.
+      builder.addCase(resetUserPassword.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
     },

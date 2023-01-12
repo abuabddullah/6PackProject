@@ -57,8 +57,54 @@ export const updateUserPassword = createAsyncThunk(
       document.cookie = `token=${data.token}; expires=${new Date(
         Date.now() + 5 * 24 * 60 * 60 * 1000
       )}; path=/`;
-      
+
       return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const forgotUserPassword = createAsyncThunk(
+  "user/forgotUserPassword",
+  async (userMailingInfo, { rejectWithValue }) => {
+    try {
+      const config = { headers: { "Content-Type": "application/json" } };
+      const { data } = await axios.post(
+        "http://localhost:5000/api/v1/password/forgot",
+        userMailingInfo,
+        config
+      );
+
+      return data; // data={success: true, message: "Email sent"}
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const resetUserPassword = createAsyncThunk(
+  "user/resetUserPassword",
+  async (userData, { rejectWithValue }) => {
+    // use rest operator to seperate token from userData and remove it from userData
+    const { token, ...userPasswordsData } = userData;
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.put(
+        `http://localhost:5000/api/v1/password/reset/${token}`,
+        userPasswordsData,
+        config
+      );
+      // saving token in coockie for 5 days
+      document.cookie = `token=${data.token}; expires=${new Date(
+        Date.now() + 5 * 24 * 60 * 60 * 1000
+      )}; path=/`;
+
+      return data; // data={success: true,token,user,}
     } catch (err) {
       return rejectWithValue(err.response.data.message);
     }

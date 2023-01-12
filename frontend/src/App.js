@@ -14,6 +14,8 @@ import SingleProductDetails from "./component/Product/SingleProductDetails";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoginSignUp from "./component/user/LoginSignUp";
+import ForgotPassword from "./component/user/ForgotPassword.js";
+import ResetPassword from "./component/user/ResetPassword.js";
 import MyAccount from "./component/user/MyAccount.js";
 import UpdateProfile from "./component/user/UpdateProfile.js";
 import UpdatePassword from "./component/user/UpdatePassword.js";
@@ -52,6 +54,8 @@ function App() {
 
         <Route path="/search" element={<Search />} />
         <Route path="/login" element={<LoginSignUp />} />
+        <Route path="/password/forgot" element={<ForgotPassword />} />
+        <Route path="/password/reset/:token" element={<ResetPassword />} />
         <Route
           path="/account"
           element={

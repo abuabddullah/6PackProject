@@ -92,6 +92,7 @@ exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 // Forgot Password
 exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
   const email = req.body.email;
+
   const user = await userModel.findOne({ email });
 
   if (!user) {
@@ -103,11 +104,15 @@ exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const resetPasswordUrl = `${req.protocol}://${req.get(
+  // bellow link is edited dueto the change in frontend url
+  /* const resetPasswordUrl = `${req.protocol}://${req.get(
     "host"
-  )}/api/v1/password/reset/${resetToken}`;
+  )}/api/v1/password/reset/${resetToken}`; */
 
-  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
+  const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+  console.log(resetPasswordUrl);
+
+  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it. \n\n বিঃদ্রঃ যদি restePasswordUrl কে কোন কারনেও একটুকু change করা লাগে (frontend/backend link changing) এর জন্যে তাহলে message variable এ হালকা কিছু লিখে দরকার পরে আবার কেটে দিতে হবে নইলে অনেক সময় link না গিয়ে ip address যায় email এ`;
 
   try {
     await sendEmail({
@@ -151,7 +156,7 @@ exports.resetPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
       )
     );
   }
-
+  
   if (req.body.password !== req.body.confirmPassword) {
     return next(new ErrorHandler("Password does not match", 400));
   }
