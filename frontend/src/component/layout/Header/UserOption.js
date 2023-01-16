@@ -4,6 +4,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonIcon from "@mui/icons-material/Person";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -17,6 +18,7 @@ const UserOption = ({ userInfo }) => {
 
   const actions = [
     { icon: <ListAltIcon />, name: "Orders", func: orders },
+    { icon: <ShoppingCartIcon />, name: "Cart", func: cart },
     { icon: <PersonIcon />, name: "Profile", func: account },
     { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
   ];
@@ -37,6 +39,10 @@ const UserOption = ({ userInfo }) => {
 
   function orders() {
     navigate("/orders");
+  }
+
+  function cart() {
+    navigate("/cart");
   }
   function account() {
     navigate("/account");

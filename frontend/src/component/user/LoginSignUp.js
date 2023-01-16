@@ -3,7 +3,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   loginUser,
@@ -11,6 +11,7 @@ import {
 } from "../../reducers/productsReducer/userActions";
 import { clearUserErrors } from "../../reducers/productsReducer/userSlice";
 import Loader from "../layout/Loader/Loader";
+import PageTitle from "../layout/PageTitle/PageTitle";
 
 const LoginSignUp = () => {
   const navigate = useNavigate();
@@ -39,6 +40,11 @@ const LoginSignUp = () => {
   const [avatar, setAvatar] = useState("/Profile.png");
   const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
 
+  // conditional routing for payment based on user login or not
+  const location = useLocation();
+  const redirectingURL = location.search
+    ? location.search.split("=")[1]
+    : "/account";
   // api post handler
   useEffect(() => {
     if (error) {
@@ -46,9 +52,9 @@ const LoginSignUp = () => {
       dispatch(clearUserErrors());
     }
     if (isAuthenticated) {
-      navigate("/account");
+      navigate(redirectingURL);
     }
-  }, [dispatch, error, navigate, isAuthenticated]);
+  }, [dispatch, error, navigate, isAuthenticated, redirectingURL]);
 
   // for login form
   const switchTabs = (e, tab) => {
@@ -115,6 +121,7 @@ const LoginSignUp = () => {
         <Loader />
       ) : (
         <>
+        <PageTitle title={"LoginSignUp"} />
           <div className="LoginSignUpContainer">
             <div className="LoginSignUpBox">
               <div>

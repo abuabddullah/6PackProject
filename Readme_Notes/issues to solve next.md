@@ -7,3 +7,4 @@
 - backend এ থেকে mailing করার জন্য **forgotPassword** function এ যে লিংক্টা মেইল করা হচ্ছে সেটা change করে দেয়া হয়েছে পরে আবার ঠিক করা হবে
 - product filtering based pagination on **_AllProducts_** page
 - reset & forgot passwor এর জন্য আমাকে আপাতত frontend এর url এনে বসাতে হয়েছে কিন্তু যখন আমি এই প্রজেক্ট কোথাও deploy করব তখন কিন্তু এই লিঙ্ক চেঞ্জ করে আবার আগের protocol-link ই দিতে হবে
+- product details or cart page এ product এর quantity show করতেছে না
