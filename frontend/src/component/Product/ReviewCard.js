@@ -9,6 +9,7 @@ const ReviewCard = ({ review }) => {
         readOnly: true,
         precision: 0.5,
         edit: false,
+        activeColor: "#eb4034",
     };
 
     return (

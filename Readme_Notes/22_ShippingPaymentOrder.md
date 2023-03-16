@@ -1,5 +1,7 @@
 # Shipping | ConfirmOrder | ProceedPayment
 
+> > আপাতত stripe payment integrating off রাখা হল
+
 ## Frontend
 
 - frontend\src\reducers\productsReducer\ **_cartSlice.js_** এ **saveShippingInfo** নামের নতুন একটা action-function add করা হয়েছে

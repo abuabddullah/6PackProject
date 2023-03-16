@@ -4,6 +4,7 @@ import WebFont from "webfontloader";
 import "./App.css";
 import Cart from "./component/Cart/Cart.js";
 import ConfirmOrder from "./component/Cart/ConfirmOrder.js";
+import OrderSuccess from "./component/Cart/OrderSuccess.js";
 import Payment from "./component/Cart/Payment.js";
 import Shipping from "./component/Cart/Shipping.js";
 import Home from "./component/Home/Home.js";
@@ -11,6 +12,7 @@ import Footer from "./component/layout/Footer/Footer.js";
 import Header from "./component/layout/Header/Header.js";
 import UserOption from "./component/layout/Header/UserOption.js";
 import NotFound from "./component/layout/NotFound/NotFound.js";
+import MyOrders from "./component/order/MyOrders.js";
 import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search.js";
 import SingleProductDetails from "./component/Product/SingleProductDetails";
@@ -21,6 +23,9 @@ import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import store from "./app/store";
+import Dashboard from "./component/admin/Dashboard.js";
+import DashboardIndex from "./component/admin/DashboardIndex";
+import OrderDetails from "./component/order/OrderDetails.js";
 import RequireAuth from "./component/protectedRoutes/RequireAuth.js";
 import ForgotPassword from "./component/user/ForgotPassword.js";
 import LoginSignUp from "./component/user/LoginSignUp";
@@ -35,7 +40,6 @@ function App() {
   const { userInfo, isAuthenticated } = useSelector(
     (state) => state.userDetails
   );
-  
 
   // payment related state
   const { stripePublishableApiKey } = useSelector((state) => state.payment);
@@ -119,9 +123,43 @@ function App() {
             }
           />
         )}
+        <Route
+          path="/success"
+          element={
+            <RequireAuth>
+              <OrderSuccess />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <RequireAuth>
+              <MyOrders />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/order/:_id"
+          element={
+            <RequireAuth>
+              <OrderDetails />
+            </RequireAuth>
+          }
+        />
+        {/* admin dashboasr related routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<DashboardIndex />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
-
       <Footer />
 
       <ToastContainer

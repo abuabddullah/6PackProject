@@ -8,3 +8,5 @@
 - product filtering based pagination on **_AllProducts_** page
 - reset & forgot passwor এর জন্য আমাকে আপাতত frontend এর url এনে বসাতে হয়েছে কিন্তু যখন আমি এই প্রজেক্ট কোথাও deploy করব তখন কিন্তু এই লিঙ্ক চেঞ্জ করে আবার আগের protocol-link ই দিতে হবে
 - product details or cart page এ product এর quantity show করতেছে না
+- payment integrate করতে পারিনাই তাই direct order নিয়ে কাজ করতেছি
+- আমি যদি কোন product কে order করে stock out করেও দিই তবুও backend এর Stock এ কোন কমা-কমি হচ্ছে না যার ফলে আবারো full stock order করতে পারছি

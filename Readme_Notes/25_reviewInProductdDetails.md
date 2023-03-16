@@ -1,3 +1,194 @@
+# Enable Reviewing in SingleOrderDetails.js
+
+## 1. create reviewSlice.js
+
+```http
+path: frontend\src\reducers\productsReducer\reviewSlice.js
+""""""""""""""""""""""""""""
+
+import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import {
+  createReview,
+  deleteReviewById,
+  getAllReviewsOfProductById,
+} from "./reviewActions";
+
+const initialState = {
+  loading: false,
+  error: null,
+  reviews: [],
+  success: false,
+  message: "",
+};
+
+const reviewSlice = createSlice({
+  name: "reviewInfo",
+  initialState,
+  reducers: {
+    clearReviewErrors: (state, action) => {
+      state.error = null;
+    },
+    resetReview: (state, action) => {
+      state.success = false;
+    },
+  },
+  extraReducers: (builder) => {
+    // create review
+    builder.addCase(createReview.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(createReview.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = action.payload.success;
+      state.message = action.payload.message;
+      toast.success("reviewing succeed", { id: "reviewing_success" });
+    });
+    builder.addCase(createReview.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.success = false;
+      toast.error("reviewing failed", { id: "reviewing_err" });
+    });
+
+    // get all review of a product
+    builder.addCase(getAllReviewsOfProductById.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getAllReviewsOfProductById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = action.payload.success;
+      state.reviews = action.payload.reviews;
+      state.message = action.payload.message;
+      toast.success("getAllReviews succeed", { id: "getAllReviews_success" });
+    });
+    builder.addCase(getAllReviewsOfProductById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.success = false;
+      toast.error("getAllReviews failed", { id: "getAllReviews_err" });
+    });
+
+    // deleteReviewById
+    builder.addCase(deleteReviewById.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteReviewById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = action.payload.success;
+      state.message = action.payload.message;
+      toast.success("deleteReviewById succeed", {
+        id: "deleteReviewById_success",
+      });
+    });
+    builder.addCase(deleteReviewById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.success = false;
+      toast.error("deleteReviewById failed", { id: "deleteReviewById_err" });
+    });
+  },
+});
+
+export const { clearReviewErrors, resetReview } = reviewSlice.actions;
+
+export default reviewSlice.reducer;
+
+
+```
+
+## 2. create reviewActions.js
+
+```http
+path: frontend\src\reducers\productsReducer\reviewActions.js
+""""""""""""""""""""""""""""
+
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const createReview = createAsyncThunk(
+  "user/createNewReview",
+  async (review) => {
+    try {
+      // get token from cookie and send via get request
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+      const token = getCookie("token");
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        "Content-Type": "application/json",
+      };
+      const { data } = await axios.put(
+        "http://localhost:5000/api/v1/review",
+        review,
+        config
+      );
+
+      return data; // {success: true,message: "Product review done successfully",product}
+    } catch (err) {
+      return err.response.data.message;
+    }
+  }
+);
+
+export const getAllReviewsOfProductById = createAsyncThunk(
+  "user/getAllReviewsOfProductById",
+  async (id) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:5000/api/v1/reviews?id=${id}`
+      );
+
+      return data; // {success: true,message: "Product review done successfully",product}
+    } catch (err) {
+      return err.response.data.message;
+    }
+  }
+);
+
+export const deleteReviewById = createAsyncThunk(
+  "user/deleteReviewById",
+  async (reviewId, productId) => {
+    try {
+      // get token from cookie and send via get request
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+      const token = getCookie("token");
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        "Content-Type": "application/json",
+      };
+      const { data } = await axios.delete(
+        `http://localhost:5000/api/v1/reviews?id=${reviewId}&productId=${productId}`,
+        config
+      );
+
+      return data; // {success: true,message: "Product review deleted successfully",product}
+    } catch (err) {
+      return err.response.data.message;
+    }
+  }
+);
+
+
+```
+
+## 3. add modal(dialouge) and react rating in SingleProductDetails.js
+
+> > mui **dialouge** এর সাথে কিছু fixed componnt এবং কিছু useStateVar নিতে হয় যা আমরা নিয়েছি
+> > মজার বিষয় হচ্ছে mui **Rating** এ by default 5 টা star থাকে যেখানে প্রতিটার ভিতরে value দেয়া থাকে তাই click করলেই তার value পাওয়া যায় সহজেই
+> > **_reviewSubmitHandler_** function এর ভিতরে আমরা review related যেই যেই data backend এ পাঠাতে চাই তা **_createReview_** reducer function এর সাহায্যে পাঠাতে পারি যা একটা **put** request এর মাধ্যমে তা করে থাকে
+
+```http
+path: frontend\src\component\Product\SingleProductDetails.js
+""""""""""""""""""""""""""""
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -216,3 +407,7 @@ const SingleProductDetails = () => {
 };
 
 export default SingleProductDetails;
+
+
+
+```

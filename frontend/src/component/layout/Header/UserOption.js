@@ -1,13 +1,13 @@
-import { Backdrop, SpeedDial, SpeedDialAction } from "@mui/material";
-import React, { Fragment, useState } from "react";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import PersonIcon from "@mui/icons-material/Person";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Backdrop, SpeedDial, SpeedDialAction } from "@mui/material";
+import React, { Fragment, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
 import { logoutMe } from "../../../reducers/productsReducer/userActions";
 
 const UserOption = ({ userInfo }) => {

@@ -53,14 +53,13 @@ exports.getSingleOrderDetails = catchAsyncErrorsMiddleware(async (req, res, next
 });
 
 // get logged in user  Orders
-exports.myAllOrders = catchAsyncErrorsMiddleware(async (req, res, next) => {
+exports.myAllOrders = async (req, res, next) => {
   const orders = await orderModel.find({ user: req.user._id });
-
   res.status(200).json({
     success: true,
     orders,
   });
-});
+};
 
 
 /* 
