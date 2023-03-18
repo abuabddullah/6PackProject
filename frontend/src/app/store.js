@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { products4HomeAPI } from "../reducers/productsReducer/products4HomeAPI";
 import productsReducer from "./../reducers/productsReducer/productsSlice";
 import userReducer from "./../reducers/productsReducer/userSlice";
+import userAdminReducer from "./../reducers/productsReducer/userAdminSlice";
 import paymentReducer from "./../reducers/productsReducer/paymentSlice";
 import orderReducer from "./../reducers/productsReducer/orderSlice";
 import userProfileReducer from "./../reducers/productsReducer/profileSlice";
@@ -13,6 +14,7 @@ const store = configureStore({
         products: productsReducer,
         productDetails: productDetailsReducer,
         userDetails: userReducer,
+        userAdmin: userAdminReducer,
         userProfile: userProfileReducer,
         cart: cartReducer,
         payment: paymentReducer,
