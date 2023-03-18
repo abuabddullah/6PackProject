@@ -25,7 +25,13 @@ import "react-toastify/dist/ReactToastify.css";
 import store from "./app/store";
 import Dashboard from "./component/admin/Dashboard.js";
 import DashboardIndex from "./component/admin/DashboardIndex";
+import ManageAllProducts from "./component/admin/ManageAllProducts";
+import ManageAllOrders from "./component/admin/ManageAllOrders.js";
+import ManageAllUsers from "./component/admin/ManageAllUsers.js";
+import ManageAllReviews from "./component/admin/ManageAllReviews.js";
+import CreateProduct from "./component/admin/CreateProduct.js";
 import OrderDetails from "./component/order/OrderDetails.js";
+import RequireAdmin from "./component/protectedRoutes/RequireAdmin.js";
 import RequireAuth from "./component/protectedRoutes/RequireAuth.js";
 import ForgotPassword from "./component/user/ForgotPassword.js";
 import LoginSignUp from "./component/user/LoginSignUp";
@@ -151,12 +157,17 @@ function App() {
         <Route
           path="/admin/dashboard"
           element={
-            <RequireAuth>
+            <RequireAdmin>
               <Dashboard />
-            </RequireAuth>
+            </RequireAdmin>
           }
         >
           <Route index element={<DashboardIndex />} />
+          <Route path='products' element={<RequireAdmin><ManageAllProducts /></RequireAdmin>} />
+          <Route path='product' element={<RequireAdmin><CreateProduct /></RequireAdmin>} />
+          <Route path='orders' element={<RequireAdmin><ManageAllOrders /></RequireAdmin>} />
+          <Route path='users' element={<RequireAdmin><ManageAllUsers /></RequireAdmin>} />
+          <Route path='reviews' element={<RequireAdmin><ManageAllReviews /></RequireAdmin>} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

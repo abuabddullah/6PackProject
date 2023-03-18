@@ -1,16 +1,20 @@
 import {
-    ArcElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip
+  ArcElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip
 } from "chart.js";
-import React from "react";
+import React, { useEffect } from "react";
 import { Doughnut, Line } from "react-chartjs-2";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { fetchAdminAllOrders } from "../../reducers/productsReducer/orderActions";
+import { fetchAdminProducts } from "../../reducers/productsReducer/productsActions";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,6 +27,15 @@ ChartJS.register(
 );
 
 const DashboardIndex = () => {
+  const dispatch = useDispatch();
+  const {products}=useSelector(state=>state.products)
+  const {orders}=useSelector(state=>state.order)
+
+  useEffect(() => {
+    dispatch(fetchAdminProducts());
+    dispatch(fetchAdminAllOrders());
+  }, [dispatch]);
+
   /* chartjs-react-chartjs */
   const lineState = {
     labels: ["Initial Amount", "Amount Earned"],
@@ -51,35 +64,36 @@ const DashboardIndex = () => {
 
   return (
     <div className="dashboardIndex">
-      <div>
-        <h1>Dashboard</h1>
-        <div className="amountIndicator">
-          <h4>Total Ammount</h4>
-          <h2>${5000}</h2>
+      <div className="dashboardSummary">
+        <div>
+          <p>
+            Total Amount <br /> ${"20000"}
+          </p>
         </div>
-        <div className="statCircle">
-          <div className="product">
+        <div className="dashboardSummaryBox2">
+          <Link to="/admin/dashboard/products">
             <p>Product</p>
-            <p>"{12}"</p>
-          </div>
-          <div className="orders">
+            {/* <p>{products && products.length}</p> */}
+            <p>{"125"}</p>
+          </Link>
+          <Link to="/admin/dashboard/orders">
             <p>Orders</p>
-            <p>"{12}"</p>
-          </div>
-          <div className="users">
+            {/* <p>{orders && orders.length}</p> */}
+            <p>{"125"}</p>
+          </Link>
+          <Link to="/admin/dashboard/users">
             <p>Users</p>
-            <p>"{12}"</p>
-          </div>
+            {/* <p>{users && users.length}</p> */}
+            <p>{"125"}</p>
+          </Link>
         </div>
       </div>
-      <div className="statChart">
-        <div className="lineChart">
-          <Line data={lineState} />
-        </div>
+      <div className="lineChart">
+        <Line data={lineState} />
+      </div>
 
-        <div className="doughnutChart">
-          <Doughnut data={doughnutState} />
-        </div>
+      <div className="doughnutChart">
+        <Doughnut data={doughnutState} />
       </div>
     </div>
   );

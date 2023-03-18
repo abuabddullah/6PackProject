@@ -1,21 +1,5 @@
-// import React from "react";
-// import PageTitle from "../layout/PageTitle/PageTitle";
-// import Sidebar from "./Sidebar.js";
-
-// const Dashboard = () => {
-//   return (
-//     <>
-//       <div className="dashboard">
-//         <PageTitle title="Dashboard" />
-//         <Sidebar />
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Dashboard;
-
 import AddIcon from "@mui/icons-material/Add";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import PeopleIcon from "@mui/icons-material/People";
 import PostAddIcon from "@mui/icons-material/PostAdd";
@@ -32,6 +16,7 @@ import ListItemText from "@mui/material/ListItemText";
 import * as React from "react";
 
 import { Link, Outlet } from "react-router-dom";
+import PageTitle from "../layout/PageTitle/PageTitle";
 export default function TemporaryDrawer() {
   const [state, setState] = React.useState({
     bottom: false,
@@ -55,6 +40,20 @@ export default function TemporaryDrawer() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
+      <List>
+        <ListItem key={"Dashboard"} disablePadding>
+          <Link to="/admin/dashboard">
+            <ListItemButton>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Dashboard"} />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+      </List>
+
+      <Divider />
       <List>
         <ListItem key={"All Products"} disablePadding>
           <Link to="/admin/dashboard/products">
@@ -125,6 +124,8 @@ export default function TemporaryDrawer() {
   );
 
   return (
+    <>
+    <PageTitle title={"Dashboard"} />
     <div className="dashboardContainer">
       {/* fixed portion for toggling features */}
       <div className="drawerSwich">
@@ -144,7 +145,11 @@ export default function TemporaryDrawer() {
         ))}
       </div>
 
-      <Outlet />
+      <div>
+        <h1>Dashboard</h1>
+        <Outlet />
+      </div>
     </div>
+    </>
   );
 }

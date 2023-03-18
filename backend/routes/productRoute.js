@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails, createNupdateProductReview, getProductAllReviews, deleteProductReview,
+  getAllProducts, createProduct, updateProduct, deleteProduct, getProductDetails, createNupdateProductReview, getProductAllReviews, deleteProductReview, getAdminProducts,
 } = require("../controllers/productController");
 const { verifyJWT, verifyUserRole } = require("../middleware/auth");
 
@@ -21,7 +21,7 @@ AdminRoute related APIs
 ===================================
 */
 
-
+router.route("/admin/products").get(verifyJWT,verifyUserRole("admin"),getAdminProducts); // AdminRoute
 router.route("/admin/product/new").post(verifyJWT,verifyUserRole("admin"),createProduct); // AdminRoute
 
 // router.route("/product/:id").put(verifyJWT,verifyUserRole("admin"),updateProduct).delete(verifyJWT,verifyUserRole("admin"),deleteProduct).get(getProductDetails); // allowed

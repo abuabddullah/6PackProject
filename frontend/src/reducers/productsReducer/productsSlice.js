@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAllProducts } from "./productsActions";
+import { fetchAdminProducts, fetchAllProducts } from "./productsActions";
 
 const productsSlice = createSlice({
   name: "products",
@@ -25,6 +25,20 @@ const productsSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(fetchAllProducts.rejected, (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    });
+
+
+    
+    builder.addCase(fetchAdminProducts.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchAdminProducts.fulfilled, (state, action) => {
+      state.products = action.payload.products;
+      state.isLoading = false;
+    });
+    builder.addCase(fetchAdminProducts.rejected, (state, action) => {
       state.error = action.payload;
       state.isLoading = false;
     });

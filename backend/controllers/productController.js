@@ -285,6 +285,18 @@ exports.getAllProducts = catchAsyncErrorsMiddleware(async (req, res, next) => {
   });
 });
 
+//get All Admin Products
+exports.getAdminProducts = catchAsyncErrorsMiddleware(
+  async (req, res, next) => {
+    const products = await productModel.find();
+
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  }
+);
+
 // Get Product details by ID
 exports.getProductDetails = catchAsyncErrorsMiddleware(
   async (req, res, next) => {

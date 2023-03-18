@@ -75,3 +75,28 @@ export const getOrderDetailsById = createAsyncThunk(
     }
   }
 );
+
+export const fetchAdminAllOrders = createAsyncThunk(
+  "admin/fetchAdminAllOrders",
+  async () => {
+    try {
+      // get token from cookie and send via get request
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+      const token = getCookie("token");
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      const { data } = await axios.get(
+        "http://localhost:5000/api/v1/admin/orders",
+        config
+      );
+      return data; // {success: true,message: "All orders are fetched successfully",totalAmount,orders,}
+    } catch (err) {
+      return err.response.data.message;
+    }
+  }
+);
