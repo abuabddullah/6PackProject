@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAdminProducts, fetchAllProducts } from "./productsActions";
+import { deleteAdminProductById, fetchAdminProducts, fetchAllProducts } from "./productsActions";
 
 const productsSlice = createSlice({
   name: "products",
@@ -8,10 +8,14 @@ const productsSlice = createSlice({
     products: [],
     error: null,
     isLoading: false,
+    isDeleted: false,
   },
   reducers: {
     clearFetchAllProductsErrors: (state, action) => {
       state.error = null;
+    },
+    resetDeleteProduct: (state, action) => {
+      state.isDeleted = false;
     },
   },
   extraReducers: (builder) => {
@@ -29,8 +33,6 @@ const productsSlice = createSlice({
       state.isLoading = false;
     });
 
-
-    
     builder.addCase(fetchAdminProducts.pending, (state, action) => {
       state.isLoading = true;
     });
@@ -42,8 +44,24 @@ const productsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     });
+
+    /* deleteAdminProductById */
+    builder.addCase(deleteAdminProductById.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(deleteAdminProductById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isDeleted = action.payload.success;
+      // state.products = state.products.filter(
+      //   (product) => product._id !== action.payload.productId
+      // );
+    });
+    builder.addCase(deleteAdminProductById.rejected, (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    });
   },
 });
 
-export const { clearFetchAllProductsErrors } = productsSlice.actions;
+export const { clearFetchAllProductsErrors,resetDeleteProduct } = productsSlice.actions;
 export default productsSlice.reducer;
