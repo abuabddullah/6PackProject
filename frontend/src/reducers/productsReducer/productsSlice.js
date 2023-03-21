@@ -1,11 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteAdminProductById, fetchAdminProducts, fetchAllProducts } from "./productsActions";
+import {
+  createNewProductByAdmin,
+  deleteAdminProductById,
+  fetchAdminProducts,
+  fetchAllProducts,
+} from "./productsActions";
 
 const productsSlice = createSlice({
   name: "products",
   initialState: {
     productsCount: 0,
     products: [],
+    newProduct: {},
     error: null,
     isLoading: false,
     isDeleted: false,
@@ -60,8 +66,22 @@ const productsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     });
+
+    /* createNewProductByAdmin */
+    builder.addCase(createNewProductByAdmin.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(createNewProductByAdmin.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.newProduct = action.payload.product;
+    });
+    builder.addCase(createNewProductByAdmin.rejected, (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    });
   },
 });
 
-export const { clearFetchAllProductsErrors,resetDeleteProduct } = productsSlice.actions;
+export const { clearFetchAllProductsErrors, resetDeleteProduct } =
+  productsSlice.actions;
 export default productsSlice.reducer;

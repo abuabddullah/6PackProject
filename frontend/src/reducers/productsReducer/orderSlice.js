@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { createOrder, fetchAdminAllOrders, getOrderDetailsById, myOrders } from "./orderActions";
+import {
+  createOrder,
+  deleteAdminOrderById,
+  fetchAdminAllOrders,
+  getOrderDetailsById,
+  myOrders,
+} from "./orderActions";
 
 const initialState = {
   loading: false,
@@ -20,6 +26,10 @@ const orderSlice = createSlice({
   reducers: {
     clearOrderErrors: (state, action) => {
       state.error = null;
+    },
+    resetOrdersErrors: (state, action) => {
+      state.error = null;
+      state.message = null;
     },
   },
   extraReducers: (builder) => {
@@ -77,9 +87,23 @@ const orderSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     });
+
+    /* deleteAdminOrderById */
+    builder.addCase(deleteAdminOrderById.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteAdminOrderById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isOrderDeleted = action.payload.success;
+      state.message = action.payload.message;
+    });
+    builder.addCase(deleteAdminOrderById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
   },
 });
 
-export const { clearOrderErrors } = orderSlice.actions;
+export const { clearOrderErrors,resetOrdersErrors } = orderSlice.actions;
 
 export default orderSlice.reducer;
