@@ -108,8 +108,8 @@ const OrderDetails = () => {
                         {item.name}
                       </Link>{" "}
                       <span>
-                        {item.quantity} X ₹{item.price} ={" "}
-                        <b>₹{item.price * item.cartQuantity}</b>
+                        {item.quantity} X ${item.price} ={" "}
+                        <b>${item.price * item.cartQuantity}</b>
                       </span>
                     </div>
                   ))}

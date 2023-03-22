@@ -215,9 +215,32 @@ const ApiFeatures = require("../utils/apiFeatures");
 const catchAsyncErrorsMiddleware = require("../middleware/catchAsyncErrorsMiddleware");
 const productModel = require("../models/productModel");
 const ErrorHandler = require("../utils/ErrorHandler");
+const cloudinary = require("cloudinary");
 
 // create a product - AdminRoute
 exports.createProduct = catchAsyncErrorsMiddleware(async (req, res, next) => {
+  let images = [];
+
+  if (typeof req.body.images === "string") {
+    images.push(req.body.images);
+  } else {
+    images = req.body.images;
+  }
+
+  const imagesLinks = [];
+
+  for (let i = 0; i < images.length; i++) {
+    const result = await cloudinary.v2.uploader.upload(images[i], {
+      folder: "6PP_Ecommerce_Products",
+    });
+
+    imagesLinks.push({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  }
+
+  req.body.images = imagesLinks;
   req.body.user = req.user.id; // verifyJWT থেকে প্রাপ্ত
   const product = await productModel.create(req.body);
   res.status(201).json({

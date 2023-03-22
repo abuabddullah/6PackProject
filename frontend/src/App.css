@@ -2048,9 +2048,18 @@ filePath: frontend\src\component\admin\CreateProduct.js
 }
 .newProductContainer h1 {
   color: rgba(0, 0, 0, 0.733);
+  font: 300 1.5rem "Roboto";
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 1vmax;
+}
+
+/* .newProductContainer h1 {
+  color: rgba(0, 0, 0, 0.733);
   font: 300 2rem "Roboto";
   text-align: center;
-}
+} */
 
 .createProductForm {
   display: flex;
@@ -2134,6 +2143,7 @@ filePath: frontend\src\component\admin\CreateProduct.js
   border-radius: 4px;
   outline: none;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.219);
+  border-radius: 0 !important;
 }
 
 #createProductBtn:hover {

@@ -8,12 +8,25 @@ import StorageIcon from "@mui/icons-material/Storage";
 import { Button } from "@mui/material";
 import { createNewProductByAdmin } from "../../reducers/productsReducer/productsActions";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  clearAllProductsErrors,
+  resetCreateNewProduct,
+} from "../../reducers/productsReducer/productsSlice";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
   const dispatch = useDispatch();
-  const { error, products, newProduct, isLoading, isDeleted } = useSelector(
-    (state) => state.products
-  );
+  const navigate = useNavigate();
+
+  const {
+    error,
+    products,
+    newProduct,
+    newProductSuccess,
+    isLoading,
+    isDeleted,
+  } = useSelector((state) => state.products);
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -35,16 +48,18 @@ const CreateProduct = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
+      toast.error("Admin All products error", { id: "AdminAllProducts_err" });
+      dispatch(clearAllProductsErrors());
     }
 
-    if (success) {
-      alert.success("Product Created Successfully");
-      history.push("/admin/dashboard");
-      dispatch({ type: NEW_PRODUCT_RESET });
+    if (newProductSuccess) {
+      toast.success("Product creation Successfully", {
+        id: "Productcreation_success",
+      });
+      dispatch(resetCreateNewProduct());
+      navigate("/admin/dashboard");
     }
-  }, [dispatch, alert, error, history, success]);
+  }, [dispatch, error, newProductSuccess,navigate]);
 
   const createProductSubmitHandler = (e) => {
     e.preventDefault();

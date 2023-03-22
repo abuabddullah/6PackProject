@@ -232,7 +232,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { fetchAllProducts } from '../../reducers/productsReducer/productsActions';
-import { clearFetchAllProductsErrors } from '../../reducers/productsReducer/productsSlice';
+import { clearAllProductsErrors } from '../../reducers/productsReducer/productsSlice';
 import ProductCard from '../Home/ProductCard';
 import Loader from '../layout/Loader/Loader';
 import PageTitle from '../layout/PageTitle/PageTitle';
@@ -246,7 +246,7 @@ const Products = () => {
     useEffect(() => {
         if (error) {
             toast.error(error, { id: 'fetchAllProducts_error' });
-            dispatch(clearFetchAllProductsErrors());
+            dispatch(clearAllProductsErrors());
         }
         dispatch(fetchAllProducts(keyWord));
     }, [dispatch, error,keyWord]);
@@ -389,7 +389,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { fetchAllProducts } from "../../reducers/productsReducer/productsActions";
-import { clearFetchAllProductsErrors } from "../../reducers/productsReducer/productsSlice";
+import { clearAllProductsErrors } from "../../reducers/productsReducer/productsSlice";
 import ProductCard from "../Home/ProductCard";
 import Loader from "../layout/Loader/Loader";
 import PageTitle from "../layout/PageTitle/PageTitle";
@@ -443,7 +443,7 @@ const Products = () => {
   useEffect(() => {
     if (error) {
       toast.error(error, { id: "fetchAllProducts_error" });
-      dispatch(clearFetchAllProductsErrors());
+      dispatch(clearAllProductsErrors());
     }
     dispatch(fetchAllProducts({ keyWord, page, limit, price,ratings, category }));
 

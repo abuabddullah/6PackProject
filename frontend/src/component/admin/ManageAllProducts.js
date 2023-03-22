@@ -11,7 +11,7 @@ import {
   fetchAllProducts,
 } from "../../reducers/productsReducer/productsActions";
 import {
-  clearFetchAllProductsErrors,
+  clearAllProductsErrors,
   resetDeleteProduct,
 } from "../../reducers/productsReducer/productsSlice";
 import PageTitle from "../layout/PageTitle/PageTitle";
@@ -28,7 +28,7 @@ const ManageAllProducts = () => {
   useEffect(() => {
     if (error) {
       toast.error("Admin All products error", { id: "AdminAllProducts_err" });
-      dispatch(clearFetchAllProductsErrors());
+      dispatch(clearAllProductsErrors());
     }
 
     if (isDeleted) {

@@ -12,16 +12,21 @@ const productsSlice = createSlice({
     productsCount: 0,
     products: [],
     newProduct: {},
+    newProductSuccess: false,
     error: null,
     isLoading: false,
     isDeleted: false,
   },
   reducers: {
-    clearFetchAllProductsErrors: (state, action) => {
+    clearAllProductsErrors: (state, action) => {
       state.error = null;
     },
     resetDeleteProduct: (state, action) => {
       state.isDeleted = false;
+    },
+    resetCreateNewProduct: (state, action) => {
+      state.newProduct = {};
+      state.newProductSuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -74,6 +79,7 @@ const productsSlice = createSlice({
     builder.addCase(createNewProductByAdmin.fulfilled, (state, action) => {
       state.isLoading = false;
       state.newProduct = action.payload.product;
+      state.newProductSuccess = action.payload.success;
     });
     builder.addCase(createNewProductByAdmin.rejected, (state, action) => {
       state.error = action.payload;
@@ -82,6 +88,9 @@ const productsSlice = createSlice({
   },
 });
 
-export const { clearFetchAllProductsErrors, resetDeleteProduct } =
-  productsSlice.actions;
+export const {
+  clearAllProductsErrors,
+  resetDeleteProduct,
+  resetCreateNewProduct,
+} = productsSlice.actions;
 export default productsSlice.reducer;
