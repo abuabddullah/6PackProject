@@ -4,6 +4,7 @@ import {
   deleteAdminProductById,
   fetchAdminProducts,
   fetchAllProducts,
+  updateProductByAdminById,
 } from "./productsActions";
 
 const productsSlice = createSlice({
@@ -16,6 +17,7 @@ const productsSlice = createSlice({
     error: null,
     isLoading: false,
     isDeleted: false,
+    isUpdated: false,
   },
   reducers: {
     clearAllProductsErrors: (state, action) => {
@@ -27,6 +29,9 @@ const productsSlice = createSlice({
     resetCreateNewProduct: (state, action) => {
       state.newProduct = {};
       state.newProductSuccess = false;
+    },
+    resetUpdateProduct: (state, action) => {
+      state.isUpdated = false;
     },
   },
   extraReducers: (builder) => {
@@ -85,6 +90,20 @@ const productsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     });
+
+    /* updateProductByAdminById */
+    builder.addCase(updateProductByAdminById.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateProductByAdminById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isUpdated = action.payload.success;
+      state.newProduct = action.payload.product;
+    });
+    builder.addCase(updateProductByAdminById.rejected, (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    });
   },
 });
 
@@ -92,5 +111,6 @@ export const {
   clearAllProductsErrors,
   resetDeleteProduct,
   resetCreateNewProduct,
+  resetUpdateProduct,
 } = productsSlice.actions;
 export default productsSlice.reducer;
