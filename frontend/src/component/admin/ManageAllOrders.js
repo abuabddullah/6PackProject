@@ -81,7 +81,7 @@ const ManageAllOrders = () => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/order/${params.getValue(params.id, "id")}`}>
+            <Link className="exactCenter" to={`/admin/dashboard/order/${params.getValue(params.id, "id")}`}>
               <EditIcon />
             </Link>
 

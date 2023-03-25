@@ -42,6 +42,7 @@ import UpdateProfile from "./component/user/UpdateProfile.js";
 import { getStripePublishableApiKey } from "./reducers/productsReducer/paymentActions";
 import { getMyProfile } from "./reducers/productsReducer/userActions";
 import UpdateProduct from "./component/admin/UpdateProduct";
+import ProcessOrder from "./component/admin/ProcessOrder";
 
 function App() {
   const { userInfo, isAuthenticated } = useSelector(
@@ -168,6 +169,7 @@ function App() {
           <Route path='product' element={<RequireAdmin><CreateProduct /></RequireAdmin>} />
           <Route path='product/:id' element={<RequireAdmin><UpdateProduct /></RequireAdmin>} />
           <Route path='orders' element={<RequireAdmin><ManageAllOrders /></RequireAdmin>} />
+          <Route path='order/:id' element={<RequireAdmin><ProcessOrder /></RequireAdmin>} />
           <Route path='users' element={<RequireAdmin><ManageAllUsers /></RequireAdmin>} />
           <Route path='reviews' element={<RequireAdmin><ManageAllReviews /></RequireAdmin>} />
         </Route>

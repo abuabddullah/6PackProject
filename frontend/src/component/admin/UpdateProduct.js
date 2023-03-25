@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import PageTitle from "../layout/PageTitle/PageTitle";
-import SpellcheckIcon from "@mui/icons-material/Spellcheck";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import DescriptionIcon from "@mui/icons-material/Description";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import StorageIcon from "@mui/icons-material/Storage";
 import { Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  fetchProductById,
-  updateProductByAdminById,
-} from "../../reducers/productsReducer/productsActions";
 import { toast } from "react-toastify";
 import {
+  fetchProductById,
+  updateProductByAdminById
+} from "../../reducers/productsReducer/productsActions";
+import {
   clearAllProductsErrors,
-  resetUpdateProduct,
+  resetUpdateProduct
 } from "../../reducers/productsReducer/productsSlice";
 import { clearFetchSingleProductErrors } from "../../reducers/productsReducer/singleProductSlice";
+import PageTitle from "../layout/PageTitle/PageTitle";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
@@ -43,13 +43,15 @@ const UpdateProduct = () => {
   const [imagesPreview, setImagesPreview] = useState([]);
 
   const categories = [
-    "Laptop",
+    "Laptops",
     "Footwear",
-    "Bottom",
+    "Bottoms",
     "Tops",
     "Attire",
     "Camera",
-    "SmartPhones",
+    "Smartphones",
+    "Watches",
+    "Headphones",
   ];
 
   useEffect(() => {

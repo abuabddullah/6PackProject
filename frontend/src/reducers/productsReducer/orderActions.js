@@ -126,3 +126,32 @@ export const deleteAdminOrderById = createAsyncThunk(
     }
   }
 );
+
+
+export const updateAdminOrderById = createAsyncThunk(
+  "products/updateAdminOrderById",
+  async ({id,myForm}) => {
+    console.log(id,myForm);
+    try {
+      // get token from cookie and send via get request
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+      const token = getCookie("token");
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        "Content-Type": "application/json",
+      };
+      const { data } = await axios.put(
+        `http://localhost:5000/api/v1/admin/order/${id}`,
+        myForm,
+        config
+      );
+      return data; // {success: true,message: "Order is updated successfully",order,}
+    } catch (err) {
+      return err.message;
+    }
+  }
+);

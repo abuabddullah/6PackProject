@@ -1979,6 +1979,11 @@ filePath: 6PP-mernProjectEcommerce/frontend/src/component/Admin/dashboard.css
 /* ==============================
 filePath: frontend\src\component\admin\ManageAllProducts.js
 ============================== */
+.exactCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .productListContainer {
   width: 100%;
   box-sizing: border-box;
@@ -2182,5 +2187,52 @@ filePath: frontend\src\component\admin\CreateProduct.js
   #createProductBtn {
     font: 300 1.9vmax "Roboto";
     padding: 1.8vmax;
+  }
+}
+
+/* ==============================
+filePath: frontend\src\component\admin\ProcessOrder.js
+============================== */
+.updateOrderForm {
+  margin: 5vmax 0;
+  padding: 3vmax;
+  background-color: white;
+}
+
+.updateOrderForm > div {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.updateOrderForm > div > select {
+  padding: 1vmax 4vmax;
+  margin: 2rem 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.267);
+  border-radius: 4px;
+  font: 300 0.9vmax cursive;
+  outline: none;
+}
+
+.updateOrderForm > div > svg {
+  position: absolute;
+  transform: translateX(1vmax);
+  font-size: 1.6vmax;
+  color: rgba(0, 0, 0, 0.623);
+}
+
+@media screen and (max-width: 600px) {
+  .updateOrderForm {
+    padding: 5vmax;
+  }
+
+  .updateOrderForm > div > select {
+    padding: 2.5vmax 5vmax;
+    font: 300 1.7vmax cursive;
+  }
+
+  .updateOrderForm > div > svg {
+    font-size: 2.8vmax;
   }
 }

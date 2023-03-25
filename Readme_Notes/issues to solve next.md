@@ -10,3 +10,4 @@
 - product details or cart page এ product এর quantity show করতেছে না
 - payment integrate করতে পারিনাই তাই direct order নিয়ে কাজ করতেছি
 - আমি যদি কোন product কে order করে stock out করেও দিই তবুও backend এর Stock এ কোন কমা-কমি হচ্ছে না যার ফলে আবারো full stock order করতে পারছি
+- dashborad এ কোন order এর status **_Shipped_** করলে database থেকে stock এর পরিমান কমে কিন্তু সাথে সাথেই render হয়ে **_ManageAllOrders_** component এ দেখায় না।

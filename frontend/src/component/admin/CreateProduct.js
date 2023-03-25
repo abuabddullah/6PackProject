@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import PageTitle from "../layout/PageTitle/PageTitle";
-import SpellcheckIcon from "@mui/icons-material/Spellcheck";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import DescriptionIcon from "@mui/icons-material/Description";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import StorageIcon from "@mui/icons-material/Storage";
 import { Button } from "@mui/material";
-import { createNewProductByAdmin } from "../../reducers/productsReducer/productsActions";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { createNewProductByAdmin } from "../../reducers/productsReducer/productsActions";
 import {
   clearAllProductsErrors,
-  resetCreateNewProduct,
+  resetCreateNewProduct
 } from "../../reducers/productsReducer/productsSlice";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import PageTitle from "../layout/PageTitle/PageTitle";
 
 const CreateProduct = () => {
   const dispatch = useDispatch();
@@ -37,13 +37,15 @@ const CreateProduct = () => {
   const [imagesPreview, setImagesPreview] = useState([]);
 
   const categories = [
-    "Laptop",
+    "Laptops",
     "Footwear",
-    "Bottom",
+    "Bottoms",
     "Tops",
     "Attire",
     "Camera",
-    "SmartPhones",
+    "Smartphones",
+    "Watches",
+    "Headphones",
   ];
 
   useEffect(() => {

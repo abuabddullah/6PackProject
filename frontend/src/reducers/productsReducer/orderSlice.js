@@ -6,6 +6,7 @@ import {
   fetchAdminAllOrders,
   getOrderDetailsById,
   myOrders,
+  updateAdminOrderById,
 } from "./orderActions";
 
 const initialState = {
@@ -30,6 +31,10 @@ const orderSlice = createSlice({
     resetOrdersErrors: (state, action) => {
       state.error = null;
       state.message = null;
+    },
+    resetOrderUpdateErrors: (state, action) => {
+      state.error = null;
+      state.isOrderUpdated = false;
     },
   },
   extraReducers: (builder) => {
@@ -101,9 +106,23 @@ const orderSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     });
+
+    /* updateAdminOrderById */
+    builder.addCase(updateAdminOrderById.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updateAdminOrderById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isOrderUpdated = action.payload.success;
+      state.message = action.payload.message;
+    });
+    builder.addCase(updateAdminOrderById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
   },
 });
 
-export const { clearOrderErrors,resetOrdersErrors } = orderSlice.actions;
+export const { clearOrderErrors, resetOrdersErrors,resetOrderUpdateErrors } = orderSlice.actions;
 
 export default orderSlice.reducer;
