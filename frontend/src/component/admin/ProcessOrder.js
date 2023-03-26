@@ -16,6 +16,7 @@ import { fetchAllProducts } from "../../reducers/productsReducer/productsActions
 const ProcessOrder = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     error,
     loading,
@@ -41,12 +42,12 @@ const ProcessOrder = () => {
       toast.success("Order process Successfully", {
         id: "Orderprocess_success",
       });
-      dispatch(fetchAllProducts());
+      navigate("/admin/dashboard/orders");
       dispatch(resetOrderUpdateErrors());
     }
 
     dispatch(getOrderDetailsById(id));
-  }, [dispatch, error, isOrderUpdated, id]);
+  }, [dispatch, error, isOrderUpdated, id, navigate]);
 
   return (
     <>
