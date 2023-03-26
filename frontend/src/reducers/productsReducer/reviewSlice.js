@@ -12,6 +12,7 @@ const initialState = {
   reviews: [],
   success: false,
   message: "",
+  isDeleteReview: false,
 };
 
 const reviewSlice = createSlice({
@@ -23,6 +24,9 @@ const reviewSlice = createSlice({
     },
     resetReview: (state, action) => {
       state.success = false;
+    },
+    resetDeleteReview: (state, action) => {
+      state.isDeleteReview = false;
     },
   },
   extraReducers: (builder) => {
@@ -52,7 +56,7 @@ const reviewSlice = createSlice({
       state.success = action.payload.success;
       state.reviews = action.payload.reviews;
       state.message = action.payload.message;
-      toast.success("getAllReviews succeed", { id: "getAllReviews_success" });
+      // toast.success("getAllReviews succeed", { id: "getAllReviews_success" });
     });
     builder.addCase(getAllReviewsOfProductById.rejected, (state, action) => {
       state.loading = false;
@@ -68,6 +72,7 @@ const reviewSlice = createSlice({
     builder.addCase(deleteReviewById.fulfilled, (state, action) => {
       state.loading = false;
       state.success = action.payload.success;
+      state.isDeleteReview = true;
       state.message = action.payload.message;
       toast.success("deleteReviewById succeed", {
         id: "deleteReviewById_success",
@@ -82,6 +87,7 @@ const reviewSlice = createSlice({
   },
 });
 
-export const { clearReviewErrors, resetReview } = reviewSlice.actions;
+export const { clearReviewErrors, resetReview, resetDeleteReview } =
+  reviewSlice.actions;
 
 export default reviewSlice.reducer;

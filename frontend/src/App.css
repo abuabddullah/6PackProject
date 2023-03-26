@@ -14,6 +14,10 @@ img {
   margin: 0 auto;
 }
 
+/* just to change the cursor */
+body {
+  cursor: url("./images/cursor.png"), auto;
+}
 /* ==============================
 filePath: frontend\src\component\layout\NotFound\NotFound.js
 ============================== */
@@ -2234,5 +2238,279 @@ filePath: frontend\src\component\admin\ProcessOrder.js
 
   .updateOrderForm > div > svg {
     font-size: 2.8vmax;
+  }
+}
+
+/* ==============================
+filePath: frontend\src\component\admin\ManageAllReviews.js
+============================== */
+
+.productReviewsContainer {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgb(255, 255, 255);
+  border-left: 1px solid rgba(0, 0, 0, 0.158);
+  height: 100vh;
+}
+
+.productReviewsForm {
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding: 3vmax;
+  background-color: white;
+}
+
+.productReviewsFormHeading {
+  color: rgba(0, 0, 0, 0.733);
+  font: 300 2rem "Roboto";
+  text-align: center;
+}
+
+.productReviewsForm > div {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin: 2rem;
+}
+.productReviewsForm > div > input {
+  padding: 1vmax 4vmax;
+  padding-right: 1vmax;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.267);
+  border-radius: 4px;
+  font: 300 0.9vmax cursive;
+  outline: none;
+}
+
+.productReviewsForm > div > svg {
+  position: absolute;
+  transform: translateX(1vmax);
+  font-size: 1.6vmax;
+  color: rgba(0, 0, 0, 0.623);
+}
+
+@media screen and (max-width: 600px) {
+  .productReviewsContainer {
+    border-left: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.158);
+  }
+  .productReviewsForm > div > input {
+    padding: 2.5vmax 5vmax;
+    font: 300 1.7vmax cursive;
+  }
+
+  .productReviewsForm > div > svg {
+    font-size: 2.8vmax;
+  }
+}
+
+/* ==============================
+filePath: frontend\src\component\Contact\Contact.js
+============================== */
+.contactContainer {
+  height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+  display: grid;
+  place-items: center;
+  background-color: white;
+  position: fixed;
+}
+
+.mailBtn {
+  text-decoration: none;
+  transform: translateX(-100vw);
+  animation: mailBtnAnimation 2s forwards;
+}
+
+.mailBtn > button {
+  text-decoration: none;
+  font: 200 2vmax "Roboto";
+  cursor: url("https://img.icons8.com/color/48/000000/edit--v2.png"), pointer;
+  padding: 2vmax;
+}
+
+@keyframes mailBtnAnimation {
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ==============================
+filePath: frontend\src\component\About\About.js
+============================== */
+.aboutSection {
+  height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+  background-color: white;
+  display: grid;
+  grid-template-columns: 4fr 4fr;
+  position: fixed;
+}
+
+.aboutSectionGradient {
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(78, 81, 255),
+    rgb(74, 137, 189)
+  );
+}
+
+.aboutSectionContainer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background-color: rgb(255, 255, 255);
+  width: 80vw;
+  height: 80vh;
+  transform: translateX(-50%) translateY(-50%);
+  box-shadow: -10px 10px 10px rgba(0, 0, 0, 0.192);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aboutSectionContainer > h1 {
+  font: 400 3vmax "Roboto";
+  color: tomato;
+  margin: 2vmax;
+}
+
+.aboutSectionContainer > div {
+  display: flex;
+  width: 100%;
+}
+
+.aboutSectionContainer > div > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2vmax;
+  box-sizing: border-box;
+}
+
+.aboutSectionContainer > div > div > p {
+  color: rgba(0, 0, 0, 0.623);
+  font: 100 1vmax "Roboto";
+}
+
+.aboutSectionContainer > div > div > button {
+  margin: 1vmax 0;
+}
+
+.aboutSectionContainer > div > div > span {
+  font: 100 1vmax "Roboto";
+  color: rgba(0, 0, 0, 0.616);
+  text-align: center;
+  width: 80%;
+}
+
+.aboutSectionContainer2 {
+  border-left: 1px solid rgba(0, 0, 0, 0.116);
+}
+
+.aboutSectionContainer2 > h2 {
+  color: rgba(0, 0, 0, 0.623);
+  font: 100 2vmax "Roboto";
+  margin: 2vmax;
+}
+
+.aboutSectionContainer2 > a > svg {
+  font-size: 4vmax;
+}
+
+.youtubeSvgIcon {
+  color: tomato;
+}
+
+.instagramSvgIcon {
+  color: rgb(144, 81, 202);
+}
+
+@media screen and (max-width: 600px) {
+  .aboutSectionContainer > div {
+    display: block;
+  }
+
+  .aboutSectionContainer > h1 {
+    font: 400 5vmax "Roboto";
+    margin: 3vmax;
+  }
+
+  .aboutSectionContainer > div > div > p {
+    font: 100 2vmax "Roboto";
+  }
+
+  .aboutSectionContainer > div > div > span {
+    font: 100 1.4vmax "Roboto";
+    width: 70%;
+  }
+
+  .aboutSectionContainer2 {
+    border-left: none;
+  }
+
+  .aboutSectionContainer2 > h2 {
+    font: 100 3vmax "Roboto";
+    margin: 2vmax;
+  }
+
+  .aboutSectionContainer2 > a > svg {
+    font-size: 6vmax;
+    margin: 1vmax;
+  }
+}
+
+/* ==============================
+filePath: frontend\src\component\layout\NotFound\NotFound.js
+============================== */
+.PageNotFound {
+  margin: auto;
+  text-align: center;
+  padding: 10vmax;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.PageNotFound > svg {
+  font-size: 7vmax;
+  color: tomato;
+}
+.PageNotFound > p {
+  font-size: 2vmax;
+}
+.PageNotFound > a {
+  background-color: rgb(51, 51, 51);
+  color: white;
+  border: none;
+  padding: 1vmax 3vmax;
+  cursor: pointer;
+  font: 400 1vmax "Roboto";
+  text-decoration: none;
+  margin: 2vmax;
+}
+
+@media screen and (max-width: 600px) {
+  .PageNotFound > a {
+    padding: 3vw 6vw;
+    font: 400 4vw "Roboto";
+    margin: 2vmax;
+  }
+
+  .PageNotFound > svg {
+    font-size: 20vw;
+  }
+  .PageNotFound > p {
+    margin: 2vmax;
+    font-size: 5vw;
   }
 }

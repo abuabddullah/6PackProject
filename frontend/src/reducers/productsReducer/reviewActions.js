@@ -46,7 +46,7 @@ export const getAllReviewsOfProductById = createAsyncThunk(
 
 export const deleteReviewById = createAsyncThunk(
   "user/deleteReviewById",
-  async (reviewId, productId) => {
+  async ({reviewId, productId}) => {
     try {
       // get token from cookie and send via get request
       function getCookie(name) {

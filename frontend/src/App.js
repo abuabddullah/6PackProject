@@ -3,6 +3,8 @@ import { Route, Routes } from "react-router-dom";
 import WebFont from "webfontloader";
 import "./App.css";
 import Cart from "./component/Cart/Cart.js";
+import Contact from "./component/Contact/Contact.js";
+import About from "./component/About/About.js";
 import ConfirmOrder from "./component/Cart/ConfirmOrder.js";
 import OrderSuccess from "./component/Cart/OrderSuccess.js";
 import Payment from "./component/Cart/Payment.js";
@@ -80,6 +82,8 @@ function App() {
         <Route path="/password/forgot" element={<ForgotPassword />} />
         <Route path="/password/reset/:token" element={<ResetPassword />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
         <Route
           path="/account"
           element={

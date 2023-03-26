@@ -1,6 +1,8 @@
+import { Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "../PageTitle/PageTitle";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -14,10 +16,12 @@ const NotFound = () => {
   return (
     <>
       <PageTitle title="Not Found" />
-      <div className="not-found">
-        <h2>404!</h2>
-        <p>Page Not Found</p>
-      </div>
+    <div className="PageNotFound">
+      <ErrorIcon />
+
+      <Typography>Page Not Found </Typography>
+      <Link to="/">Home</Link>
+    </div>
     </>
   );
 };
