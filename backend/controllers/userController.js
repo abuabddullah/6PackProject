@@ -104,13 +104,14 @@ exports.forgotPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  // bellow link is edited dueto the change in frontend url
-  /* const resetPasswordUrl = `${req.protocol}://${req.get(
+  // bellow link was edited dueto the change in frontend url [casue frontend and backend were in different url frnd:localhost:3000, bknd:localhost:5000]
+  const resetPasswordUrl = `${req.protocol}://${req.get(
     "host"
-  )}/api/v1/password/reset/${resetToken}`; */
+  )}/api/v1/password/reset/${resetToken}`; // for joining frontend and backend in same url
 
-  const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
-  console.log(resetPasswordUrl);
+  // bellow link is comment out during deployment casue "frontend and backend are merged in localhost:5000 in app.js file"
+  /* const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+  console.log(resetPasswordUrl); */
 
   const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it. \n\n বিঃদ্রঃ যদি restePasswordUrl কে কোন কারনেও একটুকু change করা লাগে (frontend/backend link changing) এর জন্যে তাহলে message variable এ হালকা কিছু লিখে দরকার পরে আবার কেটে দিতে হবে নইলে অনেক সময় link না গিয়ে ip address যায় email এ`;
 
@@ -156,7 +157,7 @@ exports.resetPassword = catchAsyncErrorsMiddleware(async (req, res, next) => {
       )
     );
   }
-  
+
   if (req.body.password !== req.body.confirmPassword) {
     return next(new ErrorHandler("Password does not match", 400));
   }

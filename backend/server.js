@@ -12,8 +12,15 @@ process.on("uncaughtException", (err) => {
 // console.log(testUncaughtError);
 
 
-//config
-dotenv.config({ path: "backend/config/config.env" });
+//config is commented out because it is not working we merged frontend and backend
+/* dotenv.config({ path: "backend/config/config.env" }); */
+
+// Config
+if (process.env.NODE_ENV !== "PRODUCTION") {
+  dotenv.config({ path: "backend/config/config.env" });
+} // for joining frontend and backend in same url
+
+
 
 
 
