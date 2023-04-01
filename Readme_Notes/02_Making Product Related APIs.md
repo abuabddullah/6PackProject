@@ -6,7 +6,7 @@
 
 > _basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে_
 
-2. এবার "6PP*ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে \*\*\_mongoose.schema()*** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports\*\* করে দিব।
+2. এবার "6PP\*ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে \*\*\_mongoose.schema()**\* method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports\*\* করে দিব।
 
 > _মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে_
 
@@ -136,7 +136,7 @@ exports.getAllProducts = (req, res) => {
 
 ####
 
-4. এবার **createProduct** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **createProduct** function কে import করে \*\*\_router.route().post()*** method দিয়ে আরেকটা নতুন **POST API\*\* এর route বানাতে হবে
+4. এবার **createProduct** function এর router বানানোর জন্য "6PP\*ECOMMERCE/backend/routes/**productRoute.js**" file এ **createProduct** function কে import করে \*\*\_router.route().post()**\* method দিয়ে আরেকটা নতুন **POST API\*\* এর route বানাতে হবে
 
 ####
 
@@ -170,7 +170,7 @@ module.exports = router;
 
 ####
 
-5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject.onrender.comapi/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
+5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject-qnef.onrender.comapi/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
 
 ####
 
@@ -316,7 +316,7 @@ exports.getAllProducts = async(req, res,next) => {
 
 ####
 
-9. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে \*\*\_router.route().put().delete()*** method দিয়ে নতুন **PUT & DELETE API\*\* এর route বানাতে হবে
+9. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP\*ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে \*\*\_router.route().put().delete()**\* method দিয়ে নতুন **PUT & DELETE API\*\* এর route বানাতে হবে
 
 ####
 
@@ -466,7 +466,7 @@ exports.getProductDetails = async(req, res,next) => {
 
 ####
 
-12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে \*\*\_router.route().get()*** method দিয়ে নতুন **GET API\*\* এর route বানাতে হবে ।
+12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP\*ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে \*\*\_router.route().get()**\* method দিয়ে নতুন **GET API\*\* এর route বানাতে হবে ।
 
 > _এখানে same **path** এর সবগুলো req কে একই সাথে একই line এ দেয়া যেত কিন্তু **AdminRoute & NonAdminRoute** differenciate করারা জন্য আলাদা আলাদা দুটা line এ করা হয়েছে_
 

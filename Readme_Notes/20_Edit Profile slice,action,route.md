@@ -92,7 +92,7 @@ export const updateUserProfile = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        "https://sixpackproject.onrender.comapi/v1/me/update",
+        "https://sixpackproject-qnef.onrender.comapi/v1/me/update",
         userProfileData,
         config
       );

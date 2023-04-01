@@ -289,13 +289,13 @@ import axios from "axios";
 
 
 // export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async () => {
-//     const { data } = await axios.get("https://sixpackproject.onrender.comapi/v1/products");
+//     const { data } = await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/products");
 //     return data;
 // })
 
 export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async (keyWord="") => {
     try {
-        const { data } = await axios.get(`https://sixpackproject.onrender.comapi/v1/products?keyword=${keyWord}`);
+        const { data } = await axios.get(`https://sixpackproject-qnef.onrender.comapi/v1/products?keyword=${keyWord}`);
         return data;
     } catch (err) {
         return err.message;
@@ -307,7 +307,7 @@ export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", as
 export const fetchProductById = createAsyncThunk("productDetails/fetchProductById", async (id) => {
     try {
         const { data } = await axios
-        .get(`https://sixpackproject.onrender.comapi/v1/product/${id}`);
+        .get(`https://sixpackproject-qnef.onrender.comapi/v1/product/${id}`);
         return data.product;
     } catch (err) {
         return err.message;
@@ -554,14 +554,14 @@ import axios from "axios";
 
 
 // export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async () => {
-//     const { data } = await axios.get("https://sixpackproject.onrender.comapi/v1/products");
+//     const { data } = await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/products");
 //     return data;
 // })
 
 
 export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async ({keyWord="",page=1,limit=3,price=[0,25000],ratings=0,category}) => {
     try {
-        let link = `https://sixpackproject.onrender.comapi/v1/products?keyword=${keyWord}&page=${page}&limit=${limit}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`
+        let link = `https://sixpackproject-qnef.onrender.comapi/v1/products?keyword=${keyWord}&page=${page}&limit=${limit}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`
 
         if(category && category !== "All"){
             link += `&category=${category}`
@@ -578,7 +578,7 @@ export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", as
 export const fetchProductById = createAsyncThunk("productDetails/fetchProductById", async (id) => {
     try {
         const { data } = await axios
-        .get(`https://sixpackproject.onrender.comapi/v1/product/${id}`);
+        .get(`https://sixpackproject-qnef.onrender.comapi/v1/product/${id}`);
         return data.product;
     } catch (err) {
         return err.message;

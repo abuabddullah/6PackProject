@@ -34,7 +34,7 @@ npm i bcryptjs jsonwebtoken validator nodemailer cookie-parser body-parser
 ####
 
 2. এবার "6PP_ECOMMERCE/backend/**models**" folder এর ভিতরে "6PP_ECOMMERCE/backend/models/**userModel.js**" file বানাতে হবে এবং
-3. "6PP*ECOMMERCE/backend/models/**userModel.js**" file এ **mongoose, validator** কে import করে নিব, তারপর \*\*\_mongoose.schema()*** method দিয়ে **user** এর schema বা কংকাল বানাতে হবে যেখানে **userSchema** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports\*\* করে দিব।
+3. "6PP\*ECOMMERCE/backend/models/**userModel.js**" file এ **mongoose, validator** কে import করে নিব, তারপর \*\*\_mongoose.schema()**\* method দিয়ে **user** এর schema বা কংকাল বানাতে হবে যেখানে **userSchema** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports\*\* করে দিব।
 
 > মনে রাখতে হবে,
 > basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে আর
@@ -149,7 +149,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 
 ####
 
-5. এবার **registerUser** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**userRoute.js**" file create করে তাতে **express, registerUser** function কে import করে \*\*\_router.route().post()*** method দিয়ে আরেকটা নতুন **POST API** এর route বানাতে হবে এবং সব শেষে **router\*\* কে exporst করে দিতে হবে
+5. এবার **registerUser** function এর router বানানোর জন্য "6PP\*ECOMMERCE/backend/routes/**userRoute.js**" file create করে তাতে **express, registerUser** function কে import করে \*\*\_router.route().post()**\* method দিয়ে আরেকটা নতুন **POST API** এর route বানাতে হবে এবং সব শেষে **router\*\* কে exporst করে দিতে হবে
 
 ####
 
@@ -212,7 +212,7 @@ module.exports = app;
 
 ####
 
-7. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject.onrender.comapi/v1/register_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে **registerUser** function এর জন্য
+7. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject-qnef.onrender.comapi/v1/register_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে **registerUser** function এর জন্য
 
 ####
 
@@ -226,7 +226,7 @@ module.exports = app;
 
 ####
 
-8. এবার "6PP*ECOMMERCE/backend/models/**userModel.js**" file এ **bcryptjs** কে import করব তারপর \*\*\_userSchema*** এর উপরে **_"save"_** event apply করে একটা asynchronous analog function pass করব যা **_next_** function কে parameter হিসেবে নিবে এবং যদি password change করা হয় অথবা user firstime register হয় তাহলেই কেবল password **_hashing_** হবে নইলে **_next()_\*\* function invoke হবে
+8. এবার "6PP\*ECOMMERCE/backend/models/**userModel.js**" file এ **bcryptjs** কে import করব তারপর \*\*\_userSchema**\* এর উপরে **_"save"_** event apply করে একটা asynchronous analog function pass করব যা **_next_** function কে parameter হিসেবে নিবে এবং যদি password change করা হয় অথবা user firstime register হয় তাহলেই কেবল password **_hashing_** হবে নইলে **_next()_\*\* function invoke হবে
 
 ####
 
@@ -340,7 +340,7 @@ JWT_EXPIRE=1d
 
 ####
 
-11. এবার 6PP*ECOMMERCE/backend/models/**userModel.js** file এ **jsonwebtoken** কে import করে তারপর \*\*\_userSchema*** এর ভিতরে methods হসেবে **getJWTToken** function কে push করে দিব যা মূলত **_jwt.sign()_** method এর সাহায্যে **json web token\*\* generate করে পাশাপাশি তা return ও করবে
+11. এবার 6PP\*ECOMMERCE/backend/models/**userModel.js** file এ **jsonwebtoken** কে import করে তারপর \*\*\_userSchema**\* এর ভিতরে methods হসেবে **getJWTToken** function কে push করে দিব যা মূলত **_jwt.sign()_** method এর সাহায্যে **json web token\*\* generate করে পাশাপাশি তা return ও করবে
 
 ####
 
@@ -490,7 +490,7 @@ exports.registerUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
 ####
 
-13. 6PP*ECOMMERCE/backend/models/**userModel.js** file এ গিয়ে এবার **User login** করার সময় যে password দিচ্ছে আর আমাদের database এ সেই email এর against এ যে password আছে তা same কিনা check করার জন্য \*\*\_UserShema.methods.comparePassword()*** নামের একটা function বানাব যা bcryptjs এর default **_compare_\*\* method এর সাহায্যে এই কাজকে সহজেই করে দিবে
+13. 6PP\*ECOMMERCE/backend/models/**userModel.js** file এ গিয়ে এবার **User login** করার সময় যে password দিচ্ছে আর আমাদের database এ সেই email এর against এ যে password আছে তা same কিনা check করার জন্য \*\*\_UserShema.methods.comparePassword()**\* নামের একটা function বানাব যা bcryptjs এর default **_compare_\*\* method এর সাহায্যে এই কাজকে সহজেই করে দিবে
 
 ####
 
@@ -943,7 +943,7 @@ exports.logoutUser = catchAsyncErrorsMiddleware(async (req, res, next) => {
 
 ####
 
-25. 6PP*ECOMMERCE/backend/routes/**userRoute.js** file এ গিয়ে **logoutUser** এর জন্য একটা \*\*\_router.route().get()*** নামের **GET\*\* req বানাব
+25. 6PP\*ECOMMERCE/backend/routes/**userRoute.js** file এ গিয়ে **logoutUser** এর জন্য একটা \*\*\_router.route().get()**\* নামের **GET\*\* req বানাব
 
 ####
 
@@ -988,7 +988,7 @@ module.exports = router;
 
 ####
 
-27. 6PP*ECOMMERCE/backend/**app.js** file এ গিয়ে **cookie-parser** কে import করে নিব তারপর \*\*\_app.use()*** method এর সাহায্যে **cookie-parser** কে \*middleweare** হিসেবে invoke করব
+27. 6PP\*ECOMMERCE/backend/**app.js** file এ গিয়ে **cookie-parser** কে import করে নিব তারপর \*\*\_app.use()**\* method এর সাহায্যে **cookie-parser** কে \*middleweare** হিসেবে invoke করব
 
 ####
 
@@ -1041,7 +1041,7 @@ module.exports = app;
 
 ####
 
-29. এবার 6PP*ECOMMERCE/backend/middleware/**auth.js** file এ \*\*\_verifyJWT*** নামের একটা async function বানাব যেখানে **_req.cookies_** থেকে আমরা **_token_** টাকে বের করে নিব আর তারপর একে **_jwt.verify()_** method এর সাহায্যে **decode** করে তা **_decodedData_** নামের variable এ assign করব তার পর database collection or model এ **.findById()** method এর সাহায্যে **id** দিয়ে userInfo কে বের করে এনে **req** এর ভিতরে **_user_** key create করে তার value হিসবে userInfo কে push করে দিব আর সব শেষে **_next()_\*\* function কে invoke করব
+29. এবার 6PP\*ECOMMERCE/backend/middleware/**auth.js** file এ \*\*\_verifyJWT**\* নামের একটা async function বানাব যেখানে **_req.cookies_** থেকে আমরা **_token_** টাকে বের করে নিব আর তারপর একে **_jwt.verify()_** method এর সাহায্যে **decode** করে তা **_decodedData_** নামের variable এ assign করব তার পর database collection or model এ **.findById()** method এর সাহায্যে **id** দিয়ে userInfo কে বের করে এনে **req** এর ভিতরে **_user_** key create করে তার value হিসবে userInfo কে push করে দিব আর সব শেষে **_next()_\*\* function কে invoke করব
 
 ####
 
@@ -1134,7 +1134,7 @@ module.exports = router;
 
 ####
 
-32. এবার 6PP*ECOMMERCE/backend/middleware/**auth.js** file এ \*\*\_verifyUserRole*** নামের একটা async function বানাব যেখানে parameter হিসেবে **_"admin"_** role কে পাব এবার এর ভিতরে check করব parameter এর role কি database এর user এর role কিনা **যদি না থাকে** তাহলে **_error message_** কে res হিসেবে পাঠিয়ে দিব আর **যদি থাকে** তাহলে **_next()_\*\* function কে invoke করব
+32. এবার 6PP\*ECOMMERCE/backend/middleware/**auth.js** file এ \*\*\_verifyUserRole**\* নামের একটা async function বানাব যেখানে parameter হিসেবে **_"admin"_** role কে পাব এবার এর ভিতরে check করব parameter এর role কি database এর user এর role কিনা **যদি না থাকে** তাহলে **_error message_** কে res হিসেবে পাঠিয়ে দিব আর **যদি থাকে** তাহলে **_next()_\*\* function কে invoke করব
 
 ####
 
@@ -1171,7 +1171,7 @@ exports.verifyUserRole = (...roles) => {
 
 ####
 
-33. এবার test করার জন্য 6PP*ECOMMERCE/backend/routes/**productRoute.js** file এ \*\*\_verifyJWT*** এর পরে কিন্তু **_updateProduct,deleteProduct_** এর আগে **_verifyUserRole_\*\* কে বসিয়ে দিতে হবে
+33. এবার test করার জন্য 6PP\*ECOMMERCE/backend/routes/**productRoute.js** file এ \*\*\_verifyJWT**\* এর পরে কিন্তু **_updateProduct,deleteProduct_** এর আগে **_verifyUserRole_\*\* কে বসিয়ে দিতে হবে
 
 ####
 

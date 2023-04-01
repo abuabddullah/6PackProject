@@ -592,7 +592,7 @@ yarn-error.log*
 > > >
 > > > > app.get("\*", (req, res) => {res.sendFile(path.resolve(\_\_dirname, "../frontend/build/index.html"));});
 >
-> > এখন আমি frontend এর terminal kill করে দিতে পারব ও তাইই করব ও পাশাপাশি backend এর terminal restart করব এবং browser এ গিয়ে _http://localhost:3000/_ এর বদলে **_https://sixpackproject.onrender.com/_** এ যাব এবং তবুও কাজ করবে কারন **_frontend & backend are merged already_**
+> > এখন আমি frontend এর terminal kill করে দিতে পারব ও তাইই করব ও পাশাপাশি backend এর terminal restart করব এবং browser এ গিয়ে _http://localhost:3000/_ এর বদলে **_https://sixpackproject-qnef.onrender.com/_** এ যাব এবং তবুও কাজ করবে কারন **_frontend & backend are merged already_**
 > >
 > > > **resetPassword** features এর জন্য আমরা backend\controllers\ **userController.js** file থেকে email এ একটা লিংক পাঠাতাম যেখানে আমাদের **_FRONTEND_URL_** env var use করতে হত। এখন আমাদের আর **FRONTEND_URL** use করতে হবে না যেহেতু frontend marged হয়ে গেছে তাই সেখানে কিছু code চেঞ্জ করতে হবে
 > > >
@@ -612,6 +612,8 @@ yarn-error.log*
 > > > 6PP_ECOMMERCE/**Procfile** এ
 > > >
 > > > > web: node backend/server.js
+> > >
+> > > **_বিদ্রঃ এটা শুধু heroku.com এর জন্যই প্রযোজ্য render.com এর জন্য নয়_**
 > >
 > > **বিঃদ্রঃ** এগুলো deploy server ভেদে আলাদা আলাদা হবে [render এর জন্য আলাদা]
 >
@@ -631,13 +633,13 @@ yarn-error.log*
 >
 > > most importantly frontend এর
 > >
-> > > সকল **_https://sixpackproject.onrender.com_** লিংক্স কে **_https://sixpackproject.onrender.com/_** convert করা হয়েছে
+> > > সকল **_https://sixpackproject-qnef.onrender.com_** লিংক্স কে **_https://sixpackproject-qnef.onrender.com/_** convert করা হয়েছে
 >
 > > এবার root folder এর **_package.json_** file এ সবার last এর proxy এর value change করে
 > >
 > > > _"proxy": "http://192.168.0.104:5000"_ এর বদলে
 > >
-> > > **"proxy": "https://sixpackproject.onrender.com/_** দিতে হবে
+> > > **"proxy": "https://sixpackproject-qnef.onrender.com/_** দিতে হবে
 >
 > > এর পর **frontend** folder টা terminal এ open করে **_npm run build_** command দিয়ে frontend/**build** তৈরি করতে হবে
 >
@@ -1258,7 +1260,7 @@ yarn-error.log*
       "last 1 safari version"
     ]
   },
-  "proxy": "https://sixpackproject.onrender.com"
+  "proxy": "https://sixpackproject-qnef.onrender.com"
 }
 
 

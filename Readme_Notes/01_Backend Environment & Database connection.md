@@ -38,7 +38,7 @@ npm i express mongoose dotenv cors
 
 ####
 
-6. এবার "6PP*ECOMMERCE/backend/**app.js**" file এ **express, cors** কে import করে তা দিয়ে **app** বানিয়ে \*\*\_app.use()*** method দিয়ে **_cors() & express.json()_** function কে invoke করে তারপর app কে এই file থেকে **export\*\* করে দিয়ে হবে যাতে অন্য file থেকেও এই app টার access পাওয়া যায়
+6. এবার "6PP\*ECOMMERCE/backend/**app.js**" file এ **express, cors** কে import করে তা দিয়ে **app** বানিয়ে \*\*\_app.use()**\* method দিয়ে **_cors() & express.json()_** function কে invoke করে তারপর app কে এই file থেকে **export\*\* করে দিয়ে হবে যাতে অন্য file থেকেও এই app টার access পাওয়া যায়
 
 ####
 
@@ -62,7 +62,7 @@ module.exports = app;
 
 ####
 
-7. এবার backend folder এ একটা config নামের folder বানাতে হবে "6PP*ECOMMERCE/backend/**config**" তার ভিতরে একটা \*\**.env*** file বানাতে হবে "6PP_ECOMMERCE/backend/config/**config.env**" এবং এই file এ একটা **\_PORT*\*\* নামের environment variable বানাতে হবে
+7. এবার backend folder এ একটা config নামের folder বানাতে হবে "6PP\*ECOMMERCE/backend/**config**" তার ভিতরে একটা \*\*\*.env**\* file বানাতে হবে "6PP_ECOMMERCE/backend/config/**config.env**" এবং এই file এ একটা **\_PORT\*\*\* নামের environment variable বানাতে হবে
 
 ####
 
@@ -75,7 +75,7 @@ PORT=5000
 
 ####
 
-8. এবার "6PP*ECOMMERCE/backend/**server.js**" file এ **app, dotenv** কে import করে নিতে হবে, তারপর \*\*\_dotenv*** কে file এর সাথে connect করে নিতে হবে (_line: 4_) এবং **_app.listen()_\*\* method দিয়ে একটা server establish করতে হবে
+8. এবার "6PP\*ECOMMERCE/backend/**server.js**" file এ **app, dotenv** কে import করে নিতে হবে, তারপর \*\*\_dotenv**\* কে file এর সাথে connect করে নিতে হবে (_line: 4_) এবং **_app.listen()_\*\* method দিয়ে একটা server establish করতে হবে
 
 ####
 
@@ -136,7 +136,7 @@ exports.getAllProducts = (req, res) => {
 ####
 
 12. এবার "6PP*ECOMMERCE/backend/**routes**" folder এ **\_getAllProducts** function* কে **_get request দিয়ে routing_** করার জন্য জন্য একটা file বানাতে হবে "6PP_ECOMMERCE/backend/routes/**productRoute.js**"
-13. "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **express, getAllProducts** কে import করে **express** এর সাহায্যে \*\*\_express.Router()*** method দিয়ে **router** create করতে হবে, এরপর **_router.route().get()_** method দিয়ে প্রতিটা **API requests** এর aginst এ route বানাতে হবে এবং সবার নিচে **router\*\* কে exports করে দিতে হবে ।
+13. "6PP\*ECOMMERCE/backend/routes/**productRoute.js**" file এ **express, getAllProducts** কে import করে **express** এর সাহায্যে \*\*\_express.Router()**\* method দিয়ে **router** create করতে হবে, এরপর **_router.route().get()_** method দিয়ে প্রতিটা **API requests** এর aginst এ route বানাতে হবে এবং সবার নিচে **router\*\* কে exports করে দিতে হবে ।
 
 > _এখানে মূলত সকল **API**s এর জন্য যে http req আছে যেমন **.get, .post, .put, .delete** আছে সেগুলোকে **pathName** অনুযায়ি line by line declare করা হয় এবং **pathName** যদি same হয় তাহলে সবগুলো request কে একই line এও declare করা যায়_
 
@@ -170,7 +170,7 @@ module.exports = router;
 
 ####
 
-14. এবার "6PP*ECOMMERCE/backend/**app.js**" file এ \*\*\_productRoute*** variable কে import করে তারপর **_app.use()_** method দিয়ে **commonURL & productRoute\*\* সহ invoke করতে হবে।
+14. এবার "6PP\*ECOMMERCE/backend/**app.js**" file এ \*\*\_productRoute**\* variable কে import করে তারপর **_app.use()_** method দিয়ে **commonURL & productRoute\*\* সহ invoke করতে হবে।
 
 > _এই **commonURL** সব সময় url এর সাথে fixed থাকে_
 
@@ -219,7 +219,7 @@ npm run start-dev
 
 ####
 
-16. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** নামের একটা নতুন collection বানাতে হবে, তারপর সেখানে **_https://sixpackproject.onrender.com/api/v1/products_** link এর against এ একটা **GET request** generate করতে হবে
+16. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** নামের একটা নতুন collection বানাতে হবে, তারপর সেখানে **_https://sixpackproject-qnef.onrender.com/api/v1/products_** link এর against এ একটা **GET request** generate করতে হবে
 
 ####
 

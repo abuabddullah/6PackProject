@@ -29,7 +29,7 @@ export const loginUser = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "application/json" } };
       const { data } = await axios.post(
-        "https://sixpackproject.onrender.comapi/v1/login",
+        "https://sixpackproject-qnef.onrender.comapi/v1/login",
         userInfo,
         config
       );
@@ -52,7 +52,7 @@ export const registerNewUser = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       const { data } = await axios.post(
-        "https://sixpackproject.onrender.comapi/v1/register",
+        "https://sixpackproject-qnef.onrender.comapi/v1/register",
         userData,
         config
       );
@@ -80,7 +80,7 @@ export const getMyProfile = createAsyncThunk("user/getMyProfile", async () => {
     const token = getCookie("token");
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
-    const { data } = await axios.get("https://sixpackproject.onrender.comapi/v1/me", config);
+    const { data } = await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/me", config);
 
     return data.user;
   } catch (err) {
@@ -94,7 +94,7 @@ export const logoutMe = createAsyncThunk("user/logoutMe", async () => {
     const removingCookieByName = "token";
     document.cookie = removingCookieByName + "=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 
-    await axios.get("https://sixpackproject.onrender.comapi/v1/logout");
+    await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/logout");
   } catch (err) {
     return err.response.data.message;
   }

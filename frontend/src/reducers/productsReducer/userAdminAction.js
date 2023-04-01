@@ -14,7 +14,7 @@ export const fetchAdminAllUsers = createAsyncThunk(
       const token = getCookie("token");
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const { data } = await axios.get(
-        "https://sixpackproject.onrender.comapi/v1/admin/users",
+        "https://sixpackproject-qnef.onrender.comapi/v1/admin/users",
         config
       );
       return data.users; // data={success: true,users,}
@@ -40,7 +40,7 @@ export const deleteAdminUserById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.delete(
-        `https://sixpackproject.onrender.comapi/v1/admin/user/${id}`,
+        `https://sixpackproject-qnef.onrender.comapi/v1/admin/user/${id}`,
         config
       );
       return data; // {success: true,message: "user deleted successfully",}
@@ -67,7 +67,7 @@ export const updateUserByAdminById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.put(
-        `https://sixpackproject.onrender.comapi/v1/admin/user/${id}`,
+        `https://sixpackproject-qnef.onrender.comapi/v1/admin/user/${id}`,
         myForm,
         config
       );
@@ -95,7 +95,7 @@ export const getUserDetailsByAdminById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.get(
-        `https://sixpackproject.onrender.comapi/v1/admin/user/${id}`,
+        `https://sixpackproject-qnef.onrender.comapi/v1/admin/user/${id}`,
         config
       );
       return data; // {success: true,user,}
