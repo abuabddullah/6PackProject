@@ -651,6 +651,10 @@ yarn-error.log*
 >
 > > এবার এই repo টা _**render.com**_ এ host করব ও সকল env vars গুলো সেখানে লিখে দিব just extra হিসেবে **_NODE_ENV = PRODUCTION_** লিখে দিব যেটা local machine এ লিখা থাকবে না
 
+> > **বিশেষ দ্রষ্টবঃ**
+> >
+> > > **render.com** এর জন্য যত বারই আমরা code change করব তত বারই **_frontend_** terminal এ গিয়ে **_npm run build_** command দিব আর তত বারই **_git add . | git commit -m "message" | git push_** করতে হবে. তা না হলে **_render.com_** এ error আসবে
+
 # File Condition after Merging
 
 ### File Path: backend\app.js
