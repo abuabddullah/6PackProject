@@ -18,7 +18,7 @@ export const getStripePublishableApiKey = createAsyncThunk(
       };
 
       const { data } = await axios.get(
-        "http://localhost:5000/api/v1/stripePublishableApiKey",
+        "https://sixpackproject.onrender.comapi/v1/stripePublishableApiKey",
         config
       );
 
@@ -45,7 +45,7 @@ export const process4Payment = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.post(
-        "http://localhost:5000/api/v1/payment/process",
+        "https://sixpackproject.onrender.comapi/v1/payment/process",
         paymentInSent,
         config
       );

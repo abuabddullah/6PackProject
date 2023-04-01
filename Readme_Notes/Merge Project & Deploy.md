@@ -631,7 +631,7 @@ yarn-error.log*
 >
 > > most importantly frontend এর
 > >
-> > > সকল **_http://localhost:5000/_** লিংক্স কে **_https://sixpackproject.onrender.com/_** convert করা হয়েছে
+> > > সকল **_https://sixpackproject.onrender.com_** লিংক্স কে **_https://sixpackproject.onrender.com/_** convert করা হয়েছে
 >
 > > এবার root folder এর **_package.json_** file এ সবার last এর proxy এর value change করে
 > >

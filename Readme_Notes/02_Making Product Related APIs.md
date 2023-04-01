@@ -2,14 +2,13 @@
 
 #### APIs : productSchema, productModel, productRoute, GET, POST, UPDATE, DELETE (37:45 - 51:45)
 
+1. backend folder এর ভিতরে "6PP_ECOMMERCE/backend/**models**" folder বানাতে হবে যার ভিতরে "6PP_ECOMMERCE/backend/models/**productModel.js**" file বানাতে হবে।
 
-1. backend folder এর ভিতরে "6PP_ECOMMERCE/backend/**models**" folder বানাতে হবে যার ভিতরে "6PP_ECOMMERCE/backend/models/**productModel.js**" file বানাতে হবে। 
+> _basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে_
 
->_basically এই model গুলোই মূলত mongodb এর **collection** এর মত কাজ করে_
+2. এবার "6PP*ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে \*\*\_mongoose.schema()*** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports\*\* করে দিব।
 
-2. এবার "6PP_ECOMMERCE/backend/models/**productModel.js**" file এ **mongoose** কে import করে **_mongoose.schema()_** method দিয়ে **product** এর schema বা কংকাল বানাতে হবে যেখানে **product** object এর সকল **key-value** এর বৈশিষ্ট define করা থাকবে, এরপর সবার নিচে **collection Name, schema name** সহ **_mongoose.model()_** method এর সাহায্যে **model** টা বানিয়ে **inline exports** করে দিব।
-
->_মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে_
+> _মনে রাখতে হবে **collection name** অবশ্যই singular form এ দিতে হবে আর **user** এর **schema** টা আপাতত skip থাকবে_
 
 ####
 
@@ -101,9 +100,13 @@ const productSchema = new mongoose.Schema({
 const productModel = mongoose.model("Product", productSchema);
 module.exports = productModel;
 ```
+
 ### POST req for creating a product by -- _ADMINROUTE_
+
 ####
+
 3. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **productModel** কে import করে নিয়ে তারপর **createProduct** নামের asynchronus function generate করতে হবে
+
 ####
 
 ```http
@@ -132,7 +135,9 @@ exports.getAllProducts = (req, res) => {
 ```
 
 ####
-4. এবার **createProduct** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **createProduct** function কে import করে **_router.route().post()_** method দিয়ে আরেকটা নতুন **POST API** এর route বানাতে হবে 
+
+4. এবার **createProduct** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **createProduct** function কে import করে \*\*\_router.route().post()*** method দিয়ে আরেকটা নতুন **POST API\*\* এর route বানাতে হবে
+
 ####
 
 ```http
@@ -164,26 +169,35 @@ module.exports = router;
 ```
 
 ####
-5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_http://localhost:5000/api/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
+
+5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject.onrender.comapi/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
+
 ####
 
 ####
+
 ![postman success screenshot](https://i.ibb.co/YLQHCp2/xcv.png)
 
 ####
 
 ####
+
 6. এবার **mongodb_compass software** দিয়ে database check করতে হবে,
+
 ####
 
 ####
+
 ![mongodb_compass success screenshot](https://i.ibb.co/JkCxW8m/xcv.png)
-####
 
+####
 
 ### GET req for having all products (51:45 - 1:02:37)
+
 ####
+
 7. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **getAllProducts** নামের function কে asynchronus করতে হবে পাশাপাশি এটাকে এমন একটা **GET API** বানাতে হবে যা সব products কে database থেকে get করতে পারে।
+
 ####
 
 ```http
@@ -212,13 +226,19 @@ exports.getAllProducts = async(req, res,next) => {
 };
 
 ```
+
 ####
+
 ![postman success screenshot](https://i.ibb.co/GPm1LM0/xcv.png)
+
 ####
 
 ### PUT,DELETE req for Updating, Deleting a product respectively by -- _ADMINROUTE_
+
 ####
-8. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ  **updateProduct, deleteProduct** নামের asynchronus function generate করতে হবে
+
+8. এবার "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **updateProduct, deleteProduct** নামের asynchronus function generate করতে হবে
+
 ####
 
 ```http
@@ -295,7 +315,9 @@ exports.getAllProducts = async(req, res,next) => {
 ```
 
 ####
-9. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে **_router.route().put().delete()_** method দিয়ে নতুন **PUT & DELETE API** এর route বানাতে হবে 
+
+9. এবার **updateProduct, deleteProduct** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **updateProduct, deleteProduct** function কে import করে \*\*\_router.route().put().delete()*** method দিয়ে নতুন **PUT & DELETE API\*\* এর route বানাতে হবে
+
 ####
 
 ```http
@@ -328,21 +350,27 @@ module.exports = router;
 ```
 
 ####
+
 10. এবার **postman & mongodb_compass software** দিয়ে project test করে দেখতে হবে,
+
 ####
 
 ####
+
 ![postman & mongodb_compass success screenshot](https://i.ibb.co/4N6CnRQ/put.png)
+
 ####
+
 ![postman & mongodb_compass success screenshot](https://i.ibb.co/Wc3f9rb/dlt.png)
+
 ####
-
-
-
 
 ### GET req for having details of a specific product
+
 ####
-11. "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ  **getProductDetails ** নামের asynchronus function generate করতে হবে
+
+11. "6PP_ECOMMERCE/backend/controllers/**productController.js**" file এ **getProductDetails ** নামের asynchronus function generate করতে হবে
+
 ####
 
 ```http
@@ -437,9 +465,10 @@ exports.getProductDetails = async(req, res,next) => {
 ```
 
 ####
-12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP_ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে **_router.route().get()_** method দিয়ে নতুন **GET API** এর route বানাতে হবে । 
 
->_এখানে same **path** এর সবগুলো  req কে একই সাথে একই line এ দেয়া যেত কিন্তু **AdminRoute & NonAdminRoute** differenciate করারা জন্য আলাদা আলাদা দুটা line এ করা হয়েছে_
+12. এবার **getProductDetails** function এর router বানানোর জন্য "6PP*ECOMMERCE/backend/routes/**productRoute.js**" file এ **getProductDetails** function কে import করে \*\*\_router.route().get()*** method দিয়ে নতুন **GET API\*\* এর route বানাতে হবে ।
+
+> _এখানে same **path** এর সবগুলো req কে একই সাথে একই line এ দেয়া যেত কিন্তু **AdminRoute & NonAdminRoute** differenciate করারা জন্য আলাদা আলাদা দুটা line এ করা হয়েছে_
 
 ####
 
@@ -476,11 +505,13 @@ module.exports = router;
 ```
 
 ####
+
 13. এবার **postman & mongodb_compass software** দিয়ে project test করে দেখতে হবে,
+
 ####
 
 ####
+
 ![postman & mongodb_compass success screenshot](https://i.ibb.co/7nkBpgY/xcv.png)
+
 ####
-
-

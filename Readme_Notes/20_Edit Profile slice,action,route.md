@@ -92,7 +92,7 @@ export const updateUserProfile = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/v1/me/update",
+        "https://sixpackproject.onrender.comapi/v1/me/update",
         userProfileData,
         config
       );

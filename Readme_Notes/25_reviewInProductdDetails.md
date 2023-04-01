@@ -122,7 +122,7 @@ export const createReview = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/v1/review",
+        "https://sixpackproject.onrender.comapi/v1/review",
         review,
         config
       );
@@ -139,7 +139,7 @@ export const getAllReviewsOfProductById = createAsyncThunk(
   async (id) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/v1/reviews?id=${id}`
+        `https://sixpackproject.onrender.comapi/v1/reviews?id=${id}`
       );
 
       return data; // {success: true,message: "Product review done successfully",product}
@@ -165,7 +165,7 @@ export const deleteReviewById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.delete(
-        `http://localhost:5000/api/v1/reviews?id=${reviewId}&productId=${productId}`,
+        `https://sixpackproject.onrender.comapi/v1/reviews?id=${reviewId}&productId=${productId}`,
         config
       );
 

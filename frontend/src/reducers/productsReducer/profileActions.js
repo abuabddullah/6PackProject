@@ -19,7 +19,7 @@ export const updateUserProfile = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/v1/me/update",
+        "https://sixpackproject.onrender.comapi/v1/me/update",
         userProfileData,
         config
       );
@@ -48,7 +48,7 @@ export const updateUserPassword = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/v1/password/update",
+        "https://sixpackproject.onrender.comapi/v1/password/update",
         userPasswordsData,
         config
       );
@@ -71,7 +71,7 @@ export const forgotUserPassword = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "application/json" } };
       const { data } = await axios.post(
-        "http://localhost:5000/api/v1/password/forgot",
+        "https://sixpackproject.onrender.comapi/v1/password/forgot",
         userMailingInfo,
         config
       );
@@ -95,7 +95,7 @@ export const resetUserPassword = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        `http://localhost:5000/api/v1/password/reset/${token}`,
+        `https://sixpackproject.onrender.comapi/v1/password/reset/${token}`,
         userPasswordsData,
         config
       );

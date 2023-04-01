@@ -17,7 +17,7 @@ export const createOrder = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.post(
-        "http://localhost:5000/api/v1/order/new",
+        "https://sixpackproject.onrender.comapi/v1/order/new",
         order,
         config
       );
@@ -42,7 +42,7 @@ export const myOrders = createAsyncThunk("user/myOrders", async () => {
       headers: { Authorization: `Bearer ${token}` },
     };
     const { data } = await axios.get(
-      "http://localhost:5000/api/v1/orders/me",
+      "https://sixpackproject.onrender.comapi/v1/orders/me",
       config
     );
     return data; // {success: true,orders}
@@ -66,7 +66,7 @@ export const getOrderDetailsById = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       };
       const { data } = await axios.get(
-        `http://localhost:5000/api/v1/order/${id}`,
+        `https://sixpackproject.onrender.comapi/v1/order/${id}`,
         config
       );
       return data; // {success: true,order}
@@ -91,7 +91,7 @@ export const fetchAdminAllOrders = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       };
       const { data } = await axios.get(
-        "http://localhost:5000/api/v1/admin/orders",
+        "https://sixpackproject.onrender.comapi/v1/admin/orders",
         config
       );
       return data; // {success: true,message: "All orders are fetched successfully",totalAmount,orders,}
@@ -117,7 +117,7 @@ export const deleteAdminOrderById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.delete(
-        `http://localhost:5000/api/v1/admin/order/${id}`,
+        `https://sixpackproject.onrender.comapi/v1/admin/order/${id}`,
         config
       );
       return data; // {success: true,message: "Order is deleted successfully",}
@@ -145,7 +145,7 @@ export const updateAdminOrderById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.put(
-        `http://localhost:5000/api/v1/admin/order/${id}`,
+        `https://sixpackproject.onrender.comapi/v1/admin/order/${id}`,
         myForm,
         config
       );

@@ -384,7 +384,7 @@ import axios from "axios";
 export const fetchProductById = createAsyncThunk("productDetails/fetchProductById", async (id) => {
     try {
         const { data } = await axios
-        .get(`http://localhost:5000/api/v1/product/${id}`);
+        .get(`https://sixpackproject.onrender.comapi/v1/product/${id}`);
         return data.product;
     } catch (err) {
         return err.message;
@@ -965,13 +965,13 @@ export default CartItemComponent;
    > >
    > > > এই function এর ভিতরে **_reducerPath_** key এর value হিসেবে **_productsAPI_** ই দিতে হবে
    > >
-   > > > **_baseUrl_** এর value হিসবে deploy করার আগপর্যন্ত আমাদের lolcalHost এর **http://localhost:5000/** হবে
+   > > > **_baseUrl_** এর value হিসবে deploy করার আগপর্যন্ত আমাদের lolcalHost এর **https://sixpackproject.onrender.com** হবে
    > >
    > > > তারপর **_endspoints_** এর callback function ভিতরে একটা custom key দিব **_getAllProducts_** নামের [**এটা মুলত কাজের উপরে ভিত্তি করে naming করতে হবে**]এর ভিতরে **query** তে **products** লিখব [**এটা মূলত full link এর last এর route কে দিতে হবে।**]
    > > >
-   > > > > যদি full link: **_http://localhost:5000/products/_** হয় তাহলে,
+   > > > > যদি full link: **_https://sixpackproject.onrender.comproducts/_** হয় তাহলে,
    > > > >
-   > > > > > base URL : **_http://localhost:5000/_**
+   > > > > > base URL : **_https://sixpackproject.onrender.com_**
    > > > >
    > > > > > route : **_products/_**
    >
@@ -987,7 +987,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Define a service using a base URL and expected endpoints
 export const productsAPI = createApi({ // x
   reducerPath: "productsAPI", // x
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/" }), // x
+  baseQuery: fetchBaseQuery({ baseUrl: "https://sixpackproject.onrender.com" }), // x
   endpoints: (builder) => ({
     getAllProducts: builder.query({ // x
       query: () => `products`, // x
@@ -1113,7 +1113,7 @@ export const loginUser = createAsyncThunk(
         try {
             const config = { headers: { "Content-Type": "application/json" } };
             const { data } = await axios.post(
-                "http://localhost:5000/api/v1/login",
+                "https://sixpackproject.onrender.comapi/v1/login",
                 userInfo,
                 config,
             );
@@ -1131,7 +1131,7 @@ export const registerNewUser = createAsyncThunk(
         try {
             const config = { headers: { "Content-Type": "multipart/form-data" } };
             const { data } = await axios.post(
-                "http://localhost:5000/api/v1/register",
+                "https://sixpackproject.onrender.comapi/v1/register",
                 userData,
                 config,
             );
