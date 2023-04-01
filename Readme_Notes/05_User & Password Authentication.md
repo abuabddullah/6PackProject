@@ -212,7 +212,7 @@ module.exports = app;
 
 ####
 
-7. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject-qnef.onrender.comapi/v1/register_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে **registerUser** function এর জন্য
+7. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject-qnef.onrender.com/api/v1/register_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে **registerUser** function এর জন্য
 
 ####
 

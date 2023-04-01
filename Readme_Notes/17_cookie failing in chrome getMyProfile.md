@@ -28,7 +28,7 @@ export const loginUser = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "application/json" } };
       const { data } = await axios.post(
-        "https://sixpackproject-qnef.onrender.comapi/v1/login",
+        "https://sixpackproject-qnef.onrender.com/api/v1/login",
         userInfo,
         config
       );
@@ -51,7 +51,7 @@ export const registerNewUser = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       const { data } = await axios.post(
-        "https://sixpackproject-qnef.onrender.comapi/v1/register",
+        "https://sixpackproject-qnef.onrender.com/api/v1/register",
         userData,
         config
       );
@@ -79,7 +79,7 @@ export const getMyProfile = createAsyncThunk("user/getMyProfile", async () => {
     const token = getCookie("token");
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
-    const { data } = await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/me", config);
+    const { data } = await axios.get("https://sixpackproject-qnef.onrender.com/api/v1/me", config);
 
     return data.user;
   } catch (err) {
@@ -103,7 +103,7 @@ export const loginUser = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "application/json" } };
       const { data } = await axios.post(
-        "https://sixpackproject-qnef.onrender.comapi/v1/login",
+        "https://sixpackproject-qnef.onrender.com/api/v1/login",
         userInfo,
         config
       );
@@ -121,7 +121,7 @@ export const registerNewUser = createAsyncThunk(
     try {
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       const { data } = await axios.post(
-        "https://sixpackproject-qnef.onrender.comapi/v1/register",
+        "https://sixpackproject-qnef.onrender.com/api/v1/register",
         userData,
         config
       );
@@ -136,7 +136,7 @@ export const registerNewUser = createAsyncThunk(
 export const getMyProfile = createAsyncThunk("user/getMyProfile", async () => {
   try {
 
-    const { data } = await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/me");
+    const { data } = await axios.get("https://sixpackproject-qnef.onrender.com/api/v1/me");
 
     return data.user;
   } catch (err) {

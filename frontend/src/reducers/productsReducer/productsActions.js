@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // export const fetchAllProducts = createAsyncThunk("products/fetchAllProducts", async () => {
-//     const { data } = await axios.get("https://sixpackproject-qnef.onrender.comapi/v1/products");
+//     const { data } = await axios.get("https://sixpackproject-qnef.onrender.com/api/v1/products");
 //     return data;
 // })
 
@@ -17,7 +17,7 @@ export const fetchAllProducts = createAsyncThunk(
     category,
   }) => {
     try {
-      let link = `https://sixpackproject-qnef.onrender.comapi/v1/products?keyword=${keyWord}&page=${page}&limit=${limit}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
+      let link = `https://sixpackproject-qnef.onrender.com/api/v1/products?keyword=${keyWord}&page=${page}&limit=${limit}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
 
       if (category && category !== "All") {
         link += `&category=${category}`;
@@ -46,7 +46,7 @@ export const fetchAdminProducts = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.get(
-        "https://sixpackproject-qnef.onrender.comapi/v1/admin/products",
+        "https://sixpackproject-qnef.onrender.com/api/v1/admin/products",
         config
       );
       return data; // { success: true, products,}
@@ -72,7 +72,7 @@ export const deleteAdminProductById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.delete(
-        `https://sixpackproject-qnef.onrender.comapi/v1/admin/product/${id}`,
+        `https://sixpackproject-qnef.onrender.com/api/v1/admin/product/${id}`,
         config
       );
       return data; // {success: true,message: "Product deleted",}
@@ -87,7 +87,7 @@ export const fetchProductById = createAsyncThunk(
   async (id) => {
     try {
       const { data } = await axios.get(
-        `https://sixpackproject-qnef.onrender.comapi/v1/product/${id}`
+        `https://sixpackproject-qnef.onrender.com/api/v1/product/${id}`
       );
       return data.product;
     } catch (err) {
@@ -113,7 +113,7 @@ export const createNewProductByAdmin = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.post(
-        "https://sixpackproject-qnef.onrender.comapi/v1/admin/product/new",
+        "https://sixpackproject-qnef.onrender.com/api/v1/admin/product/new",
         product,
         config
       );
@@ -141,7 +141,7 @@ export const updateProductByAdminById = createAsyncThunk(
         "Content-Type": "application/json",
       };
       const { data } = await axios.put(
-        `https://sixpackproject-qnef.onrender.comapi/v1/admin/product/${id}`,
+        `https://sixpackproject-qnef.onrender.com/api/v1/admin/product/${id}`,
         productUpdateInfo,
         config
       );

@@ -633,7 +633,7 @@ yarn-error.log*
 >
 > > most importantly frontend এর
 > >
-> > > সকল **_https://sixpackproject-qnef.onrender.com_** লিংক্স কে **_https://sixpackproject-qnef.onrender.com/_** convert করা হয়েছে
+> > > সকল **_https://sixpackproject-qnef.onrender.com/_** লিংক্স কে **_https://sixpackproject-qnef.onrender.com/_** convert করা হয়েছে
 >
 > > এবার root folder এর **_package.json_** file এ সবার last এর proxy এর value change করে
 > >
@@ -1260,7 +1260,7 @@ yarn-error.log*
       "last 1 safari version"
     ]
   },
-  "proxy": "https://sixpackproject-qnef.onrender.com"
+  "proxy": "https://sixpackproject-qnef.onrender.com/"
 }
 
 

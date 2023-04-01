@@ -170,7 +170,7 @@ module.exports = router;
 
 ####
 
-5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject-qnef.onrender.comapi/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
+5. এবার **postman software** দিয়ে project test করার জন্য **Ecommerce** collection এ **_https://sixpackproject-qnef.onrender.com/api/v1/admin/product/new_** link এর against এ **body** তে **json** format এ একটা **POST request** generate করতে হবে
 
 ####
 
