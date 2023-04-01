@@ -11,14 +11,7 @@
   height: 10vmax;
   border-bottom: 5px solid rgba(0, 0, 0, 0.719);
   border-radius: 50%;
-  -webkit-animation: loadingRotate 800ms linear infinite;
-          animation: loadingRotate 800ms linear infinite;
-}
-
-@-webkit-keyframes loadingRotate {
-  to {
-    transform: rotateZ(-360deg);
-  }
+  animation: loadingRotate 800ms linear infinite;
 }
 
 @keyframes loadingRotate {

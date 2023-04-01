@@ -2,7 +2,6 @@
   background-color: #000000;
   color: #ffffff;
   padding: 5vmax 3vmax 1vmax 3vmax;
-  margin-top: 5vmax;
 }
 .footer p {
   text-align: center;
@@ -72,12 +71,4 @@
 }
 .rightFooter ul li a:hover {
   color: #eb4034;
-}
-
-@media screen and (max-width: 600px) {
-  .midFooter {
-    visibility: hidden;
-  }
-}
-
-/*# sourceMappingURL=Footer.css.map */
+}/*# sourceMappingURL=Footer.css.map */
